@@ -1,1 +1,1 @@
-# honey-pot
+# Conviction funding pilot
