@@ -19,7 +19,7 @@ const Metrics = React.memo(function Metrics({
 
   return (
     <Box
-      heading="Honey"
+      heading="ANT"
       css={`
         margin-bottom: ${2 * GU}px;
       `}
@@ -43,7 +43,6 @@ const Metrics = React.memo(function Metrics({
             height="60"
             width="60"
             alt=""
-            onClick={onExecuteIssuance}
             css={`
               margin-right: ${4 * GU}px;
               cursor: pointer;
@@ -127,7 +126,7 @@ function TokenPrice({ token }) {
 
   return (
     <div>
-      <Metric label="Honey price" value={`$${usdValue}`} color={theme.green} />
+      <Metric label="ANT price" value={`$${usdValue}`} color={theme.green} />
       <Link
         href="https://uniswap.1hive.org/swap"
         external

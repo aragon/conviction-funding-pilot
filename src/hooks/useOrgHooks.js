@@ -60,7 +60,6 @@ export function useOrganzation() {
   const [organzation, setOrganization] = useState(null)
   const { ethereum, ethers } = useWallet()
 
-  console.log(getDefaultChain())
   useEffect(() => {
     let cancelled = false
     const fetchOrg = async () => {
@@ -74,7 +73,7 @@ export function useOrganzation() {
         ],
         {
           readProvider: ethereum || ethers,
-          chainId: 100,
+          chainId: getDefaultChain(),
         }
       )
 
