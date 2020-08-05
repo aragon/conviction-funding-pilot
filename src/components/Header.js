@@ -3,25 +3,29 @@ import { GU } from '@aragon/ui'
 import AccountModule from './Account/AccountModule'
 import Layout from './Layout'
 
-import beeSvg from '../assets/bee.svg'
-import headerBackgroundSvg from '../assets/header-background.svg'
+import logoAnt from '../assets/logo-ant.svg'
+import headerBackgroundSvg from '../assets/backdrop.png'
 import logoSvg from '../assets/logotext.svg'
 
 function Header({ compact }) {
-  const BeeIcon = <img src={beeSvg} height={compact ? 40 : 60} alt="" />
+  const antIcon = <img src={logoAnt} height={compact ? 40 : 60} alt="" />
   const headerItemsWidth = compact ? 'auto' : 25 * GU
 
   return (
     <header
       css={`
-        background: rgba(124, 224, 214, 0.6);
+        background: linear-gradient(
+          90deg,
+          rgba(85, 194, 250, 1) 31%,
+          rgba(101, 225, 247, 1) 100%,
+          rgba(0, 212, 255, 1) 100%
+        );
         margin-bottom: ${compact ? `${2 * GU}px` : 0};
       `}
     >
       <div
         css={`
           background: url(${headerBackgroundSvg}) no-repeat;
-          background-size: 811px 600px;
           background-position: center;
           padding: ${compact
             ? `${3 * GU}px`
@@ -41,9 +45,18 @@ function Header({ compact }) {
                 width: ${headerItemsWidth}px;
               `}
             >
-              {compact ? BeeIcon : <img src={logoSvg} height="30" alt="" />}
+              {compact ? antIcon : <img src={logoSvg} height="30" alt="" />}
             </div>
-            {!compact && <div>{BeeIcon}</div>}
+            {!compact && (
+              <div
+              // css={`
+              // background: white;
+              // border-radius: 50%/50%;
+              // `}
+              >
+                {antIcon}
+              </div>
+            )}
             <div
               css={`
                 width: ${headerItemsWidth}px;
