@@ -34,7 +34,6 @@ export function useProposals() {
     if (isLoading) {
       return proposals
     }
-
     return proposals.map(proposal => {
       const stakes = stakesHistory.filter(
         stake => parseInt(stake.proposalId) === parseInt(proposal.id)
@@ -72,6 +71,7 @@ export function useProposals() {
         latestBlock.number,
         alpha
       )
+
       const userStakedConviction = userConviction.div(maxConviction)
       const stakedConviction = currentConviction.div(maxConviction)
       const futureConviction = getMaxConviction(totalTokensStaked, alpha)

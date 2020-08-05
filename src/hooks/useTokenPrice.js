@@ -52,7 +52,7 @@ export function useTokenBalanceToUsd(amount, token) {
           setConvertedAmount(convertedAmount)
         }
       } catch (err) {
-        console.error(`Could not fetch Uniswap price for ${token.name}`, err)
+        // console.error(`Could not fetch Uniswap price for ${token.name}`, err)
         if (!cancelled) {
           retryTimer = setTimeout(
             updateConvertedAmount,

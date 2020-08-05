@@ -17,16 +17,12 @@ import {
   useStakesHistorySubscription,
 } from './useSubscriptions'
 
-// Endpoints TODO: Move to endpoints file
-
 // Organzation
-const ORG_ADDRESS = '0xe9869a0bbc8fb8c61b7d81c33fa2ba84871b3b0e'
-const ORG_SUBRAPH_URL =
-  'https://api.thegraph.com/subgraphs/name/1hive/aragon-xdai'
+const ORG_ADDRESS = '0xc46e67b7b3d1fe9f949a21d9a5b1f84590bb78dc'
 
 // Convcition voting
 const APP_NAME = 'conviction-voting'
-const APP_SUBRAPH_URL =
+const APP_SUBGRAPH_URL =
   'https://api.thegraph.com/subgraphs/name/1hive/aragon-conviction-voting-xdai'
 
 // Tokens app
@@ -63,19 +59,10 @@ export function useOrganzation() {
   useEffect(() => {
     let cancelled = false
     const fetchOrg = async () => {
-      const organization = await connect(
-        ORG_ADDRESS,
-        [
-          'thegraph',
-          {
-            orgSubgraphUrl: ORG_SUBRAPH_URL,
-          },
-        ],
-        {
-          readProvider: ethereum || ethers,
-          chainId: getDefaultChain(),
-        }
-      )
+      const organization = await connect(ORG_ADDRESS, 'thegraph', {
+        ethereum,
+        network: getDefaultChain(),
+      })
 
       if (!cancelled) {
         setOrganization(organization)
@@ -109,7 +96,7 @@ export function useAppData(organization) {
 
       const convictionVoting = new ConvictionVoting(
         convictionApp.address,
-        APP_SUBRAPH_URL
+        APP_SUBGRAPH_URL
       )
 
       const config = await convictionVoting.config()
@@ -218,12 +205,10 @@ export function useTokenBalances(account, token) {
         return
       }
 
-      const { miniMeToken } = results.data
-
       if (!cancelled) {
         setBalances({
-          balance: new BigNumber(miniMeToken.holders[0]?.balance || 0),
-          totalSupply: new BigNumber(miniMeToken.totalSupply),
+          balance: new BigNumber(0),
+          totalSupply: new BigNumber(0),
         })
       }
     }

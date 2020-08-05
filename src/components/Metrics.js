@@ -1,8 +1,6 @@
 import React from 'react'
 import { Box, GU, Link, textStyle, useLayout, useTheme } from '@aragon/ui'
-import { useTokenBalanceToUsd } from '../hooks/useTokenPrice'
 
-import { bigNum } from '../lib/bigNumber'
 import { formatTokenAmount } from '../lib/token-utils'
 import honeySvg from '../assets/honey.svg'
 
@@ -104,7 +102,6 @@ function Metric({ label, value, color }) {
 
 function TokenBalance({ label, token, value }) {
   const theme = useTheme()
-  const usdValue = useTokenBalanceToUsd(value, token)
 
   return (
     <>
@@ -114,7 +111,7 @@ function TokenBalance({ label, token, value }) {
           color: ${theme.green};
         `}
       >
-        $ {usdValue}
+        $ 0
       </div>
     </>
   )
@@ -122,11 +119,10 @@ function TokenBalance({ label, token, value }) {
 
 function TokenPrice({ token }) {
   const theme = useTheme()
-  const usdValue = useTokenBalanceToUsd(bigNum(1), token)
 
   return (
     <div>
-      <Metric label="ANT price" value={`$${usdValue}`} color={theme.green} />
+      <Metric label="ANT price" value={`$${0}`} color={theme.green} />
       <Link
         href="https://uniswap.1hive.org/swap"
         external
