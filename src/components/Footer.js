@@ -2,7 +2,7 @@ import React from 'react'
 import { GU, Link as AragonLink, textStyle, useTheme } from '@aragon/ui'
 import styled from 'styled-components'
 import Layout from './Layout'
-import logoSvg from '../assets/logo.svg'
+import antSvg from '../assets/logo-ant.svg'
 
 export default function Footer({ compact }) {
   const theme = useTheme()
@@ -40,7 +40,7 @@ export default function Footer({ compact }) {
               width: ${40 * GU}px;
             `}
           >
-            <img src={logoSvg} height="40" alt="" />
+            <img src={antSvg} height="40" alt="" />
           </div>
           <div>
             <h5

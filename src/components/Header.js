@@ -5,7 +5,6 @@ import Layout from './Layout'
 
 import logoAnt from '../assets/logo-ant.svg'
 import headerBackgroundSvg from '../assets/backdrop.png'
-import logoSvg from '../assets/logotext.svg'
 
 function Header({ compact }) {
   const antIcon = <img src={logoAnt} height={compact ? 40 : 60} alt="" />
@@ -45,7 +44,7 @@ function Header({ compact }) {
                 width: ${headerItemsWidth}px;
               `}
             >
-              {compact ? antIcon : <img src={logoSvg} height="30" alt="" />}
+              {compact ? antIcon : <img src={logoAnt} height="30" alt="" />}
             </div>
             {!compact && (
               <div

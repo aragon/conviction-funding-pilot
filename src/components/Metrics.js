@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, GU, Link, textStyle, useLayout, useTheme } from '@aragon/ui'
 
 import { formatTokenAmount } from '../lib/token-utils'
-import honeySvg from '../assets/honey.svg'
+import antSvg from '../assets/logo-ant.svg'
 
 const Metrics = React.memo(function Metrics({
   totalSupply,
@@ -37,13 +37,12 @@ const Metrics = React.memo(function Metrics({
           `}
         >
           <img
-            src={honeySvg}
+            src={antSvg}
             height="60"
             width="60"
             alt=""
             css={`
               margin-right: ${4 * GU}px;
-              cursor: pointer;
             `}
           />
           {compactMode && <TokenPrice token={stakeToken} />}

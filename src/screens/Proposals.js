@@ -252,7 +252,7 @@ const Amount = ({
   requestedAmount = 0,
   requestToken: { symbol, decimals, verified },
 }) => {
-  const tokenIcon = getTokenIconBySymbol(symbol)
+  const tokenIcon = getTokenIconBySymbol('ANT')
   return (
     <div>
       <Balance
