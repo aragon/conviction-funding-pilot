@@ -21,14 +21,12 @@ function Wallet({ myStakes }) {
   const theme = useTheme()
   const { account } = useWallet()
   const { accountBalance, stakeToken } = useAppState()
-  console.log(profileName, setProfileName)
   const balanceUsdValue = useTokenBalanceToUsd(accountBalance, stakeToken)
 
   useEffect(() => {
     async function getProfileForAccount() {
       if (account) {
-        const profile = await getProfile(account)
-        const { name } = profile
+        const { name } = await getProfile(account)
         setProfileName(name)
       }
     }
