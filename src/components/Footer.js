@@ -51,16 +51,16 @@ export default function Footer({ compact }) {
             >
               Community
             </h5>
-            <Link href="https://keybase.io/team/1hive" external>
-              Keybase
+            <Link href="https://aragon.org/blog" external>
+              Blog
             </Link>
-            <Link href="https://github.com/1Hive" external>
+            <Link href="https://github.com/aragon/" external>
               Github
             </Link>
-            <Link href="https://twitter.com/1HiveOrg" external>
+            <Link href="https://twitter.com/aragonproject" external>
               Twitter
             </Link>
-            <Link href="https://forum.1hive.org/" external>
+            <Link href="https://forum.aragon.org/" external>
               Forum
             </Link>
           </div>
@@ -73,11 +73,11 @@ export default function Footer({ compact }) {
             >
               Tools
             </h5>
-            <Link
-              href="https://www.notion.so/1Hive-Community-Handbook-f66d489df85a4011bac681963bfee796"
-              external
-            >
-              Handbook
+            <Link href="https://wiki.aragon.org/" external>
+              Wiki
+            </Link>
+            <Link href="https://connect.aragon.org/" external>
+              Connect
             </Link>
           </div>
         </div>

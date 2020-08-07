@@ -122,20 +122,30 @@ export function ConvictionCountdown({ proposal, shorter }) {
     remainingTimeToPass,
     neededTokens,
     currentConviction,
+    neededConviction,
   } = proposal
 
   const view = useMemo(() => {
     if (executed) {
       return EXECUTED
     }
-    if (currentConviction.gte(threshold)) {
+    if (
+      !neededConviction.toString().includes('Infinity') &&
+      currentConviction.gte(threshold)
+    ) {
       return AVAILABLE
     }
     if (remainingTimeToPass > 0) {
       return MAY_PASS
     }
     return UNABLE_TO_PASS
-  }, [currentConviction, executed, threshold, remainingTimeToPass])
+  }, [
+    currentConviction,
+    executed,
+    neededConviction,
+    threshold,
+    remainingTimeToPass,
+  ])
 
   return (
     <div

@@ -148,7 +148,6 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
     )
 
     const max = getMaxConviction(totalSupply, alpha)
-
     return Math.round((threshold / max) * 100)
   }, [alpha, formData.amount, maxRatio, totalSupply, vaultBalance, weight])
 

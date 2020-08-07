@@ -123,7 +123,7 @@ function TokenPrice({ token }) {
     <div>
       <Metric label="ANT price" value={`$${0}`} color={theme.green} />
       <Link
-        href="https://uniswap.1hive.org/swap"
+        href="https://app.uniswap.org/#/swap"
         external
         css={`
           ${textStyle('body3')};

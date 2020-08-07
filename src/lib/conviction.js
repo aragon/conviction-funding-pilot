@@ -257,7 +257,7 @@ export function calculateThreshold(requested, funds, supply, alpha, beta, rho) {
       .div(oneBN.minus(alpha))
       .div(beta.minus(share).pow(2))
   } else {
-    return new BigNumber(0)
+    return new BigNumber('-1')
   }
 }
 

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Box,
   EthIdenticon,
@@ -8,6 +8,7 @@ import {
   useTheme,
 } from '@aragon/ui'
 import styled from 'styled-components'
+import { getProfile } from '3box'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 
@@ -16,11 +17,23 @@ import { formatTokenAmount, getTokenIconBySymbol } from '../lib/token-utils'
 import { useTokenBalanceToUsd } from '../hooks/useTokenPrice'
 
 function Wallet({ myStakes }) {
+  const [profileName, setProfileName] = useState(null)
   const theme = useTheme()
   const { account } = useWallet()
   const { accountBalance, stakeToken } = useAppState()
-
+  console.log(profileName, setProfileName)
   const balanceUsdValue = useTokenBalanceToUsd(accountBalance, stakeToken)
+
+  useEffect(() => {
+    async function getProfileForAccount() {
+      if (account) {
+        const profile = await getProfile(account)
+        const { name } = profile
+        setProfileName(name)
+      }
+    }
+    getProfileForAccount()
+  }, [account])
 
   const myActiveTokens = useMemo(() => {
     if (!myStakes) {
@@ -61,7 +74,7 @@ function Wallet({ myStakes }) {
             ${textStyle('title4')}
           `}
         >
-          {shortenAddress(account, 4)}
+          {profileName || shortenAddress(account, 4)}
         </span>
       </div>
       <div
