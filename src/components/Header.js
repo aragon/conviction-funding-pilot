@@ -3,11 +3,9 @@ import { GU } from '@aragon/ui'
 import AccountModule from './Account/AccountModule'
 import Layout from './Layout'
 
-import logoAnt from '../assets/logo-ant.svg'
 import headerBackgroundSvg from '../assets/backdrop.png'
 
 function Header({ compact }) {
-  const antIcon = <img src={logoAnt} height={compact ? 40 : 60} alt="" />
   const headerItemsWidth = compact ? 'auto' : 25 * GU
 
   return (
@@ -35,27 +33,10 @@ function Header({ compact }) {
           <div
             css={`
               display: flex;
-              justify-content: space-between;
+              justify-content: flex-end;
               align-items: center;
             `}
           >
-            <div
-              css={`
-                width: ${headerItemsWidth}px;
-              `}
-            >
-              {compact ? antIcon : <img src={logoAnt} height="30" alt="" />}
-            </div>
-            {!compact && (
-              <div
-              // css={`
-              // background: white;
-              // border-radius: 50%/50%;
-              // `}
-              >
-                {antIcon}
-              </div>
-            )}
             <div
               css={`
                 width: ${headerItemsWidth}px;

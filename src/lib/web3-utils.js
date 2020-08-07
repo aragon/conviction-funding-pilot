@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import BigNumber from 'bignumber.js'
 import { toChecksumAddress } from 'web3-utils'
 import env from '../environment'
 import { getDefaultChain } from '../local-settings'
@@ -90,6 +92,45 @@ export function addressesEqualNoSum(first, second) {
   first = first && first.toLowerCase()
   second = second && second.toLowerCase()
   return first === second
+}
+
+/**
+ * Convert a token into a USD price
+ *
+ * @param {String} symbol The symbol of the token to convert from.
+ * @param {Number} decimals The amount of decimals for the token.
+ * @param {BigNumber} balance The balance to convert into USD.
+ * @returns {String} the amount of the token in USD
+ */
+export function useTokenBalanceToUsd(symbol, decimals, balance) {
+  const [usd, setUsd] = useState('-')
+  useEffect(() => {
+    let cancelled = false
+
+    fetch(
+      `https://min-api.cryptocompare.com/data/price?fsym=${symbol}&tsyms=USD`
+    )
+      .then(res => res.json())
+      .then(price => {
+        if (cancelled || !balance || !(parseFloat(price.USD) > 0)) {
+          return
+        }
+
+        const precision = 6
+
+        const usdBalance = balance
+          .times(BigNumber(parseInt(price.USD * 10 ** precision, 10)))
+          .div(10 ** precision)
+          .div(BigNumber(10).pow(decimals))
+        setUsd(usdBalance)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [balance, decimals, symbol])
+
+  return usd
 }
 
 // Re-export some web3-utils functions

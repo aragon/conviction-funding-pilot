@@ -1,7 +1,8 @@
 import React from 'react'
 import { Box, GU, Link, textStyle, useLayout, useTheme } from '@aragon/ui'
-
+import { bigNum } from '../lib/bigNumber'
 import { formatTokenAmount } from '../lib/token-utils'
+import { useTokenBalanceToUsd } from '../lib/web3-utils'
 import antSvg from '../assets/logo-ant.svg'
 
 const Metrics = React.memo(function Metrics({
@@ -14,6 +15,8 @@ const Metrics = React.memo(function Metrics({
 }) {
   const { layoutName } = useLayout()
   const compactMode = layoutName === 'small'
+  const antPrice = useTokenBalanceToUsd('ANT', 18, bigNum(1))
+  console.log(antPrice)
 
   return (
     <Box
@@ -45,9 +48,9 @@ const Metrics = React.memo(function Metrics({
               margin-right: ${4 * GU}px;
             `}
           />
-          {compactMode && <TokenPrice token={stakeToken} />}
+          {compactMode && <TokenPrice token={antPrice} />}
         </div>
-        {!compactMode && <TokenPrice token={stakeToken} />}
+        {!compactMode && <TokenPrice token={antPrice} />}
         <div>
           <TokenBalance
             label="Common Pool"
@@ -121,7 +124,11 @@ function TokenPrice({ token }) {
 
   return (
     <div>
-      <Metric label="ANT price" value={`$${0}`} color={theme.green} />
+      <Metric
+        label="ANT price"
+        value={`$${token.toString()}`}
+        color={theme.green}
+      />
       <Link
         href="https://app.uniswap.org/#/swap"
         external
