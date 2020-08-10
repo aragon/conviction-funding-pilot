@@ -1,13 +1,19 @@
 import { useMemo } from 'react'
-import { Contract as EthersContract, providers as Providers } from 'ethers'
+import Ethers, {
+  Contract as EthersContract,
+  providers as Providers,
+} from 'ethers'
 import { getNetwork } from '../networks'
 
 export function useContractReadOnly(address, abi) {
-  const ethEndpoint = getNetwork().defaultEthNode
+  const { defaultEthNode: readProvider, type: networkName } = getNetwork()
 
   const ethProvider = useMemo(
-    () => (ethEndpoint ? new Providers.JsonRpcProvider(ethEndpoint) : null),
-    [ethEndpoint]
+    () =>
+      readProvider.includes('wss')
+        ? Ethers.getDefaultProvider(networkName)
+        : new Providers.JsonRpcProvider(readProvider),
+    [networkName, readProvider]
   )
 
   return useMemo(() => {

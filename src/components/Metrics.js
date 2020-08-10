@@ -16,7 +16,6 @@ const Metrics = React.memo(function Metrics({
   const { layoutName } = useLayout()
   const compactMode = layoutName === 'small'
   const antPrice = useTokenBalanceToUsd('ANT', 18, bigNum(1))
-  console.log(antPrice)
 
   return (
     <Box

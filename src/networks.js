@@ -7,12 +7,14 @@ const networks = {
     ensRegistry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     name: 'Mainnet',
     type: 'main',
+    defaultEthNode: 'wss://mainnet.eth.aragon.network/ws',
   },
   rinkeby: {
     chainId: 4,
     ensRegistry: '0x98df287b6c145399aaa709692c8d308357bc085d',
     name: 'Rinkeby',
     type: 'rinkeby',
+    defaultEthNode: 'wss://rinkeby.eth.aragon.network/ws',
   },
   xdai: {
     chainId: 100,

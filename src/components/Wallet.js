@@ -1,4 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import styled from 'styled-components'
+import TokenAmount from 'token-amount'
+import { getProfile } from '3box'
 import {
   Box,
   EthIdenticon,
@@ -7,13 +10,12 @@ import {
   textStyle,
   useTheme,
 } from '@aragon/ui'
-import styled from 'styled-components'
-import { getProfile } from '3box'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 
 import BigNumber from '../lib/bigNumber'
-import { formatTokenAmount, getTokenIconBySymbol } from '../lib/token-utils'
+import { getTokenIconBySymbol } from '../lib/token-utils'
+import { useTokenBalance } from '../hooks/useTokenBalance'
 import { useTokenBalanceToUsd } from '../hooks/useTokenPrice'
 
 function Wallet({ myStakes }) {
@@ -21,6 +23,7 @@ function Wallet({ myStakes }) {
   const theme = useTheme()
   const { account } = useWallet()
   const { accountBalance, stakeToken } = useAppState()
+  const antBalance = useTokenBalance('ANT')
   const balanceUsdValue = useTokenBalanceToUsd(accountBalance, stakeToken)
 
   useEffect(() => {
@@ -99,10 +102,10 @@ function Wallet({ myStakes }) {
         </h5>
         <div>
           <Balance
-            amount={accountBalance}
-            decimals={stakeToken.decimals}
+            amount={antBalance}
+            decimals={18}
             label="Balance"
-            symbol={stakeToken.symbol}
+            symbol="ANT"
             value={balanceUsdValue}
           />
           <LineSeparator border={theme.border} />
@@ -165,7 +168,7 @@ const Balance = ({
             color: ${theme[inactive ? 'negative' : 'content']};
           `}
         >
-          {formatTokenAmount(amount, decimals)}
+          {TokenAmount.format(amount, decimals)}
         </span>
         {value && (
           <div

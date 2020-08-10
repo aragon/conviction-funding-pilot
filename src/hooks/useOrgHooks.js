@@ -18,16 +18,16 @@ import {
 } from './useSubscriptions'
 
 // Organzation
-const ORG_ADDRESS = '0xc46e67b7b3d1fe9f949a21d9a5b1f84590bb78dc'
+const ORG_ADDRESS = '0x7050ead31291e288fee6f34f8616b58a86064d4f'
 
 // Convcition voting
-const APP_NAME = 'conviction-voting'
+const APP_NAME = 'conviction-beta'
 const APP_SUBGRAPH_URL =
-  'https://api.thegraph.com/subgraphs/name/1hive/aragon-conviction-voting-xdai'
+  'https://api.thegraph.com/subgraphs/name/1hive/aragon-cv-rinkeby-staging'
 
 // Tokens app
 const TOKEN_MANAGER_SUBGRAPH =
-  'https://api.thegraph.com/subgraphs/name/1hive/aragon-tokens-xdai'
+  'https://api.thegraph.com/subgraphs/name/aragon/aragon-tokens-rinkeby'
 const TOKEN_HOLDER_QUERY = `
 query miniMeToken($id: String!, $address: String!) {
   miniMeToken(id: $id){
