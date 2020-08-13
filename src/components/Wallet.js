@@ -15,7 +15,6 @@ import { useWallet } from '../providers/Wallet'
 
 import BigNumber, { bigNum } from '../lib/bigNumber'
 import { getTokenIconBySymbol } from '../lib/token-utils'
-import { useTokenBalance } from '../hooks/useTokenBalance'
 // import { useTokenBalanceToUsd } from '../lib/web3-utils'
 
 function Wallet({ myStakes }) {
@@ -23,7 +22,6 @@ function Wallet({ myStakes }) {
   const theme = useTheme()
   const { account } = useWallet()
   const { accountBalance, stakeToken } = useAppState()
-  const antBalance = useTokenBalance('ANT')
   // const balanceUsdValue = useTokenBalanceToUsd('ANT', 18, accountBalance)
 
   useEffect(() => {
@@ -102,7 +100,7 @@ function Wallet({ myStakes }) {
         </h5>
         <div>
           <Balance
-            amount={antBalance}
+            amount={accountBalance}
             decimals={18}
             label="Balance"
             symbol="ANT"

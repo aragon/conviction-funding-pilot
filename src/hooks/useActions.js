@@ -97,7 +97,6 @@ async function sendIntent(
   { ethers, from }
 ) {
   try {
-    console.log(organization, appAddress, fn, params, ethers, from, '??')
     const intent = organization.appIntent(appAddress, fn, params)
 
     const txPath = await intent.paths(from)

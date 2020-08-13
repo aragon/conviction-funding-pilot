@@ -82,7 +82,6 @@ export function useAppData(organization) {
       const convictionVoting = await ConvictionVoting(convictionApp)
 
       const config = await convictionVoting.config()
-      console.log(convictionVoting, 'voting', apps)
 
       if (!cancelled) {
         setAppData(appData => ({
@@ -191,7 +190,6 @@ export function useTokenBalances(account, token, timer = 3000) {
         const contractTotalSupply = await tokenContract.totalSupply()
         if (!cancelled) {
           // Contract value is bn.js so we need to convert it to bignumber.js
-          console.log('new totalSupply', contractTotalSupply.toString())
           const newBalance = new BigNumber(contractNewBalance.toString())
           const newTotalSupply = new BigNumber(contractTotalSupply.toString())
 

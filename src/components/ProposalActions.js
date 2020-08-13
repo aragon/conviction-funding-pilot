@@ -26,6 +26,7 @@ function ProposalActions({
 
   const totalStaked = useAccountTotalStaked()
 
+  // This is the current stake in this proposal
   const myStake = useMemo(
     () =>
       stakes.find(({ entity }) => addressesEqual(entity, connectedAccount)) || {
@@ -36,7 +37,7 @@ function ProposalActions({
 
   const nonStakedTokens = useMemo(
     () => accountBalance.minus(totalStaked).plus(myStake.amount),
-    [myStake.amount, accountBalance, totalStaked]
+    [accountBalance, myStake.amount, totalStaked]
   )
 
   const myStakeAmountFormatted = formatTokenAmount(
@@ -83,11 +84,11 @@ function ProposalActions({
     const newValue = new BigNumber(toDecimals(inputValue, stakeToken.decimals))
 
     if (newValue.lt(myStake.amount)) {
-      onWithdrawFromProposal(id, myStake.amount.minus(newValue).toString(10))
+      onWithdrawFromProposal(id, myStake.amount.minus(newValue).toFixed())
       return
     }
 
-    onStakeToProposal(id, newValue.minus(myStake.amount).toString(10))
+    onStakeToProposal(id, newValue.minus(myStake.amount).toFixed())
   }, [
     id,
     inputValue,
