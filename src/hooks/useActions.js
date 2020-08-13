@@ -15,7 +15,7 @@ export default function useActions(onDone) {
     async ({ title, link, amount, beneficiary }) => {
       sendIntent(
         organization,
-        convictionVoting.appAddress,
+        convictionVoting.address,
         'addProposal',
         [title, toHex(link), amount, beneficiary],
         { ethers, from: account }
@@ -30,7 +30,7 @@ export default function useActions(onDone) {
     (proposalId, amount) => {
       sendIntent(
         organization,
-        convictionVoting.appAddress,
+        convictionVoting.address,
         'stakeToProposal',
         [proposalId, amount],
         { ethers, from: account }
@@ -45,7 +45,7 @@ export default function useActions(onDone) {
     (proposalId, amount) => {
       sendIntent(
         organization,
-        convictionVoting.appAddress,
+        convictionVoting.address,
         'withdrawFromProposal',
         [proposalId, amount],
         { ethers, from: account }
@@ -60,7 +60,7 @@ export default function useActions(onDone) {
     proposalId => {
       sendIntent(
         organization,
-        convictionVoting.appAddress,
+        convictionVoting.address,
         'executeProposal',
         [proposalId, true],
         { ethers, from: account }
@@ -97,6 +97,7 @@ async function sendIntent(
   { ethers, from }
 ) {
   try {
+    console.log(organization, appAddress, fn, params, ethers, from, '??')
     const intent = organization.appIntent(appAddress, fn, params)
 
     const txPath = await intent.paths(from)
