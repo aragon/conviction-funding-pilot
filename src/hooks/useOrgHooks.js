@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import gql from 'graphql-tag'
-import { GraphQLWrapper } from '@aragon/connect-thegraph'
-
-import { ConvictionVoting } from '@1hive/connect-thegraph-conviction-voting'
+import ConvictionVoting from '@1hive/connect-conviction-voting'
 import { connect } from '@aragon/connect'
 import { getDefaultChain } from '../local-settings'
 import { transformConfigData, getAppAddressByName } from '../lib/data-utils'
+import { addressesEqual } from '../lib/web3-utils.js'
 import { useContractReadOnly } from './useContract'
 
 import BigNumber from '../lib/bigNumber'
@@ -17,29 +15,12 @@ import {
   useStakesHistorySubscription,
 } from './useSubscriptions'
 
+console.log(ConvictionVoting)
+
 // Organzation
 const ORG_ADDRESS = '0x7050ead31291e288fee6f34f8616b58a86064d4f'
 
-// Convcition voting
 const APP_NAME = 'conviction-beta'
-const APP_SUBGRAPH_URL =
-  'https://api.thegraph.com/subgraphs/name/1hive/aragon-cv-rinkeby-staging'
-
-// Tokens app
-const TOKEN_MANAGER_SUBGRAPH =
-  'https://api.thegraph.com/subgraphs/name/aragon/aragon-tokens-rinkeby'
-const TOKEN_HOLDER_QUERY = `
-query miniMeToken($id: String!, $address: String!) {
-  miniMeToken(id: $id){
-    id
-    totalSupply
-    holders(where: {address: $address}){
-      address
-      balance
-    }
-  }
-}
-`
 
 const DEFAULT_APP_DATA = {
   convictionVoting: null,
@@ -55,12 +36,11 @@ const DEFAULT_APP_DATA = {
 export function useOrganzation() {
   const [organzation, setOrganization] = useState(null)
   const { ethereum, ethers } = useWallet()
-
+  console.log(ethereum, ethers)
   useEffect(() => {
     let cancelled = false
     const fetchOrg = async () => {
       const organization = await connect(ORG_ADDRESS, 'thegraph', {
-        ethereum,
         network: getDefaultChain(),
       })
 
@@ -91,13 +71,17 @@ export function useAppData(organization) {
 
     const fetchAppData = async () => {
       const apps = await organization.apps()
+      const permissions = await organization.permissions()
 
       const convictionApp = apps.find(app => app.name === APP_NAME)
-
-      const convictionVoting = new ConvictionVoting(
-        convictionApp.address,
-        APP_SUBGRAPH_URL
+      console.log(convictionApp, 'conviction', apps)
+      const convictionAppPermissions = permissions.filter(({ appAddress }) =>
+        addressesEqual(appAddress, convictionApp.address)
       )
+
+      const convictionVoting = await ConvictionVoting(convictionApp)
+
+      console.log(convictionVoting, 'conviction')
 
       const config = await convictionVoting.config()
 
@@ -108,6 +92,7 @@ export function useAppData(organization) {
           installedApps: apps,
           convictionVoting,
           organization,
+          permissions: convictionAppPermissions,
         }))
       }
     }
@@ -179,44 +164,4 @@ export function useVaultBalance(installedApps, token, timeout = 1000) {
   }, [vaultBalance, vaultContract, controlledTimeout, timeout, token.id])
 
   return vaultBalance
-}
-
-export function useTokenBalances(account, token) {
-  const [balances, setBalances] = useState({
-    balance: new BigNumber(-1),
-    totalSupply: new BigNumber(-1),
-  })
-
-  useEffect(() => {
-    if (!token.id) {
-      return
-    }
-
-    let cancelled = false
-
-    const queryAccountStakeBalance = async () => {
-      const wrapper = new GraphQLWrapper(TOKEN_MANAGER_SUBGRAPH)
-      const results = await wrapper.performQuery(gql(TOKEN_HOLDER_QUERY), {
-        id: `tokenAddress-${token.id}`,
-        address: account || '',
-      })
-
-      if (!results.data) {
-        return
-      }
-
-      if (!cancelled) {
-        setBalances({
-          balance: new BigNumber(0),
-          totalSupply: new BigNumber(0),
-        })
-      }
-    }
-
-    queryAccountStakeBalance()
-
-    return () => (cancelled = true)
-  }, [account, token.id])
-
-  return balances
 }
