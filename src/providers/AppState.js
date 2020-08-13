@@ -2,14 +2,17 @@ import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 
 import {
+  useAppData,
   useVaultBalance,
   useOrganzation,
-  useAppData,
+  useTokenBalances,
 } from '../hooks/useOrgHooks'
+import { useWallet } from '../providers/Wallet'
 
 const AppStateContext = React.createContext()
 
 function AppStateProvider({ children }) {
+  const { account } = useWallet()
   const organization = useOrganzation()
   const {
     convictionVoting,
@@ -20,18 +23,21 @@ function AppStateProvider({ children }) {
   } = useAppData(organization)
 
   const vaultBalance = useVaultBalance(installedApps, requestToken)
-
-  const appLoading = !convictionVoting
+  const { balance, totalSupply } = useTokenBalances(account, stakeToken)
+  const balancesLoading = vaultBalance.eq(-1) || totalSupply.eq(-1)
+  const appLoading = !convictionVoting || balancesLoading
 
   return (
     <AppStateContext.Provider
       value={{
         ...appData,
+        accountBalance: balance,
         convictionVoting,
         installedApps,
         isLoading: appLoading,
         requestToken,
         stakeToken,
+        totalSupply: totalSupply,
         vaultBalance,
       }}
     >

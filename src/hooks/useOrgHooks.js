@@ -1,25 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import ConvictionVoting from '@1hive/connect-conviction-voting'
 import { connect } from '@aragon/connect'
-import { getDefaultChain } from '../local-settings'
-import { transformConfigData, getAppAddressByName } from '../lib/data-utils'
-import { addressesEqual } from '../lib/web3-utils.js'
-import { useContractReadOnly } from './useContract'
-
+import env from '../environment'
+import { getNetwork } from '../networks'
 import BigNumber from '../lib/bigNumber'
-
-import vaultAbi from '../abi/vault-balance.json'
+import { transformConfigData, getAppAddressByName } from '../lib/data-utils'
+import { getDefaultChain } from '../local-settings'
 import { useWallet } from '../providers/Wallet'
+import { addressesEqual } from '../lib/web3-utils.js'
 import {
   useProposalsSubscription,
   useStakesHistorySubscription,
 } from './useSubscriptions'
-
-console.log(ConvictionVoting)
+import { useContractReadOnly } from './useContract'
+import minimeTokenAbi from '../abi/minimeToken.json'
+import vaultAbi from '../abi/vault-balance.json'
 
 // Organzation
-const ORG_ADDRESS = '0x7050ead31291e288fee6f34f8616b58a86064d4f'
-
 const APP_NAME = 'conviction-beta'
 
 const DEFAULT_APP_DATA = {
@@ -36,11 +33,14 @@ const DEFAULT_APP_DATA = {
 export function useOrganzation() {
   const [organzation, setOrganization] = useState(null)
   const { ethereum, ethers } = useWallet()
-  console.log(ethereum, ethers)
+
   useEffect(() => {
     let cancelled = false
+
     const fetchOrg = async () => {
-      const organization = await connect(ORG_ADDRESS, 'thegraph', {
+      const { orgAddress } = getNetwork(env('CHAIN_ID'))
+
+      const organization = await connect(orgAddress, 'thegraph', {
         network: getDefaultChain(),
       })
 
@@ -74,16 +74,15 @@ export function useAppData(organization) {
       const permissions = await organization.permissions()
 
       const convictionApp = apps.find(app => app.name === APP_NAME)
-      console.log(convictionApp, 'conviction', apps)
+
       const convictionAppPermissions = permissions.filter(({ appAddress }) =>
         addressesEqual(appAddress, convictionApp.address)
       )
 
       const convictionVoting = await ConvictionVoting(convictionApp)
 
-      console.log(convictionVoting, 'conviction')
-
       const config = await convictionVoting.config()
+      console.log(convictionVoting, 'voting', apps)
 
       if (!cancelled) {
         setAppData(appData => ({
@@ -164,4 +163,57 @@ export function useVaultBalance(installedApps, token, timeout = 1000) {
   }, [vaultBalance, vaultContract, controlledTimeout, timeout, token.id])
 
   return vaultBalance
+}
+
+export function useTokenBalances(account, token, timer = 3000) {
+  const [balances, setBalances] = useState({
+    balance: new BigNumber(-1),
+    totalSupply: new BigNumber(-1),
+  })
+
+  const tokenContract = useContractReadOnly(token.id, minimeTokenAbi)
+
+  useEffect(() => {
+    if (!token.id) {
+      return
+    }
+
+    let cancelled = false
+    let timeoutId
+
+    const fetchAccountStakeBalance = async () => {
+      try {
+        let contractNewBalance = new BigNumber(-1)
+        if (account) {
+          contractNewBalance = await tokenContract.balanceOf(account)
+        }
+
+        const contractTotalSupply = await tokenContract.totalSupply()
+        if (!cancelled) {
+          // Contract value is bn.js so we need to convert it to bignumber.js
+          console.log('new totalSupply', contractTotalSupply.toString())
+          const newBalance = new BigNumber(contractNewBalance.toString())
+          const newTotalSupply = new BigNumber(contractTotalSupply.toString())
+
+          if (
+            !newTotalSupply.eq(balances.totalSupply) ||
+            !newBalance.eq(balances.balance)
+          ) {
+            setBalances({ balance: newBalance, totalSupply: newTotalSupply })
+          }
+        }
+      } catch (err) {
+        console.error(`Error fetching balance: ${err} retrying...`)
+      }
+    }
+
+    fetchAccountStakeBalance()
+
+    return () => {
+      cancelled = true
+      clearTimeout(timeoutId)
+    }
+  }, [account, balances, tokenContract, token.id])
+
+  return balances
 }

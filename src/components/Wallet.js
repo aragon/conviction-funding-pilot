@@ -13,10 +13,10 @@ import {
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 
-import BigNumber from '../lib/bigNumber'
+import BigNumber, { bigNum } from '../lib/bigNumber'
 import { getTokenIconBySymbol } from '../lib/token-utils'
 import { useTokenBalance } from '../hooks/useTokenBalance'
-import { useTokenBalanceToUsd } from '../hooks/useTokenPrice'
+// import { useTokenBalanceToUsd } from '../lib/web3-utils'
 
 function Wallet({ myStakes }) {
   const [profileName, setProfileName] = useState(null)
@@ -24,7 +24,7 @@ function Wallet({ myStakes }) {
   const { account } = useWallet()
   const { accountBalance, stakeToken } = useAppState()
   const antBalance = useTokenBalance('ANT')
-  const balanceUsdValue = useTokenBalanceToUsd(accountBalance, stakeToken)
+  // const balanceUsdValue = useTokenBalanceToUsd('ANT', 18, accountBalance)
 
   useEffect(() => {
     let cancelled = false
@@ -106,7 +106,6 @@ function Wallet({ myStakes }) {
             decimals={18}
             label="Balance"
             symbol="ANT"
-            value={balanceUsdValue}
           />
           <LineSeparator border={theme.border} />
           <Balance
@@ -123,7 +122,7 @@ function Wallet({ myStakes }) {
 }
 
 const Balance = ({
-  amount,
+  amount = bigNum(0),
   decimals,
   inactive = false,
   label,
@@ -168,7 +167,10 @@ const Balance = ({
             color: ${theme[inactive ? 'negative' : 'content']};
           `}
         >
-          {TokenAmount.format(amount, decimals)}
+          {TokenAmount.format(
+            amount.toFixed ? amount.toFixed() : amount.toString(),
+            decimals
+          )}
         </span>
         {value && (
           <div

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { getMarketDetails, getTokenReserves } from '@1hive/uniswap-sdk'
 import { useWallet } from '../providers/Wallet'
 import BigNumber from '../lib/bigNumber'
 import { formatTokenAmount } from '../lib/token-utils'
@@ -17,7 +16,7 @@ async function getTokenMarketDetails(tokenAddress, provider) {
 /**
  * @dev Tokens can only be bought in Uniswap for now so we'll get the Token <> XDAI market details
  * Convert Token amount into USD price
- * @param {BigNum} amount The amount to convert to USD
+ * @param {BigNum} amount The amount to convert to US
  * @param {Object} token The token in question
  * @returns {String} The amount value in USD
  */
