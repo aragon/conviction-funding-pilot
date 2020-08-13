@@ -4,9 +4,8 @@ const DEFAULT_CHAIN_ID = 4
 const ENV_VARS = {
   CHAIN_ID() {
     const chainId = parseInt(process.env.REACT_APP_CHAIN_ID)
-    return isNaN(chainId) ? DEFAULT_CHAIN_ID : chainId
+    return chainId || DEFAULT_CHAIN_ID
   },
-
   FORTMATIC_API_KEY() {
     return process.env.REACT_APP_FORTMATIC_API_KEY || ''
   },
