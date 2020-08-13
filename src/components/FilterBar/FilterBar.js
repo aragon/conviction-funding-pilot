@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react'
-import { DropDown } from '@aragon/ui'
+import { DropDown, GU } from '@aragon/ui'
 import PropTypes from 'prop-types'
 
 import TextFilter from './TextFilter'
@@ -11,9 +11,11 @@ const FilterBar = React.memo(
     proposalExecutionStatusFilter,
     proposalStatusFilter,
     proposalTextFilter,
+    proposalTypeFilter,
     handleExecutionStatusFilterChange,
     handleProposalStatusFilterChange,
     handleTextFilterChange,
+    handleProposalTypeFilterChange,
   }) => {
     const [textFieldVisible, setTextFieldVisible] = useState(false)
     const textFilterOpener = useRef(null)
@@ -28,14 +30,25 @@ const FilterBar = React.memo(
       <div
         css={`
           display: flex;
-          align-itmes: center;
+          align-items: center;
         `}
       >
+        {' '}
+        <DropDown
+          header="Type"
+          placeholder="Type"
+          selected={proposalTypeFilter}
+          onChange={handleProposalTypeFilterChange}
+          items={['Funding', 'Signaling']}
+        />
         <DropDown
           header="Status"
           selected={proposalExecutionStatusFilter}
           onChange={handleExecutionStatusFilterChange}
           items={['Open', 'Closed']}
+          css={`
+            margin-left: ${1.5 * GU}px;
+          `}
         />
         {!statusFilterDisabled && (
           <DropdownFilter
