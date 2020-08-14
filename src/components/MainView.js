@@ -17,8 +17,9 @@ function MainView({ children }) {
         height: 100vh;
       `}
     >
-      <Header compact={compactMode} />
-
+      <Layout>
+        <Header compact={compactMode} />
+      </Layout>
       <div
         css={`
           ${!compactMode && `transform: translateY(-${4 * GU}px);`}

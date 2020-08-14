@@ -49,7 +49,6 @@ function ProposalDetail({
   const panelState = usePanelState()
   const { vaultBalance, permissions } = useAppState()
   const { account: connectedAccount } = useWallet()
-  console.log(proposal, 'proposal')
   const {
     id,
     name,
@@ -84,7 +83,11 @@ function ProposalDetail({
 
   return (
     <div>
-      <Bar>
+      <Bar
+        css={`
+          margin-top: ${4 * GU}px;
+        `}
+      >
         <BackButton onClick={onBack} />
       </Bar>
       <Split

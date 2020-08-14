@@ -161,8 +161,13 @@ function AccountModule({ compact }) {
         <Button
           icon={<IconConnect />}
           label="Enable account"
+          mode="strong"
           onClick={toggle}
           display={compact ? 'icon' : 'all'}
+          wide
+          css={`
+            font-weight: bold;
+          `}
         />
       )}
 

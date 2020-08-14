@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo } from 'react'
 import {
-  Box,
-  Button,
   DataView,
+  Info,
   Link,
   GU,
-  IconPlus,
   textStyle,
   useLayout,
   useTheme,
@@ -88,40 +86,30 @@ const Proposals = React.memo(
     return (
       <div>
         {!compactMode && (
-          <Box padding={2 * GU}>
-            <div
-              css={`
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-              `}
-            >
-              {account && (
-                <Button
-                  mode="strong"
-                  onClick={onRequestNewProposal}
-                  label="New proposal"
-                  icon={<IconPlus />}
-                  display={compactMode ? 'icon' : 'label'}
-                />
-              )}
-              <FilterBar
-                proposalsSize={filteredProposals.length}
-                proposalExecutionStatusFilter={proposalExecutionStatusFilter}
-                proposalStatusFilter={proposalSupportStatusFilter}
-                proposalTextFilter={proposalTextFilter}
-                proposalTypeFilter={proposalTypeFilter}
-                handleExecutionStatusFilterChange={
-                  handleExecutionStatusFilterChange
-                }
-                handleProposalStatusFilterChange={
-                  handleProposalSupportFilterChange
-                }
-                handleTextFilterChange={updateTextFilter}
-                handleProposalTypeFilterChange={handleProposalTypeFilterChange}
-              />
-            </div>
-          </Box>
+          <div
+            css={`
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            `}
+          >
+            <FilterBar
+              proposalsSize={filteredProposals.length}
+              proposalExecutionStatusFilter={proposalExecutionStatusFilter}
+              proposalStatusFilter={proposalSupportStatusFilter}
+              proposalTextFilter={proposalTextFilter}
+              proposalTypeFilter={proposalTypeFilter}
+              handleExecutionStatusFilterChange={
+                handleExecutionStatusFilterChange
+              }
+              handleProposalStatusFilterChange={
+                handleProposalSupportFilterChange
+              }
+              handleRequestNewProposal={onRequestNewProposal}
+              handleTextFilterChange={updateTextFilter}
+              handleProposalTypeFilterChange={handleProposalTypeFilterChange}
+            />
+          </div>
         )}
 
         <DataView
@@ -141,15 +129,6 @@ const Proposals = React.memo(
                 >
                   Proposals
                 </strong>
-                {account && (
-                  <Button
-                    mode="strong"
-                    onClick={onRequestNewProposal}
-                    label="New proposal"
-                    icon={<IconPlus />}
-                    display={compactMode ? 'icon' : 'label'}
-                  />
-                )}
               </div>
             )
           }
@@ -222,13 +201,22 @@ const Proposals = React.memo(
 )
 
 const ProposalInfo = ({ proposal, requestToken }) => {
+  const { requestedAmount, status } = proposal
   return (
     <div
       css={`
         width: ${23 * GU}px;
       `}
     >
-      <ConvictionBar proposal={proposal} withThreshold={requestToken} />
+      {requestedAmount.eq('0') ? (
+        <Info mode={status === 'Cancelled' ? 'warning' : 'info'}>
+          {status !== 'Cancelled' ? 'Signaling Proposal' : 'Removed proposal'}
+        </Info>
+      ) : status !== 'Cancelled' ? (
+        <ConvictionBar proposal={proposal} withThreshold={requestToken} />
+      ) : (
+        <Info mode="warning">Removed proposal</Info>
+      )}
     </div>
   )
 }

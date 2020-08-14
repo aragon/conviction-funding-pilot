@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
+import { Split } from '@aragon/ui'
 
 import Metrics from '../components/Metrics'
 import Proposals from './Proposals'
@@ -57,41 +58,63 @@ const MainScreen = React.memo(
     return (
       <>
         {selectedProposal ? (
-          <ProposalDetail
-            onBack={handleBack}
-            onCancelProposal={onCancelProposal}
-            onExecuteProposal={onExecuteProposal}
-            onStakeToProposal={onStakeToProposal}
-            onWithdrawFromProposal={onWithdrawFromProposal}
-            proposal={selectedProposal}
-            requestToken={requestToken}
+          <Split
+            primary={
+              <ProposalDetail
+                onBack={handleBack}
+                onCancelProposal={onCancelProposal}
+                onExecuteProposal={onExecuteProposal}
+                onStakeToProposal={onStakeToProposal}
+                onWithdrawFromProposal={onWithdrawFromProposal}
+                proposal={selectedProposal}
+                requestToken={requestToken}
+              />
+            }
+            secondary={
+              <Metrics
+                totalSupply={totalSupply}
+                commonPool={vaultBalance}
+                myStakes={myStakes}
+                onExecuteIssuance={onExecuteIssuance}
+                stakeToken={stakeToken}
+                requestToken={requestToken}
+                totalActiveTokens={totalActiveTokens}
+              />
+            }
+            invert="horizontal"
           />
         ) : (
-          <>
-            <Metrics
-              totalSupply={totalSupply}
-              commonPool={vaultBalance}
-              onExecuteIssuance={onExecuteIssuance}
-              stakeToken={stakeToken}
-              requestToken={requestToken}
-              totalActiveTokens={totalActiveTokens}
-            />
-            <Proposals
-              filteredProposals={filteredProposals}
-              proposalExecutionStatusFilter={proposalExecutionStatusFilter}
-              proposalSupportStatusFilter={proposalSupportStatusFilter}
-              proposalTextFilter={proposalTextFilter}
-              proposalTypeFilter={proposalTypeFilter}
-              handleProposalSupportFilterChange={
-                handleProposalSupportFilterChange
-              }
-              handleExecutionStatusFilterChange={handleTabChange}
-              handleSearchTextFilterChange={handleSearchTextFilterChange}
-              handleProposalTypeFilterChange={handleProposalTypeFilterChange}
-              requestToken={requestToken}
-              onRequestNewProposal={onRequestNewProposal}
-            />
-          </>
+          <Split
+            primary={
+              <Proposals
+                filteredProposals={filteredProposals}
+                proposalExecutionStatusFilter={proposalExecutionStatusFilter}
+                proposalSupportStatusFilter={proposalSupportStatusFilter}
+                proposalTextFilter={proposalTextFilter}
+                proposalTypeFilter={proposalTypeFilter}
+                handleProposalSupportFilterChange={
+                  handleProposalSupportFilterChange
+                }
+                handleExecutionStatusFilterChange={handleTabChange}
+                handleSearchTextFilterChange={handleSearchTextFilterChange}
+                handleProposalTypeFilterChange={handleProposalTypeFilterChange}
+                requestToken={requestToken}
+                onRequestNewProposal={onRequestNewProposal}
+              />
+            }
+            secondary={
+              <Metrics
+                totalSupply={totalSupply}
+                commonPool={vaultBalance}
+                myStakes={myStakes}
+                onExecuteIssuance={onExecuteIssuance}
+                stakeToken={stakeToken}
+                requestToken={requestToken}
+                totalActiveTokens={totalActiveTokens}
+              />
+            }
+            invert="horizontal"
+          />
         )}
       </>
     )

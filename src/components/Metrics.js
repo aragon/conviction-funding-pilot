@@ -1,62 +1,119 @@
-import React from 'react'
-import { Box, GU, Link, textStyle, useLayout, useTheme } from '@aragon/ui'
-import { bigNum } from '../lib/bigNumber'
+import React, { useMemo } from 'react'
+import styled from 'styled-components'
+import { Box, GU, Info, textStyle, useLayout, useTheme } from '@aragon/ui'
+import AccountModule from './Account/AccountModule'
+import BigNumber, { bigNum } from '../lib/bigNumber'
 import { formatTokenAmount } from '../lib/token-utils'
 import { useTokenBalanceToUsd } from '../lib/web3-utils'
-import antSvg from '../assets/logo-ant.svg'
+import { useAppState } from '../providers/AppState'
+import { useWallet } from '../providers/Wallet'
+import StakingTokens from '../screens/StakingTokens'
 
 const Metrics = React.memo(function Metrics({
   totalSupply,
   commonPool,
-  onExecuteIssuance,
+  myStakes,
   stakeToken,
   requestToken,
   totalActiveTokens,
 }) {
+  const { accountBalance } = useAppState()
+  const { connected } = useWallet()
   const { layoutName } = useLayout()
+  const theme = useTheme()
   const compactMode = layoutName === 'small'
   const antPrice = useTokenBalanceToUsd('ANT', 18, bigNum(1))
 
+  const myActiveTokens = useMemo(() => {
+    if (!myStakes) {
+      return new BigNumber('0')
+    }
+    return myStakes.reduce((accumulator, stake) => {
+      return accumulator.plus(stake.amount)
+    }, new BigNumber('0'))
+  }, [myStakes])
+
+  const inactiveTokens = useMemo(() => {
+    if (!accountBalance.gte(0) || !myActiveTokens) {
+      return new BigNumber('0')
+    }
+    return accountBalance.minus(myActiveTokens)
+  }, [accountBalance, myActiveTokens])
+
   return (
-    <Box
-      heading="ANT"
-      css={`
-        margin-bottom: ${2 * GU}px;
-      `}
-    >
-      <div
+    <>
+      <Box
         css={`
-          display: ${compactMode ? 'block' : 'flex'};
-          align-items: flex-start;
-          justify-content: space-between;
+          margin-top: ${4 * GU}px;
+          margin-bottom: ${2 * GU}px;
         `}
       >
+        <AccountModule compact={compactMode} />
+        {!connected && (
+          <Info
+            css={`
+              margin-top: ${3 * GU}px;
+              margin-bottom: ${4 * GU}px;
+            `}
+          >
+            This application requires the use of a Ethereum wallet. New to
+            Ethereum? Learn more about wallets
+          </Info>
+        )}
         <div
           css={`
-            display: flex;
-            align-items: center;
-            margin-bottom: ${(compactMode ? 2 : 0) * GU}px;
+            display: ${compactMode ? 'block' : 'flex'};
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
           `}
         >
-          <img
-            src={antSvg}
-            height="60"
-            width="60"
-            alt=""
+          {connected && (
+            <>
+              <div>
+                <TokenBalance
+                  label="Active"
+                  value={totalActiveTokens}
+                  token={stakeToken}
+                />
+              </div>
+              <div>
+                <TokenBalance
+                  label="Inactive"
+                  value={inactiveTokens}
+                  token={stakeToken}
+                />
+              </div>
+              <LineSeparator border={theme.border} />
+              <StakingTokens
+                myStakes={myStakes}
+                totalActiveTokens={totalActiveTokens}
+              />
+              <LineSeparator border={theme.border} />
+            </>
+          )}
+          <div
             css={`
-              margin-right: ${4 * GU}px;
+              display: flex;
+              align-items: center;
+              margin-bottom: ${(compactMode ? 2 : 0) * GU}px;
+              width: 100%;
             `}
-          />
-          {compactMode && <TokenPrice token={antPrice} />}
+          >
+            {compactMode && <TokenPrice token={antPrice} />}
+          </div>
+          {!compactMode && <TokenPrice token={antPrice} />}
+          <div>
+            <TokenBalance
+              label="Organization Funds"
+              value={commonPool}
+              token={requestToken}
+            />
+          </div>
         </div>
-        {!compactMode && <TokenPrice token={antPrice} />}
-        <div>
-          <TokenBalance
-            label="Common Pool"
-            value={commonPool}
-            token={requestToken}
-          />
-        </div>
+      </Box>
+
+      <Box heading="Key Metrics">
         <div>
           <TokenBalance
             label="Token Supply"
@@ -64,15 +121,8 @@ const Metrics = React.memo(function Metrics({
             token={stakeToken}
           />
         </div>
-        <div>
-          <TokenBalance
-            label="Active"
-            value={totalActiveTokens}
-            token={stakeToken}
-          />
-        </div>
-      </div>
-    </Box>
+      </Box>
+    </>
   )
 })
 
@@ -119,28 +169,17 @@ function TokenBalance({ label, token, value }) {
 }
 
 function TokenPrice({ token }) {
-  const theme = useTheme()
-
   return (
     <div>
-      <Metric
-        label="ANT price"
-        value={`$${token.toString()}`}
-        color={theme.green}
-      />
-      <Link
-        href="https://app.uniswap.org/#/swap"
-        external
-        css={`
-          ${textStyle('body3')};
-          text-decoration: none;
-          display: flex;
-        `}
-      >
-        Trade
-      </Link>
+      <Metric label="ANT price" value={`$${token.toString()}`} />
     </div>
   )
 }
+
+const LineSeparator = styled.div`
+  height: 1px;
+  border: 0.5px solid ${({ border }) => border};
+  margin: ${3 * GU}px 0;
+`
 
 export default Metrics

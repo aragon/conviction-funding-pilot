@@ -1,53 +1,36 @@
 import React from 'react'
-import { GU } from '@aragon/ui'
-import AccountModule from './Account/AccountModule'
-import Layout from './Layout'
+import { textStyle, IconSettings, GU } from '@aragon/ui'
+import logoAaSvg from '../assets/logo-aa.svg'
 
-import headerBackgroundSvg from '../assets/backdrop.png'
-
-function Header({ compact }) {
-  const headerItemsWidth = compact ? 'auto' : 25 * GU
-
+function Header() {
   return (
-    <header
+    <div
       css={`
-        background: linear-gradient(
-          90deg,
-          rgba(85, 194, 250, 1) 31%,
-          rgba(101, 225, 247, 1) 100%,
-          rgba(0, 212, 255, 1) 100%
-        );
-        margin-bottom: ${compact ? `${2 * GU}px` : 0};
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       `}
     >
       <div
         css={`
-          background: url(${headerBackgroundSvg}) no-repeat;
-          background-position: center;
-          padding: ${compact
-            ? `${3 * GU}px`
-            : `${5.625 * GU}px 0 ${8.75 * GU}px 0`};
+          display: flex;
+          align-items: center;
         `}
       >
-        <Layout>
-          <div
-            css={`
-              display: flex;
-              justify-content: flex-end;
-              align-items: center;
-            `}
-          >
-            <div
-              css={`
-                width: ${headerItemsWidth}px;
-              `}
-            >
-              <AccountModule compact={compact} />
-            </div>
-          </div>
-        </Layout>
+        <img src={logoAaSvg} width="40" />
+        <div
+          css={`
+            margin-left: ${1.5 * GU}px;
+            ${textStyle('title4')}
+          `}
+        >
+          Aragon Association
+        </div>
       </div>
-    </header>
+
+      <IconSettings />
+    </div>
   )
 }
 
