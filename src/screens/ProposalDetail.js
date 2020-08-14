@@ -27,6 +27,8 @@ import { useWallet } from '../providers/Wallet'
 import { getTokenIconBySymbol, formatTokenAmount } from '../lib/token-utils'
 import { addressesEqualNoSum as addressesEqual } from '../lib/web3-utils'
 
+import { ZERO_ADDR } from '../constants'
+
 function ProposalDetail({
   proposal,
   onBack,
@@ -51,6 +53,8 @@ function ProposalDetail({
     requestedAmount,
     executed,
   } = proposal
+
+  const signalingProposal = addressesEqual(beneficiary, ZERO_ADDR)
 
   return (
     <div>
@@ -135,7 +139,7 @@ function ProposalDetail({
                     )
                   }
                 />
-                {requestToken && (
+                {requestToken && !signalingProposal && (
                   <DataField
                     label="Beneficiary"
                     value={
