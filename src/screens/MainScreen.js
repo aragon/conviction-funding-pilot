@@ -11,6 +11,7 @@ const MainScreen = React.memo(
   ({
     isLoading,
     myStakes,
+    onCancelProposal,
     onExecuteIssuance,
     onExecuteProposal,
     onRequestNewProposal,
@@ -58,6 +59,7 @@ const MainScreen = React.memo(
         {selectedProposal ? (
           <ProposalDetail
             onBack={handleBack}
+            onCancelProposal={onCancelProposal}
             onExecuteProposal={onExecuteProposal}
             onStakeToProposal={onStakeToProposal}
             onWithdrawFromProposal={onWithdrawFromProposal}

@@ -27,6 +27,7 @@ const App = React.memo(function App() {
     <MainScreen
       isLoading={isLoading}
       myStakes={myStakes}
+      onCancelProposal={actions.cancelProposal}
       onExecuteIssuance={actions.executeIssuance}
       onExecuteProposal={actions.executeProposal}
       onRequestNewProposal={proposalPanel.requestOpen}

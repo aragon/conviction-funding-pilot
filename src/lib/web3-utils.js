@@ -134,4 +134,4 @@ export function useTokenBalanceToUsd(symbol, decimals, balance) {
 }
 
 // Re-export some web3-utils functions
-export { isAddress, toChecksumAddress, toUtf8 } from 'web3-utils'
+export { isAddress, toChecksumAddress, toUtf8, soliditySha3 } from 'web3-utils'
