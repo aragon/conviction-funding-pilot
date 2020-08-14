@@ -5,6 +5,7 @@ import { toHex } from 'web3-utils'
 import { getAppAddressByName } from '../lib/data-utils'
 
 const GAS_LIMIT = 450000
+const EMPTY_HEX_STRING = '0x'
 
 export default function useActions(onDone) {
   const { account, ethers } = useWallet()
@@ -17,7 +18,7 @@ export default function useActions(onDone) {
         organization,
         convictionVoting.address,
         'addProposal',
-        [title, toHex(link), amount, beneficiary],
+        [title, link ? toHex(link) : EMPTY_HEX_STRING, amount, beneficiary],
         { ethers, from: account }
       )
 
