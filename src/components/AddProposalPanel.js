@@ -16,7 +16,7 @@ import { toDecimals } from '../lib/math-utils'
 import { formatTokenAmount } from '../lib/token-utils'
 import { calculateThreshold, getMaxConviction } from '../lib/conviction'
 
-const ZERO_ADDR = '0x0000000000000000000000000000000000000000'
+import { ZERO_ADDR } from '../constants'
 
 const NULL_PROPOSAL_TYPE = -1
 const FUNDING_PROPOSAL = 1
@@ -129,7 +129,12 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
 
       const { amount, beneficiary = ZERO_ADDR, link, title } = formData
       const convertedAmount = amount.valueBN.toString()
-      onSubmit({ title, link, amount: convertedAmount, beneficiary })
+      onSubmit({
+        title,
+        link,
+        amount: convertedAmount,
+        beneficiary: beneficiary || ZERO_ADDR,
+      })
     },
     [formData, onSubmit]
   )
