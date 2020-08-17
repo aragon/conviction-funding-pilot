@@ -1,20 +1,10 @@
 import React, { useState, useRef, useCallback } from 'react'
-import {
-  Button,
-  DropDown,
-  Tabs,
-  useLayout,
-  useTheme,
-  GU,
-  IconPlus,
-} from '@aragon/ui'
+import { Button, DropDown, useLayout, useTheme, GU, IconPlus } from '@aragon/ui'
 import PropTypes from 'prop-types'
 
 import TextFilter from './TextFilter'
 import DropdownFilter from './DropdownFilter'
 import { useWallet } from '../../providers/Wallet'
-
-const PROPOSAL_STATUSES = ['Open', 'Paused', 'Disputed', 'Closed']
 
 const FilterBar = React.memo(
   ({
@@ -49,19 +39,9 @@ const FilterBar = React.memo(
           width: 100%;
           display: flex;
           flex-direction: column;
+          margin-bottom: ${3 * GU}px;
         `}
       >
-        <Tabs
-          items={PROPOSAL_STATUSES}
-          css={`
-            width: 100% !important;
-            background: red;
-            margin: 0;
-          `}
-          style={{
-            width: '100%',
-          }}
-        />
         <div
           css={`
             width: 100%;
@@ -105,6 +85,11 @@ const FilterBar = React.memo(
                 }
               />
             )}
+            <div
+              css={`
+                flex-grow: 1;
+              `}
+            />
             <TextFilter
               textFilter={proposalTextFilter}
               updateTextFilter={handleTextFilterChange}
@@ -124,6 +109,7 @@ const FilterBar = React.memo(
               display={compactMode ? 'icon' : 'label'}
               css={`
                 justify-self: flex-end;
+                margin-left: ${1 * GU}px;
               `}
             />
           )}

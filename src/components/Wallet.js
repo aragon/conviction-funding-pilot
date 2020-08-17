@@ -42,22 +42,6 @@ function Wallet({ myStakes }) {
     }
   }, [account])
 
-  const myActiveTokens = useMemo(() => {
-    if (!myStakes) {
-      return new BigNumber('0')
-    }
-    return myStakes.reduce((accumulator, stake) => {
-      return accumulator.plus(stake.amount)
-    }, new BigNumber('0'))
-  }, [myStakes])
-
-  const inactiveTokens = useMemo(() => {
-    if (!accountBalance.gte(0) || !myActiveTokens) {
-      return new BigNumber('0')
-    }
-    return accountBalance.minus(myActiveTokens)
-  }, [accountBalance, myActiveTokens])
-
   return (
     <Box padding={0}>
       <div

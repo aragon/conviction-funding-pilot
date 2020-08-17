@@ -104,13 +104,14 @@ const MainScreen = React.memo(
             }
             secondary={
               <Metrics
-                totalSupply={totalSupply}
+                amountOfProposals={filteredProposals.length}
                 commonPool={vaultBalance}
                 myStakes={myStakes}
                 onExecuteIssuance={onExecuteIssuance}
-                stakeToken={stakeToken}
                 requestToken={requestToken}
+                stakeToken={stakeToken}
                 totalActiveTokens={totalActiveTokens}
+                totalSupply={totalSupply}
               />
             }
             invert="horizontal"

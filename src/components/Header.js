@@ -1,5 +1,5 @@
 import React from 'react'
-import { textStyle, IconSettings, GU } from '@aragon/ui'
+import { ButtonBase, textStyle, IconSettings, GU } from '@aragon/ui'
 import logoAaSvg from '../assets/logo-aa.svg'
 
 function Header() {
@@ -29,7 +29,14 @@ function Header() {
         </div>
       </div>
 
-      <IconSettings />
+      <ButtonBase
+        css={`
+          height: 100%;
+          color: #8fa4b5;
+        `}
+      >
+        <IconSettings />
+      </ButtonBase>
     </div>
   )
 }

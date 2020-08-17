@@ -116,10 +116,13 @@ export function useTokenBalanceToUsd(symbol, decimals, balance) {
           return
         }
 
+        const usdDigits = 2
         const precision = 6
 
         const usdBalance = balance
-          .times(BigNumber(parseInt(price.USD * 10 ** precision, 10)))
+          .times(
+            BigNumber(parseInt(price.USD * 10 ** (precision + usdDigits), 10))
+          )
           .div(10 ** precision)
           .div(BigNumber(10).pow(decimals))
         setUsd(usdBalance)

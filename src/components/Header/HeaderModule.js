@@ -1,5 +1,5 @@
 import React from 'react'
-import { ButtonBase, GU, IconDown, useTheme, useViewport } from '@aragon/ui'
+import { ButtonBase, GU, useTheme, useViewport } from '@aragon/ui'
 
 function HeaderModule({ icon, content, onClick }) {
   const { above } = useViewport()
@@ -10,8 +10,8 @@ function HeaderModule({ icon, content, onClick }) {
       onClick={onClick}
       css={`
         height: 100%;
-        padding: ${1 * GU}px;
         background: ${theme.surface};
+        width: 100%;
         &:active {
           background: ${theme.surfacePressed};
         }
@@ -22,7 +22,6 @@ function HeaderModule({ icon, content, onClick }) {
           display: flex;
           align-items: center;
           text-align: left;
-          padding: 0 ${1 * GU}px;
         `}
       >
         <>
@@ -31,18 +30,13 @@ function HeaderModule({ icon, content, onClick }) {
             <React.Fragment>
               <div
                 css={`
+                  width: 100%;
                   padding-left: ${1 * GU}px;
                   padding-right: ${0.5 * GU}px;
                 `}
               >
                 {content}
               </div>
-              <IconDown
-                size="small"
-                css={`
-                  color: ${theme.surfaceIcon};
-                `}
-              />
             </React.Fragment>
           )}
         </>
