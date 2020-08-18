@@ -6,6 +6,7 @@ import { Spring, animated } from 'react-spring/renderprops'
 function SummaryBar({
   show = true,
   firstSize = 0,
+  hideSeparator = false,
   secondSize = 0,
   thirdSize = 0,
   requiredSize = 0,
@@ -69,7 +70,7 @@ function SummaryBar({
                 ),
               }}
             >
-              <RequiredSeparator />
+              {!hideSeparator && <RequiredSeparator />}
             </RequiredSeparatorWrapper>
           </RequiredSeparatorClip>
         </Main>

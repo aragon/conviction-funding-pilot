@@ -45,7 +45,6 @@ const MainScreen = React.memo(
     const handleBack = useCallback(() => {
       history.push(`/`)
     }, [history])
-
     const handleTabChange = tabIndex => {
       handleProposalExecutionFilterChange(tabIndex)
       handleProposalSupportFilterChange(-1)
@@ -76,6 +75,7 @@ const MainScreen = React.memo(
                 commonPool={vaultBalance}
                 myStakes={myStakes}
                 onExecuteIssuance={onExecuteIssuance}
+                proposals={filteredProposals}
                 stakeToken={stakeToken}
                 requestToken={requestToken}
                 totalActiveTokens={totalActiveTokens}
@@ -104,10 +104,10 @@ const MainScreen = React.memo(
             }
             secondary={
               <Metrics
-                amountOfProposals={filteredProposals.length}
                 commonPool={vaultBalance}
                 myStakes={myStakes}
                 onExecuteIssuance={onExecuteIssuance}
+                proposals={filteredProposals}
                 requestToken={requestToken}
                 stakeToken={stakeToken}
                 totalActiveTokens={totalActiveTokens}

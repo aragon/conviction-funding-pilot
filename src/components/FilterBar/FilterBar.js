@@ -93,7 +93,7 @@ const FilterBar = React.memo(
             <TextFilter
               textFilter={proposalTextFilter}
               updateTextFilter={handleTextFilterChange}
-              placeholder="Search by name"
+              placeholder="Search"
               visible={textFieldVisible}
               setVisible={setTextFieldVisible}
               openerRef={textFilterOpener}
@@ -104,7 +104,7 @@ const FilterBar = React.memo(
             <Button
               mode="strong"
               onClick={handleRequestNewProposal}
-              label="New proposal"
+              label="Create new proposal"
               icon={<IconPlus />}
               display={compactMode ? 'icon' : 'label'}
               css={`

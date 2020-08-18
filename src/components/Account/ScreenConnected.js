@@ -47,7 +47,7 @@ function AccountScreenConnected({ wallet }) {
             css={`
               width: ${2.5 * GU}px;
               height: ${2.5 * GU}px;
-              margin-right: ${0.5 * GU}px;
+              margin-right: ${1 * GU}px;
               transform: translateY(-2px);
             `}
           />

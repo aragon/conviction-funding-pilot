@@ -1,30 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
+import TokenAmount from 'token-amount'
+import { useTheme, GU, tokenIconUrl } from '@aragon/ui'
 
-import { GU, tokenIconUrl } from '@aragon/ui'
-
-import { formatTokenAmount } from '../lib/token-utils'
+import { useTokenBalanceToUsd } from '../lib/web3-utils'
 import { ETHER_TOKEN_VERIFIED_BY_SYMBOL } from '../lib/verified-tokens'
 import { getNetwork } from '../networks'
-
-const splitAmount = amount => {
-  const [integer, fractional] = formatTokenAmount(amount).split('.')
-  return (
-    <span
-      css={`
-        margin-right: ${0.5 * GU}px;
-      `}
-    >
-      <span>{integer}</span>
-      {fractional && <span className="fractional">.{fractional}</span>}
-    </span>
-  )
-}
 
 const BalanceToken = ({ amount, symbol, color, size, icon }) => {
   const network = getNetwork()
   const tokenAddress =
     symbol && ETHER_TOKEN_VERIFIED_BY_SYMBOL.get(symbol.toUpperCase())
+  const theme = useTheme()
+  const antBalance = useTokenBalanceToUsd(symbol, 18, amount)
+
   return (
     <div
       css={`
@@ -39,8 +28,25 @@ const BalanceToken = ({ amount, symbol, color, size, icon }) => {
           icon || tokenIconUrl(tokenAddress, symbol, network && network.type)
         }
       />
-      {amount !== undefined ? splitAmount(amount.toFixed(3)) : ' - '}
-      {symbol || ''}
+      {TokenAmount.format(amount, 18)}
+      &nbsp;
+      <span
+        css={`
+          color: ${theme.contentSecondary};
+        `}
+      >
+        {` ${symbol}` || ''}
+      </span>
+      <div
+        css={`
+          margin-left: ${1 * GU}px;
+          color: ${theme.contentSecondary};
+        `}
+      >
+        (${' '}
+        {antBalance === '-' ? '' : TokenAmount.format(antBalance.toFixed(0), 2)}
+        )
+      </div>
     </div>
   )
 }

@@ -19,9 +19,9 @@ import { useWallet } from '../providers/Wallet'
 import StakingTokens from '../screens/StakingTokens'
 
 const Metrics = React.memo(function Metrics({
-  amountOfProposals,
   commonPool,
   myStakes,
+  proposals,
   requestToken,
   stakeToken,
   totalActiveTokens,
@@ -105,6 +105,17 @@ const Metrics = React.memo(function Metrics({
                 />
               </div>
               <LineSeparator border={theme.border} />
+              <div
+                css={`
+                  ${textStyle('body4')}
+                  color: ${theme.contentSecondary};
+                  text-transform: uppercase;
+                  margin-bottom: ${1 * GU}px;
+                  margin-top: ${1 * GU}px;
+                `}
+              >
+                Supported Proposals
+              </div>
               <StakingTokens
                 myStakes={myStakes}
                 totalActiveTokens={totalActiveTokens}
@@ -151,7 +162,7 @@ const Metrics = React.memo(function Metrics({
           />
         </MetricContainer>
         <MetricContainer>
-          <Metric label="Proposals" value={amountOfProposals} />
+          <Metric label="Proposals" value={proposals.length} />
           <div
             css={`${textStyle('body3')}
             color: ${theme.contentSecondary};
@@ -161,11 +172,7 @@ const Metrics = React.memo(function Metrics({
             Open
           </div>
         </MetricContainer>
-        <Metric
-          label="Participants"
-          value={amountOfProposals}
-          secondaryValue="MAU"
-        />
+        <Metric label="Participants" secondaryValue="MAU" />
       </Box>
     </>
   )

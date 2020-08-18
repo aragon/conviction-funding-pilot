@@ -134,7 +134,11 @@ function ProposalActions({
   ])
 
   return connectedAccount ? (
-    <div>
+    <div
+      css={`
+        margin-top: ${4 * GU}px;
+      `}
+    >
       {mode === 'update' && (
         <Field label="Amount of your tokens for this proposal">
           <div
@@ -166,10 +170,14 @@ function ProposalActions({
         </Field>
       )}
       <Button
-        wide
         mode={buttonProps.mode}
         onClick={buttonProps.action}
         disabled={buttonProps.disabled}
+        css={`
+          width: 215px;
+          margin-top: ${3 * GU}px;
+          box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
+        `}
       >
         {buttonProps.text}
       </Button>

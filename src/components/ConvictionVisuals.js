@@ -50,7 +50,11 @@ export function ConvictionChart({ proposal, withThreshold = true, lines }) {
   )
 }
 
-export function ConvictionBar({ proposal, withThreshold = true }) {
+export function ConvictionBar({
+  hideSeparator = false,
+  proposal,
+  withThreshold = true,
+}) {
   const theme = useTheme()
 
   const {
@@ -67,6 +71,7 @@ export function ConvictionBar({ proposal, withThreshold = true }) {
     <div>
       <SummaryBar
         firstSize={userStakedConviction.toNumber()}
+        hideSeparator={hideSeparator}
         secondSize={secondSize.toNumber()}
         thirdSize={thirdSize.toNumber()}
         requiredSize={withThreshold && neededConviction?.toNumber()}
@@ -75,7 +80,7 @@ export function ConvictionBar({ proposal, withThreshold = true }) {
       <div>
         <span
           css={`
-            ${textStyle('body3')}
+            ${textStyle('body2')}
           `}
         >
           {Math.round(stakedConviction * 100)}%{' '}
@@ -83,6 +88,7 @@ export function ConvictionBar({ proposal, withThreshold = true }) {
             <span
               css={`
                 color: ${theme.contentSecondary};
+                ${textStyle('body2')};
               `}
             >
               {neededConviction
