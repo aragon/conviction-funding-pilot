@@ -110,6 +110,7 @@ const FilterBar = React.memo(
               css={`
                 justify-self: flex-end;
                 margin-left: ${1 * GU}px;
+                width: 215px;
               `}
             />
           )}

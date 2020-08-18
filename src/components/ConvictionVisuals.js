@@ -94,8 +94,8 @@ export function ConvictionBar({
               {neededConviction
                 ? `(${Math.round(
                     neededConviction.multipliedBy(new BigNumber('100'))
-                  )}% needed)`
-                : `(&infin; needed)`}
+                  )}% Conviction Needed)`
+                : `(&infin; Needed)`}
             </span>
           ) : (
             <span

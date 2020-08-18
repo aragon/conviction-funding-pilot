@@ -28,8 +28,8 @@ const SCREENS = [
   },
   {
     id: 'connected',
-    title: 'Active wallet',
-    height: 22 * GU,
+    title: 'Ethereum Provider',
+    height: 29 * GU,
   },
   {
     id: 'error',
