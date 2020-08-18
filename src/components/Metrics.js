@@ -161,18 +161,15 @@ const Metrics = React.memo(function Metrics({
             symbol="ANT"
           />
         </MetricContainer>
-        <MetricContainer>
-          <Metric label="Proposals" value={proposals.length} />
-          <div
-            css={`${textStyle('body3')}
+        <Metric label="Proposals" value={proposals.length} />
+        <div
+          css={`${textStyle('body3')}
             color: ${theme.contentSecondary};
             text-transform: uppercase;
             `}
-          >
-            Open
-          </div>
-        </MetricContainer>
-        <Metric label="Participants" secondaryValue="MAU" />
+        >
+          Open
+        </div>
       </Box>
     </>
   )

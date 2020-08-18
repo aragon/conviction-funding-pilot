@@ -325,9 +325,20 @@ const Outcome = ({ result, positive }) => {
         color: ${theme[positive ? 'positive' : 'negative']};
         display: flex;
         align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+        font-size: 14px;
       `}
     >
-      {positive ? <IconCheck /> : <IconCross />} {result}
+      {positive ? <IconCheck /> : <IconCross />}{' '}
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        {result}
+      </span>
     </div>
   )
 }
