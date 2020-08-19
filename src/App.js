@@ -19,26 +19,22 @@ const App = React.memo(function App() {
 
   const selectedProposal = useSelectedProposal(proposals)
 
-  const MainScreenComponent = (
-    <MainScreen
-      isLoading={isLoading}
-      myStakes={myStakes}
-      onCancelProposal={actions.cancelProposal}
-      onExecuteIssuance={actions.executeIssuance}
-      onExecuteProposal={actions.executeProposal}
-      onRequestNewProposal={proposalPanel.requestOpen}
-      onStakeToProposal={actions.stakeToProposal}
-      onWithdrawFromProposal={actions.withdrawFromProposal}
-      proposals={proposals}
-      selectedProposal={selectedProposal}
-      totalActiveTokens={totalActiveTokens}
-    />
-  )
-
   return (
     <div>
       <SyncIndicator visible={isLoading} />
-      {MainScreenComponent}
+      <MainScreen
+        isLoading={isLoading}
+        myStakes={myStakes}
+        onCancelProposal={actions.cancelProposal}
+        onExecuteIssuance={actions.executeIssuance}
+        onExecuteProposal={actions.executeProposal}
+        onRequestNewProposal={proposalPanel.requestOpen}
+        onStakeToProposal={actions.stakeToProposal}
+        onWithdrawFromProposal={actions.withdrawFromProposal}
+        proposals={proposals}
+        selectedProposal={selectedProposal}
+        totalActiveTokens={totalActiveTokens}
+      />
       <SidePanel
         title="New proposal"
         opened={proposalPanel.visible}
