@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Box, Distribution, GU, useTheme, useViewport } from '@aragon/ui'
+import { Distribution, GU, useTheme, useViewport } from '@aragon/ui'
 
 import BigNumber from '../lib/bigNumber'
 import { stakesPercentages } from '../lib/math-utils'
@@ -58,28 +58,26 @@ const StakingTokens = React.memo(function StakingTokens({ myStakes }) {
     return null
   }
 
-  const colors = [theme.green, theme.red, theme.purple, theme.yellow]
+  const colors = [theme.purple, theme.red, theme.positive, theme.yellow]
 
   return (
-    <Box heading="My supported proposals" padding={3 * GU}>
-      <div>
-        <Distribution
-          colors={colors}
-          heading="Your active token distribution"
-          items={stakes}
-          renderLegendItem={({ item }) => {
-            return (
-              <DistributionItem
-                compact={compact}
-                proposalName={item.proposalName}
-                proposalId={item.proposalId}
-                selectProposal={handleSelectProposal}
-              />
-            )
-          }}
-        />
-      </div>
-    </Box>
+    <div>
+      <Distribution
+        colors={colors}
+        heading="Voting influence distribution"
+        items={stakes}
+        renderLegendItem={({ item }) => {
+          return (
+            <DistributionItem
+              compact={compact}
+              proposalName={item.proposalName}
+              proposalId={item.proposalId}
+              selectProposal={handleSelectProposal}
+            />
+          )
+        }}
+      />
+    </div>
   )
 })
 

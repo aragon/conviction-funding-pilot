@@ -10,6 +10,7 @@ function AccountNotConnected() {
         border-radius: ${RADIUS}px;
         background: ${theme.background};
         padding: ${3.5 * GU}px ${10 * GU}px;
+        margin-top: ${2 * GU}px;
         text-align: center;
       `}
     >

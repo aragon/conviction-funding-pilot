@@ -28,8 +28,8 @@ const SCREENS = [
   },
   {
     id: 'connected',
-    title: 'Active wallet',
-    height: 22 * GU,
+    title: 'Ethereum Provider',
+    height: 29 * GU,
   },
   {
     id: 'error',
@@ -149,7 +149,10 @@ function AccountModule({ compact }) {
         display: flex;
         align-items: center;
         justify-content: space-around;
+        width: 100%;
         outline: 0;
+        padding-top: ${1.5 * GU}px;
+        padding-bottom: ${1.5 * GU}px;
       `}
     >
       {screen.id === 'connected' ? (
@@ -161,8 +164,13 @@ function AccountModule({ compact }) {
         <Button
           icon={<IconConnect />}
           label="Enable account"
+          mode="strong"
           onClick={toggle}
           display={compact ? 'icon' : 'all'}
+          wide
+          css={`
+            font-weight: bold;
+          `}
         />
       )}
 

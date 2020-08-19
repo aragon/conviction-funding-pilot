@@ -1,13 +1,10 @@
 import React from 'react'
-import { SidePanel, Split, SyncIndicator } from '@aragon/ui'
+import { SidePanel, SyncIndicator } from '@aragon/ui'
 
 import AddProposalPanel from './components/AddProposalPanel'
 import MainScreen from './screens/MainScreen'
-import StakingTokens from './screens/StakingTokens'
-import Wallet from './components/Wallet'
 
 import useAppLogic from './app-logic'
-import { useWallet } from './providers/Wallet'
 import useSelectedProposal from './hooks/useSelectedProposal'
 
 const App = React.memo(function App() {
@@ -20,47 +17,24 @@ const App = React.memo(function App() {
     totalActiveTokens,
   } = useAppLogic()
 
-  const { account } = useWallet()
   const selectedProposal = useSelectedProposal(proposals)
-
-  const MainScreenComponent = (
-    <MainScreen
-      isLoading={isLoading}
-      myStakes={myStakes}
-      onCancelProposal={actions.cancelProposal}
-      onExecuteIssuance={actions.executeIssuance}
-      onExecuteProposal={actions.executeProposal}
-      onRequestNewProposal={proposalPanel.requestOpen}
-      onStakeToProposal={actions.stakeToProposal}
-      onWithdrawFromProposal={actions.withdrawFromProposal}
-      proposals={proposals}
-      selectedProposal={selectedProposal}
-      totalActiveTokens={totalActiveTokens}
-    />
-  )
 
   return (
     <div>
       <SyncIndicator visible={isLoading} />
-
-      {!account ? (
-        MainScreenComponent
-      ) : (
-        <Split
-          primary={MainScreenComponent}
-          secondary={
-            <div>
-              <Wallet myStakes={myStakes} />
-              <StakingTokens
-                myStakes={myStakes}
-                totalActiveTokens={totalActiveTokens}
-              />
-            </div>
-          }
-          invert="horizontal"
-        />
-      )}
-
+      <MainScreen
+        isLoading={isLoading}
+        myStakes={myStakes}
+        onCancelProposal={actions.cancelProposal}
+        onExecuteIssuance={actions.executeIssuance}
+        onExecuteProposal={actions.executeProposal}
+        onRequestNewProposal={proposalPanel.requestOpen}
+        onStakeToProposal={actions.stakeToProposal}
+        onWithdrawFromProposal={actions.withdrawFromProposal}
+        proposals={proposals}
+        selectedProposal={selectedProposal}
+        totalActiveTokens={totalActiveTokens}
+      />
       <SidePanel
         title="New proposal"
         opened={proposalPanel.visible}

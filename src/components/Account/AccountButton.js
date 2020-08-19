@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {
   EthIdenticon,
   GU,
-  RADIUS,
   shortenAddress,
   textStyle,
   useTheme,
@@ -19,17 +18,22 @@ function AccountButton({ label, onClick }) {
   return (
     <HeaderModule
       icon={
-        <div css="position: relative">
-          <EthIdenticon address={wallet.account} radius={RADIUS} />
+        <div
+          css={`
+            position: relative;
+            width: 52px;
+          `}
+        >
+          <EthIdenticon address={wallet.account} radius={50} scale={2} />
           <div
             css={`
               position: absolute;
-              bottom: -3px;
-              right: -3px;
-              width: 10px;
-              height: 10px;
+              bottom: 0px;
+              right: 0px;
+              width: 16px;
+              height: 16px;
               background: ${theme.positive};
-              border: 2px solid ${theme.surface};
+              border: 3px solid ${theme.surface};
               border-radius: 50%;
             `}
           />
@@ -40,14 +44,13 @@ function AccountButton({ label, onClick }) {
           <div
             css={`
               margin-bottom: -5px;
-              ${textStyle('body2')}
+              ${textStyle('title4')}
             `}
           >
             {label ? (
               <div
                 css={`
                   overflow: hidden;
-                  max-width: ${16 * GU}px;
                   text-overflow: ellipsis;
                   white-space: nowrap;
                 `}
@@ -60,11 +63,13 @@ function AccountButton({ label, onClick }) {
           </div>
           <div
             css={`
-              font-size: 11px; /* doesn’t exist in aragonUI */
-              color: ${theme.positive};
+              ${textStyle('body4')}
+              color: ${theme.contentSecondary};
+              text-transform: uppercase;
+              margin-top: ${1 * GU}px;
             `}
           >
-            Connected
+            Enabled Account
           </div>
         </>
       }

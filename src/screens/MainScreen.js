@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
+import { Split } from '@aragon/ui'
 
 import Metrics from '../components/Metrics'
 import Proposals from './Proposals'
@@ -44,7 +45,6 @@ const MainScreen = React.memo(
     const handleBack = useCallback(() => {
       history.push(`/`)
     }, [history])
-
     const handleTabChange = tabIndex => {
       handleProposalExecutionFilterChange(tabIndex)
       handleProposalSupportFilterChange(-1)
@@ -57,41 +57,65 @@ const MainScreen = React.memo(
     return (
       <>
         {selectedProposal ? (
-          <ProposalDetail
-            onBack={handleBack}
-            onCancelProposal={onCancelProposal}
-            onExecuteProposal={onExecuteProposal}
-            onStakeToProposal={onStakeToProposal}
-            onWithdrawFromProposal={onWithdrawFromProposal}
-            proposal={selectedProposal}
-            requestToken={requestToken}
+          <Split
+            primary={
+              <ProposalDetail
+                onBack={handleBack}
+                onCancelProposal={onCancelProposal}
+                onExecuteProposal={onExecuteProposal}
+                onStakeToProposal={onStakeToProposal}
+                onWithdrawFromProposal={onWithdrawFromProposal}
+                proposal={selectedProposal}
+                requestToken={requestToken}
+              />
+            }
+            secondary={
+              <Metrics
+                totalSupply={totalSupply}
+                commonPool={vaultBalance}
+                myStakes={myStakes}
+                onExecuteIssuance={onExecuteIssuance}
+                amountOfProposals={proposals.length}
+                stakeToken={stakeToken}
+                requestToken={requestToken}
+                totalActiveTokens={totalActiveTokens}
+              />
+            }
+            invert="horizontal"
           />
         ) : (
-          <>
-            <Metrics
-              totalSupply={totalSupply}
-              commonPool={vaultBalance}
-              onExecuteIssuance={onExecuteIssuance}
-              stakeToken={stakeToken}
-              requestToken={requestToken}
-              totalActiveTokens={totalActiveTokens}
-            />
-            <Proposals
-              filteredProposals={filteredProposals}
-              proposalExecutionStatusFilter={proposalExecutionStatusFilter}
-              proposalSupportStatusFilter={proposalSupportStatusFilter}
-              proposalTextFilter={proposalTextFilter}
-              proposalTypeFilter={proposalTypeFilter}
-              handleProposalSupportFilterChange={
-                handleProposalSupportFilterChange
-              }
-              handleExecutionStatusFilterChange={handleTabChange}
-              handleSearchTextFilterChange={handleSearchTextFilterChange}
-              handleProposalTypeFilterChange={handleProposalTypeFilterChange}
-              requestToken={requestToken}
-              onRequestNewProposal={onRequestNewProposal}
-            />
-          </>
+          <Split
+            primary={
+              <Proposals
+                filteredProposals={filteredProposals}
+                proposalExecutionStatusFilter={proposalExecutionStatusFilter}
+                proposalSupportStatusFilter={proposalSupportStatusFilter}
+                proposalTextFilter={proposalTextFilter}
+                proposalTypeFilter={proposalTypeFilter}
+                handleProposalSupportFilterChange={
+                  handleProposalSupportFilterChange
+                }
+                handleExecutionStatusFilterChange={handleTabChange}
+                handleSearchTextFilterChange={handleSearchTextFilterChange}
+                handleProposalTypeFilterChange={handleProposalTypeFilterChange}
+                requestToken={requestToken}
+                onRequestNewProposal={onRequestNewProposal}
+              />
+            }
+            secondary={
+              <Metrics
+                commonPool={vaultBalance}
+                myStakes={myStakes}
+                onExecuteIssuance={onExecuteIssuance}
+                amountOfProposals={proposals.length}
+                requestToken={requestToken}
+                stakeToken={stakeToken}
+                totalActiveTokens={totalActiveTokens}
+                totalSupply={totalSupply}
+              />
+            }
+            invert="horizontal"
+          />
         )}
       </>
     )

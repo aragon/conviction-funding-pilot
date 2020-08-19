@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { GU, Popover, springs, textStyle, useTheme } from '@aragon/ui'
 import { Spring, animated } from 'react-spring/renderprops'
+import { useWallet } from '../../providers/Wallet'
 
 const AnimatedSection = animated.section
 
@@ -16,14 +17,15 @@ function HeaderPopover({
   visible,
 }) {
   const theme = useTheme()
+  const { connected } = useWallet()
 
   return (
     <Popover
       closeOnOpenerFocus
       onClose={onClose}
       opener={opener}
-      placement="bottom-end"
       visible={visible}
+      placement="center-start"
       css={`
         width: ${width}px;
       `}
@@ -52,7 +54,7 @@ function HeaderPopover({
                 align-items: center;
                 height: ${4 * GU}px;
                 padding-left: ${2 * GU}px;
-                border-bottom: 1px solid ${theme.border};
+                ${!connected && `border-bottom: 1px solid ${theme.border};`}
                 color: ${theme.contentSecondary};
                 ${textStyle('label2')};
               `}

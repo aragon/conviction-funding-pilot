@@ -9,7 +9,6 @@ import {
   textStyle,
   useTheme,
 } from '@aragon/ui'
-import IdentityBadge from '../IdentityBadge'
 import { getProviderFromUseWalletId } from '../../ethereum-providers'
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard'
 
@@ -25,6 +24,7 @@ function AccountScreenConnected({ wallet }) {
     <div
       css={`
         padding: ${2 * GU}px;
+        padding-top: ${0.5 * GU}px;
       `}
     >
       <div
@@ -47,7 +47,7 @@ function AccountScreenConnected({ wallet }) {
             css={`
               width: ${2.5 * GU}px;
               height: ${2.5 * GU}px;
-              margin-right: ${0.5 * GU}px;
+              margin-right: ${1 * GU}px;
               transform: translateY(-2px);
             `}
           />
@@ -76,12 +76,17 @@ function AccountScreenConnected({ wallet }) {
               }
             `}
           >
-            <IdentityBadge
-              entity={wallet.account}
-              compact
-              badgeOnly
-              css="cursor: pointer"
-            />
+            <span
+              css={`
+                color: ${theme.contentSecondary};
+                ${textStyle('body3')};
+                display: block;
+                margin-right: ${1 * GU}px;
+                line-height: 0;
+              `}
+            >
+              Copy Address
+            </span>
             <IconCopy
               css={`
                 color: ${theme.hint};
@@ -89,6 +94,35 @@ function AccountScreenConnected({ wallet }) {
             />
           </ButtonBase>
         </div>
+      </div>
+      <div
+        css={`
+          padding: ${1 * GU};
+          background: ${theme.infoSurface};
+          ${textStyle('label1')}
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: ${1.5 * GU}px;
+          margin-bottom: ${1.5 * GU}px;
+        `}
+      >
+        {wallet.account}
+      </div>
+
+      <div
+        css={`
+          margin-bottom: ${1.5 * GU};
+        `}
+      >
+        <span
+          css={`
+            color: ${theme.contentSecondary};
+          `}
+        >
+          Current block:&nbsp;
+        </span>{' '}
+        Block {wallet.getBlockNumber()}
       </div>
       <div
         css={`
@@ -105,7 +139,7 @@ function AccountScreenConnected({ wallet }) {
             margin-left: ${0.5 * GU}px;
           `}
         >
-          {`Connected to Ethereum ${walletNetworkName} Network`}
+          {`Connected to ${walletNetworkName} Network`}
         </span>
       </div>
 
@@ -116,7 +150,7 @@ function AccountScreenConnected({ wallet }) {
           margin-top: ${1 * GU}px;
         `}
       >
-        Disconnect wallet
+        Disconnect
       </Button>
     </div>
   )
