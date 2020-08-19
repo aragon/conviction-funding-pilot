@@ -157,7 +157,7 @@ const Metrics = React.memo(function Metrics({
           <TokenPrice token={antPrice} uppercased />
           <ButtonBase
             wide
-            href="https://anj.aragon.org"
+            href="https://aragon.org/token/ant"
             css={`
               position: relative;
               width: 100%;
