@@ -10,6 +10,8 @@ import BigNumber from '../lib/bigNumber'
 import { formatTokenAmount } from '../lib/token-utils'
 import { round, safeDiv, toDecimals } from '../lib/math-utils'
 import AccountNotConnected from './AccountNotConnected'
+import ChangeSupportModal from './ChangeSupportModal'
+import ProposalSupported from './ProposalSupported'
 
 const MAX_INPUT_DECIMAL_BASE = 6
 
@@ -20,6 +22,7 @@ function ProposalActions({
   onStakeToProposal,
   onWithdrawFromProposal,
 }) {
+  const [modalVisible, setModalVisible] = useState(false)
   const { stakeToken, accountBalance } = useAppState()
   const { account: connectedAccount } = useWallet()
   const { id, currentConviction, stakes, threshold } = proposal
@@ -76,6 +79,14 @@ function ProposalActions({
     return 'support'
   }, [currentConviction, didIStake, threshold])
 
+  const closeModal = useCallback(() => {
+    setModalVisible(false)
+  }, [setModalVisible])
+
+  const openModal = useCallback(() => {
+    setModalVisible(true)
+  }, [setModalVisible])
+
   const handleExecute = useCallback(() => {
     onExecuteProposal(id)
   }, [id, onExecuteProposal])
@@ -113,8 +124,6 @@ function ProposalActions({
         text: 'Change support',
         action: handleChangeSupport,
         mode: 'normal',
-        disabled:
-          myStakeAmountFormatted.replace(',', '') === inputValue.toString(),
       }
     }
     return {
@@ -127,74 +136,86 @@ function ProposalActions({
     accountBalance,
     handleExecute,
     handleChangeSupport,
-    inputValue,
     mode,
-    myStakeAmountFormatted,
     onRequestSupportProposal,
   ])
 
   return connectedAccount ? (
-    <div
-      css={`
-        margin-top: ${4 * GU}px;
-      `}
-    >
-      {mode === 'update' && (
-        <Field label="Amount of your tokens for this proposal">
-          <div
-            css={`
-              display: flex;
-              justify-content: space-between;
-            `}
-          >
-            <Slider
-              value={progress}
-              onUpdate={setProgress}
-              css={`
-                padding-left: 0;
-                width: 100%;
-              `}
-            />
-            <TextInput
-              value={inputValue}
-              onChange={setAmount}
-              type="number"
-              max={maxAvailable}
-              min="0"
-              required
-              css={`
-                width: ${18 * GU}px;
-              `}
-            />
-          </div>
-        </Field>
-      )}
-      <Button
-        mode={buttonProps.mode}
-        onClick={buttonProps.action}
-        disabled={buttonProps.disabled}
+    <>
+      <div
         css={`
-          width: 215px;
-          margin-top: ${3 * GU}px;
-          box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
+          margin-top: ${4 * GU}px;
         `}
       >
-        {buttonProps.text}
-      </Button>
-      {mode === 'support' && buttonProps.disabled && (
-        <Info
-          mode="warning"
+        {mode === 'update' && (
+          <>
+            <div
+              css={`
+                margin-bottom: ${2 * GU}px;
+              `}
+            >
+              <ProposalSupported amountOfTokens={myStake.amount} />
+            </div>
+            <Field label="Amount of your tokens for this proposal">
+              <div
+                css={`
+                  display: flex;
+                  justify-content: space-between;
+                `}
+              >
+                <Slider
+                  value={progress}
+                  onUpdate={setProgress}
+                  css={`
+                    padding-left: 0;
+                    width: 100%;
+                  `}
+                />
+                <TextInput
+                  value={inputValue}
+                  onChange={setAmount}
+                  type="number"
+                  max={maxAvailable}
+                  min="0"
+                  required
+                  css={`
+                    width: ${18 * GU}px;
+                  `}
+                />
+              </div>
+            </Field>
+          </>
+        )}
+        <Button
+          mode="strong"
+          onClick={openModal}
           css={`
-            margin-top: ${2 * GU}px;
+            width: 215px;
+            margin-top: ${3 * GU}px;
+            box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
           `}
         >
-          The currently connected account does not hold any{' '}
-          <strong>{stakeToken.symbol}</strong> tokens and therefore cannot
-          participate in this proposal. Make sure your account is holding{' '}
-          <strong>{stakeToken.symbol}</strong>.
-        </Info>
-      )}
-    </div>
+          {buttonProps.text}
+        </Button>
+        {mode === 'support' && buttonProps.disabled && (
+          <Info
+            mode="warning"
+            css={`
+              margin-top: ${2 * GU}px;
+            `}
+          >
+            The currently connected account does not hold any{' '}
+            <strong>{stakeToken.symbol}</strong> tokens and therefore cannot
+            participate in this proposal. Make sure your account is holding{' '}
+            <strong>{stakeToken.symbol}</strong>.
+          </Info>
+        )}
+      </div>
+      <ChangeSupportModal
+        modalVisible={modalVisible}
+        onModalClose={closeModal}
+      />
+    </>
   ) : (
     <AccountNotConnected />
   )
