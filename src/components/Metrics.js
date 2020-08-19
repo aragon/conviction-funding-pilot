@@ -102,7 +102,7 @@ const Metrics = React.memo(function Metrics({
             <>
               <p
                 css={`
-                  margin-top: ${5 * GU}px;
+                  margin-top: ${3 * GU}px;
                   margin-bottom: ${1.5 * GU}px;
                   ${textStyle('body4')};
                   text-transform: uppercase;
