@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   GU,
+  Help,
   Link,
   Info,
   textStyle,
@@ -11,6 +12,7 @@ import {
   useTheme,
 } from '@aragon/ui'
 import AccountModule from './Account/AccountModule'
+import Carousel from './Carousel/Carousel'
 import BigNumber, { bigNum } from '../lib/bigNumber'
 import { formatTokenAmount } from '../lib/token-utils'
 import { useTokenBalanceToUsd } from '../lib/web3-utils'
@@ -19,9 +21,9 @@ import { useWallet } from '../providers/Wallet'
 import StakingTokens from '../screens/StakingTokens'
 
 const Metrics = React.memo(function Metrics({
+  amountOfProposals,
   commonPool,
   myStakes,
-  proposals,
   requestToken,
   stakeToken,
   totalActiveTokens,
@@ -49,6 +51,14 @@ const Metrics = React.memo(function Metrics({
     }
     return accountBalance.minus(myActiveTokens)
   }, [accountBalance, myActiveTokens])
+
+  const carouselContent = useMemo(
+    () => [
+      <CarouselBalance label="Active" amount={myActiveTokens} />,
+      <CarouselBalance label="Inactive" amount={inactiveTokens} />,
+    ],
+    [myActiveTokens, inactiveTokens]
+  )
 
   return (
     <>
@@ -90,19 +100,40 @@ const Metrics = React.memo(function Metrics({
         >
           {connected && (
             <>
-              <div>
-                <TokenBalance
-                  label="Active"
-                  value={totalActiveTokens}
-                  token={stakeToken}
-                />
-              </div>
-              <div>
-                <TokenBalance
-                  label="Inactive"
-                  value={inactiveTokens}
-                  token={stakeToken}
-                />
+              <p
+                css={`
+                  margin-top: ${5 * GU}px;
+                  margin-bottom: ${1.5 * GU}px;
+                  ${textStyle('body4')};
+                  text-transform: uppercase;
+                  color: ${theme.contentSecondary};
+                `}
+              >
+                Voting influence
+              </p>
+              <Carousel content={carouselContent} />
+              <div
+                css={`
+                  margin-top: ${3 * GU}px;
+                  display: flex;
+                `}
+              >
+                <h3
+                  css={`
+                    color: ${theme.help};
+                    ${textStyle('body2')}
+                    margin-right: ${1 * GU}px;
+                  `}
+                >
+                  What is voting influence?
+                </h3>
+                <Help hint="What is voting influence?">
+                  We captured a snapshot of your ANT balance on 2020/08/24 that
+                  has been translated into your current voting influence.{' '}
+                  <Link external href="https://blog.aragon.org/">
+                    Learn more
+                  </Link>
+                </Help>
               </div>
               <LineSeparator border={theme.border} />
               <div
@@ -161,15 +192,7 @@ const Metrics = React.memo(function Metrics({
             symbol="ANT"
           />
         </MetricContainer>
-        <Metric label="Proposals" value={proposals.length} />
-        <div
-          css={`${textStyle('body3')}
-            color: ${theme.contentSecondary};
-            text-transform: uppercase;
-            `}
-        >
-          Open
-        </div>
+        <Metric label="Proposals" value={amountOfProposals} />
       </Box>
     </>
   )
@@ -219,6 +242,44 @@ function Metric({ label, value, color, secondaryValue, uppercased }) {
         </span>
       </div>
     </>
+  )
+}
+
+function CarouselBalance({ amount, label, symbol = 'ANT' }) {
+  const theme = useTheme()
+
+  return (
+    <div
+      css={`
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      `}
+    >
+      <h3
+        css={`
+          ${textStyle('body2')}
+        `}
+      >
+        {label}
+      </h3>
+      <h2
+        css={`
+          ${textStyle('title1')}
+        `}
+      >
+        {formatTokenAmount(amount.toFixed(), 18)}{' '}
+        <span
+          css={`
+            color: ${theme.contentSecondary};
+            ${textStyle('body2')}
+          `}
+        >
+          {symbol}
+        </span>
+      </h2>
+    </div>
   )
 }
 
