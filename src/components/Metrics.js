@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import {
   Box,
-  Button,
+  ButtonBase,
   GU,
   Help,
   Link,
@@ -155,15 +155,30 @@ const Metrics = React.memo(function Metrics({
             </>
           )}
           <TokenPrice token={antPrice} uppercased />
-          <Button
+          <ButtonBase
             wide
-            onClick={() => undefined}
+            href="https://anj.aragon.org"
             css={`
+              position: relative;
+              width: 100%;
+              height: 40px;
+              background: #ffffff;
+              border: 1px solid #dde4e9;
+              box-sizing: border-box;
+              box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
+              border-radius: 4px;
               margin-top: ${2.5 * GU}px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              ${textStyle('body2')}
+              &:active {
+                top: 1px;
+              }
             `}
           >
             Get ANT
-          </Button>
+          </ButtonBase>
           <LineSeparator />
           <TokenBalance
             label="Pilot Funds"
