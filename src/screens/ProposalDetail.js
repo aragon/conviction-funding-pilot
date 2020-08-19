@@ -54,6 +54,7 @@ function getOutcomeText(proposalState) {
 }
 
 function ProposalDetail({
+  myStakes,
   proposal,
   onBack,
   onCancelProposal,
@@ -243,6 +244,7 @@ function ProposalDetail({
                 }
               />
               <ProposalActions
+                myStakes={myStakes}
                 proposal={proposal}
                 onExecuteProposal={onExecuteProposal}
                 onRequestSupportProposal={panelState.requestOpen}

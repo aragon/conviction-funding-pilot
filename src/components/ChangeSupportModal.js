@@ -1,4 +1,6 @@
-import React, { useCallback } from 'react'
+import React, { useEffect, useCallback, useMemo, useState } from 'react'
+import BigNumber from 'bignumber.js'
+import TokenAmount from 'token-amount'
 import {
   Button,
   Modal,
@@ -10,12 +12,118 @@ import {
 } from '@aragon/ui'
 import antLogo from '../assets/logo-ant.svg'
 
-function ChangeSupportModal({ modalVisible, onModalClose }) {
+function ChangeSupportModal({
+  accountBalance,
+  availableTokens,
+  currentStakedTokens = new BigNumber('0'),
+  modalVisible,
+  onModalClose,
+  onStakeToProposal,
+  onWithdrawFromProposal,
+  proposalId,
+  totalActiveTokens,
+}) {
+  const [percentage, setPercentage] = useState(0)
+  const [tokensToStake, setTokensToStake] = useState(currentStakedTokens)
+  const [movedSlider, setMovedSlider] = useState(false)
   const theme = useTheme()
 
-  const changeSupport = useCallback(async () => {
-    onModalClose()
-  }, [onModalClose])
+  useEffect(() => setMovedSlider(true), [percentage])
+
+  useEffect(() => {
+    if (
+      percentage === 0 &&
+      currentStakedTokens.toFixed(0) !== '0' &&
+      !accountBalance.eq('-1') &&
+      !movedSlider
+    ) {
+      if (accountBalance.eq('0')) {
+        return
+      }
+      const newPercentage =
+        Number(
+          currentStakedTokens
+            .div(accountBalance)
+            .times(new BigNumber('100'))
+            .toFixed(0)
+        ) / 100
+      setPercentage(newPercentage)
+      setTokensToStake(currentStakedTokens)
+    }
+  }, [
+    accountBalance,
+    availableTokens,
+    currentStakedTokens,
+    movedSlider,
+    percentage,
+    setMovedSlider,
+    tokensToStake,
+  ])
+
+  const fixedPercentage = useMemo(
+    () => Math.ceil(percentage.toFixed(2) * 100).toString(),
+    [percentage]
+  )
+
+  const amountInOtherProposals = useMemo(
+    () => totalActiveTokens.minus(currentStakedTokens),
+    [currentStakedTokens, totalActiveTokens]
+  )
+
+  const percentageAvailable = useMemo(
+    () =>
+      availableTokens
+        .div(accountBalance)
+        .times(new BigNumber('100'))
+        .toFixed(0),
+    [accountBalance, availableTokens]
+  )
+
+  const percentageStaked = useMemo(
+    () =>
+      totalActiveTokens
+        .minus(currentStakedTokens)
+        .div(accountBalance)
+        .times(new BigNumber('100'))
+        .toFixed(0),
+    [accountBalance, currentStakedTokens, totalActiveTokens]
+  )
+
+  const disabled = useMemo(
+    () =>
+      tokensToStake.isGreaterThan(
+        accountBalance.minus(availableTokens).toFixed(0)
+      ),
+    [accountBalance, availableTokens, tokensToStake]
+  )
+
+  useEffect(() => {
+    const amountToStake = accountBalance
+      .times(new BigNumber(fixedPercentage))
+      .div(new BigNumber('100'))
+    setTokensToStake(amountToStake)
+  }, [accountBalance, availableTokens, fixedPercentage])
+
+  const handleChangeSupport = useCallback(() => {
+    if (tokensToStake.lt(currentStakedTokens)) {
+      onWithdrawFromProposal(
+        proposalId,
+        currentStakedTokens.minus(tokensToStake).toFixed(0)
+      )
+      return
+    }
+
+    onStakeToProposal(
+      proposalId,
+      tokensToStake.minus(currentStakedTokens).toFixed(0)
+    )
+  }, [
+    currentStakedTokens,
+    proposalId,
+    tokensToStake,
+    onStakeToProposal,
+    onWithdrawFromProposal,
+  ])
 
   return (
     <Modal visible={modalVisible} onClose={onModalClose}>
@@ -45,7 +153,6 @@ function ChangeSupportModal({ modalVisible, onModalClose }) {
           backing the proposal will increase over time from 0 up to the max
           amount specified.
         </p>
-
         <h2
           css={`
             margin-top: ${4 * GU}px;
@@ -69,47 +176,66 @@ function ChangeSupportModal({ modalVisible, onModalClose }) {
               flex-grow: 1;
             `}
           />
-          <Slider />
+          <Slider value={percentage} onUpdate={setPercentage} />
           <div
             css={`
               flex-grow: 1;
             `}
           />
-          <p
+          <div
             css={`
+              width: ${20 * GU}px;
+              display: flex;
+            `}
+          >
+            <p
+              css={`
               ${textStyle('body2')}
               margin-left: ${1 * GU}px;
           `}
-          >
-            18%
-          </p>
-          <p
-            css={`
+            >
+              {fixedPercentage}%
+            </p>
+            <p
+              css={`
               ${textStyle('body2')}
               color: ${theme.contentSecondary};
               margin-left: ${1 * GU}px;
           `}
-          >
-            (450 ANT)
-          </p>
+            >
+              (
+              {TokenAmount.format(tokensToStake.toFixed(0), 18, {
+                symbol: 'ANT',
+              })}
+              )
+            </p>
+          </div>
         </div>
         <Info
           css={`
             margin-top: ${4 * GU}px;
           `}
         >
-          You have 830 ANT tokens (33% of your balance) available to support
-          this proposal. You are supporting other proposals with 1,480 locked
-          tokens (66% of your balance).
+          You have{' '}
+          {TokenAmount.format(availableTokens.toFixed(0), 18, {
+            symbol: 'ANT',
+          })}{' '}
+          tokens ({percentageAvailable}% of your balance) available to support
+          this proposal. You are supporting other proposals with{' '}
+          {TokenAmount.format(amountInOtherProposals.toFixed(0), 18, {
+            symbol: 'ANT',
+          })}{' '}
+          locked tokens ({percentageStaked}% of your balance).
         </Info>
 
         <Button
+          disabled={disabled}
           mode="strong"
           wide
           css={`
             margin-top: ${3 * GU}px;
           `}
-          onClick={changeSupport}
+          onClick={handleChangeSupport}
         >
           Support Proposal
         </Button>

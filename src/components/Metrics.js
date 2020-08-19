@@ -118,22 +118,31 @@ const Metrics = React.memo(function Metrics({
                   display: flex;
                 `}
               >
-                <h3
+                <div
                   css={`
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  `}
+                >
+                  <h3
+                    css={`
                     color: ${theme.help};
                     ${textStyle('body2')}
                     margin-right: ${1 * GU}px;
+                    padding-top: ${0.5 * GU}px;
                   `}
-                >
-                  What is voting influence?
-                </h3>
-                <Help hint="What is voting influence?">
-                  We captured a snapshot of your ANT balance on 2020/08/24 that
-                  has been translated into your current voting influence.{' '}
-                  <Link external href="https://blog.aragon.org/">
-                    Learn more
-                  </Link>
-                </Help>
+                  >
+                    What is voting influence?
+                  </h3>
+                  <Help hint="What is voting influence?">
+                    We captured a snapshot of your ANT balance on 2020/08/24
+                    that has been translated into your current voting influence.{' '}
+                    <Link external href="https://blog.aragon.org/">
+                      Learn more
+                    </Link>
+                  </Help>
+                </div>
               </div>
               <LineSeparator border={theme.border} />
               <div

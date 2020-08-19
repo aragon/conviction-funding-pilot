@@ -9,7 +9,7 @@
     "@1hive/connect-thegraph-conviction-voting": "^0.1.7",
     "@1hive/uniswap-sdk": "^1.0.0",
     "@aragon/connect": "^0.6.0",
-    "@aragon/ui": "^1.5.0",
+    "@aragon/ui": "^1.6.0",
     "bignumber.js": "^9.0.0",
     "clipboard-polyfill": "^3.0.0-pre5",
     "ethers": "^5.0.7",

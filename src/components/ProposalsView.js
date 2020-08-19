@@ -11,8 +11,7 @@ import {
 } from '@aragon/ui'
 import { ConvictionBar } from './ConvictionVisuals'
 import { Amount } from '../screens/ProposalDetail'
-
-const ZERO_ADDR = '0x0000000000000000000000000000000000000000'
+import { ZERO_ADDR } from '../constants'
 
 const PROPOSALS_PER_PAGE = 5
 

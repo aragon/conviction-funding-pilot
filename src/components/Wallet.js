@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import TokenAmount from 'token-amount'
 import { getProfile } from '3box'
@@ -13,16 +13,14 @@ import {
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 
-import BigNumber, { bigNum } from '../lib/bigNumber'
+import { bigNum } from '../lib/bigNumber'
 import { getTokenIconBySymbol } from '../lib/token-utils'
-// import { useTokenBalanceToUsd } from '../lib/web3-utils'
 
-function Wallet({ myStakes }) {
+function Wallet() {
   const [profileName, setProfileName] = useState(null)
   const theme = useTheme()
   const { account } = useWallet()
   const { accountBalance, stakeToken } = useAppState()
-  // const balanceUsdValue = useTokenBalanceToUsd('ANT', 18, accountBalance)
 
   useEffect(() => {
     let cancelled = false
