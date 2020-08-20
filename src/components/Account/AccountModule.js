@@ -204,7 +204,7 @@ function AccountModule({ compact }) {
                 `}
               >
                 {(() => {
-                  if (screenId === 'connecting') {
+                  if (screen.id === 'connecting') {
                     return (
                       <ScreenConnecting
                         providerId={activating}
@@ -212,10 +212,10 @@ function AccountModule({ compact }) {
                       />
                     )
                   }
-                  if (screenId === 'connected') {
+                  if (screen.id === 'connected') {
                     return <ScreenConnected wallet={wallet} />
                   }
-                  if (screenId === 'error') {
+                  if (screen.id === 'error') {
                     return (
                       <ScreenError
                         error={wallet.error}

@@ -21,7 +21,7 @@ const FilterBar = React.memo(
   }) => {
     const [textFieldVisible, setTextFieldVisible] = useState(false)
     const textFilterOpener = useRef(null)
-    const { connected } = useWallet()
+    const { status } = useWallet()
     const theme = useTheme()
     const { layoutName } = useLayout()
     const compactMode = layoutName === 'small'
@@ -100,7 +100,7 @@ const FilterBar = React.memo(
               onClick={handlerTextFilterClick}
             />
           </div>
-          {connected && (
+          {status === 'connected' && (
             <Button
               mode="strong"
               onClick={handleRequestNewProposal}
