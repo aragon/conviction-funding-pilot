@@ -65,6 +65,11 @@ function ChangeSupportModal({
     [percentage]
   )
 
+  const totalAvailableTokens = useMemo(
+    () => availableTokens.plus(currentStakedTokens),
+    [availableTokens, currentStakedTokens]
+  )
+
   const amountInOtherProposals = useMemo(
     () => totalActiveTokens.minus(currentStakedTokens),
     [currentStakedTokens, totalActiveTokens]
@@ -72,11 +77,11 @@ function ChangeSupportModal({
 
   const percentageAvailable = useMemo(
     () =>
-      availableTokens
+      totalAvailableTokens
         .div(accountBalance)
         .times(new BigNumber('100'))
         .toFixed(0),
-    [accountBalance, availableTokens]
+    [accountBalance, totalAvailableTokens]
   )
 
   const percentageStaked = useMemo(
@@ -91,10 +96,17 @@ function ChangeSupportModal({
 
   const disabled = useMemo(
     () =>
-      tokensToStake.isGreaterThan(
-        accountBalance.minus(availableTokens).toFixed(0)
-      ),
-    [accountBalance, availableTokens, tokensToStake]
+      totalAvailableTokens.isLessThan(tokensToStake.toFixed(0)) ||
+      currentStakedTokens.isEqualTo(tokensToStake.toFixed(0)),
+    [currentStakedTokens, tokensToStake, totalAvailableTokens]
+  )
+
+  console.log(
+    tokensToStake.isGreaterThan(totalAvailableTokens.toFixed(0)),
+    tokensToStake.toFixed(0),
+    totalAvailableTokens.toFixed(0),
+    totalAvailableTokens.isLessThan(tokensToStake.toFixed(0)),
+    totalAvailableTokens.isEqualTo(tokensToStake.toFixed(0))
   )
 
   useEffect(() => {
@@ -217,7 +229,7 @@ function ChangeSupportModal({
           `}
         >
           You have{' '}
-          {TokenAmount.format(availableTokens.toFixed(0), 18, {
+          {TokenAmount.format(totalAvailableTokens.toFixed(0), 18, {
             symbol: 'ANT',
           })}{' '}
           tokens ({percentageAvailable}% of your balance) available to support
