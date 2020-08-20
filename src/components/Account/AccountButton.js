@@ -100,7 +100,7 @@ function AccountButton({ label, onClick }) {
               <div>{shortenAddress(wallet.account)}</div>
             )}
           </div>
-          {profile ? (
+          {profile?.name ? (
             <div
               css={`
                 padding: ${1 * GU};

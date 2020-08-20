@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react'
-import { ButtonBase, textStyle, IconSettings, useTheme, GU } from '@aragon/ui'
+import { ButtonBase, textStyle, IconSettings, GU } from '@aragon/ui'
 import { useAppState } from '../providers/AppState'
 import logoAaSvg from '../assets/logo-aa.svg'
 
 function Header() {
   const { appearance, setAppearance } = useAppState()
-  const theme = useTheme()
 
   const toggleAppearance = useCallback(
     () => setAppearance(appearance === 'light' ? 'dark' : 'light'),
@@ -32,7 +31,6 @@ function Header() {
           width="40"
           onClick={toggleAppearance}
           css={`
-            background: ${theme.background}
             position: relative;
             cursor: pointer;
             &:active {

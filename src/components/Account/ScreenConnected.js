@@ -18,7 +18,7 @@ function AccountScreenConnected({ wallet }) {
 
   const walletNetworkName = wallet.networkName
 
-  const providerInfo = getProviderFromUseWalletId(wallet.activated)
+  const providerInfo = getProviderFromUseWalletId(wallet.connector)
 
   return (
     <div
@@ -144,7 +144,7 @@ function AccountScreenConnected({ wallet }) {
       </div>
 
       <Button
-        onClick={() => wallet.deactivate()}
+        onClick={() => wallet.reset()}
         wide
         css={`
           margin-top: ${1 * GU}px;

@@ -30,7 +30,7 @@ const Metrics = React.memo(function Metrics({
   totalSupply,
 }) {
   const { accountBalance } = useAppState()
-  const { connected } = useWallet()
+  const { status } = useWallet()
   const { layoutName } = useLayout()
   const theme = useTheme()
   const compactMode = layoutName === 'small'
@@ -70,7 +70,7 @@ const Metrics = React.memo(function Metrics({
         `}
       >
         <AccountModule compact={compactMode} />
-        {!connected && (
+        {status === 'disconnected' && (
           <Info
             css={`
               margin-top: ${3 * GU}px;
@@ -99,7 +99,7 @@ const Metrics = React.memo(function Metrics({
             justify-content: space-between;
           `}
         >
-          {connected && (
+          {status === 'connected' && (
             <>
               <p
                 css={`
@@ -146,7 +146,7 @@ const Metrics = React.memo(function Metrics({
                 </div>
               </div>
               <div
-                css={`  
+                css={`
                   width: 100%;
                   height: 1px;
                   border: 1px solid ${theme.border};
@@ -196,7 +196,7 @@ const Metrics = React.memo(function Metrics({
             Get ANT
           </ButtonBase>
           <div
-            css={`  
+            css={`
                   width: 100%;
                   height: 1px;
                   border: 1px solid ${theme.border};
@@ -359,11 +359,7 @@ function TokenPrice({ token, uppercased }) {
 const LineSeparator = styled.div`
   width: 100%;
   height: 1px;
-  border: 1px solid
-    ${props => {
-      console.log(props.border)
-      return props.border
-    }};
+  border: 1px solid ${props => props.border};
   margin: ${3 * GU}px 0;
 `
 

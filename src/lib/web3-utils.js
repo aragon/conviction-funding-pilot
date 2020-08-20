@@ -104,7 +104,7 @@ export function addressesEqualNoSum(first, second) {
  * @returns {String} the amount of the token in USD
  */
 export function useTokenBalanceToUsd(symbol, decimals, balance) {
-  const [usd, setUsd] = useState('-')
+  const [usd, setUsd] = useState(BigNumber('0'))
   useEffect(() => {
     let cancelled = false
     setUsd(BigNumber('0'))

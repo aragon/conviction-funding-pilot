@@ -101,14 +101,6 @@ function ChangeSupportModal({
     [currentStakedTokens, tokensToStake, totalAvailableTokens]
   )
 
-  console.log(
-    tokensToStake.isGreaterThan(totalAvailableTokens.toFixed(0)),
-    tokensToStake.toFixed(0),
-    totalAvailableTokens.toFixed(0),
-    totalAvailableTokens.isLessThan(tokensToStake.toFixed(0)),
-    totalAvailableTokens.isEqualTo(tokensToStake.toFixed(0))
-  )
-
   useEffect(() => {
     const amountToStake = accountBalance
       .times(new BigNumber(fixedPercentage))
