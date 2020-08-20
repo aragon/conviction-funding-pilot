@@ -34,7 +34,7 @@ function Header() {
             position: relative;
             cursor: pointer;
             &:active {
-              top: 2px;
+              top: 1px;
             }
           `}
         />
