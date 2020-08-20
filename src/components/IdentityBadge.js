@@ -10,7 +10,6 @@ function IdentityBadge({ entity, useBox, ...props }) {
     let cancelled = false
     async function getProfile() {
       const profile = await Box.getProfile(entity)
-      console.log(profile)
       if (!cancelled) {
         setBoxProfile(profile)
       }
