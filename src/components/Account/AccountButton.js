@@ -86,7 +86,7 @@ function AccountButton({ label, onClick }) {
               ${textStyle('title4')}
             `}
           >
-            {profile ? (
+            {profile?.name ? (
               <div
                 css={`
                   overflow: hidden;

@@ -117,6 +117,7 @@ async function sendIntent(
     const intent = organization.appIntent(appAddress, fn, params)
 
     const txPath = await intent.paths(from)
+    console.log('rip here', txPath)
     const { to, data } = txPath.transactions[0] // TODO: Handle errors when no tx path is found
     ethers.getSigner().sendTransaction({ data, to, gasLimit: GAS_LIMIT })
   } catch (err) {

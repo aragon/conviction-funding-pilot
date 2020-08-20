@@ -240,6 +240,7 @@ function ProposalDetail({
                   <ConvictionBar
                     proposal={proposal}
                     withThreshold={!!requestToken}
+                    hideSeparator={proposal.beneficiary === ZERO_ADDR}
                   />
                 }
               />
