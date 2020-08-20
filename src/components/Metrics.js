@@ -144,7 +144,13 @@ const Metrics = React.memo(function Metrics({
                   </Help>
                 </div>
               </div>
-              <LineSeparator border={theme.border} />
+              <div
+                css={`  
+                  width: 100%;
+                  height: 1px;
+                  border: 1px solid ${theme.border};
+                  margin: ${3 * GU}px 0;l`}
+              />
               <div
                 css={`
                   ${textStyle('body4')}
@@ -171,8 +177,8 @@ const Metrics = React.memo(function Metrics({
               position: relative;
               width: 100%;
               height: 40px;
-              background: #ffffff;
-              border: 1px solid #dde4e9;
+              background: ${theme.surfaceInteractive};
+              border: 1px solid ${theme.border};
               box-sizing: border-box;
               box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
               border-radius: 4px;
@@ -188,7 +194,13 @@ const Metrics = React.memo(function Metrics({
           >
             Get ANT
           </ButtonBase>
-          <LineSeparator />
+          <div
+            css={`  
+                  width: 100%;
+                  height: 1px;
+                  border: 1px solid ${theme.border};
+                  margin: ${3 * GU}px 0;l`}
+          />
           <TokenBalance
             label="Pilot Funds"
             value={commonPool}
@@ -346,7 +358,11 @@ function TokenPrice({ token, uppercased }) {
 const LineSeparator = styled.div`
   width: 100%;
   height: 1px;
-  border: 1px solid rgba(221, 228, 233, 0.7);
+  border: 1px solid
+    ${props => {
+      console.log(props.border)
+      return props.border
+    }};
   margin: ${3 * GU}px 0;
 `
 

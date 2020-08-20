@@ -1,15 +1,9 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
-import {
-  Link,
-  IdentityBadge,
-  Pagination,
-  textStyle,
-  useTheme,
-  GU,
-} from '@aragon/ui'
+import { Link, Pagination, textStyle, useTheme, GU } from '@aragon/ui'
 import { ConvictionBar } from './ConvictionVisuals'
+import IdentityBadge from './IdentityBadge'
 import { Amount } from '../screens/ProposalDetail'
 import { ZERO_ADDR } from '../constants'
 
@@ -47,7 +41,7 @@ function ProposalsView({ proposals }) {
       `}
     >
       {shownProposals.map(proposal => (
-        <ProposalCard key={proposal.id}>
+        <ProposalCard key={proposal.id} background={theme.surface}>
           <div
             css={`
               width: 100%;
@@ -167,7 +161,7 @@ const ProposalCard = styled.div`
   margin-bottom: ${2 * GU}px;
   border-radius: 4px;
   padding: ${3 * GU}px;
-  background: white;
+  background: ${props => props.background};
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
 `
 

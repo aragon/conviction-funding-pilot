@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { HashRouter } from 'react-router-dom'
-import { Main } from '@aragon/ui'
 
 import App from './App'
+import Main from './components/Main'
 import MainView from './components/MainView'
 import { WalletProvider } from './providers/Wallet'
 import { AppStateProvider } from './providers/AppState'
@@ -11,13 +11,13 @@ import { AppStateProvider } from './providers/AppState'
 ReactDOM.render(
   <WalletProvider>
     <AppStateProvider>
-      <Main assetsUrl="/aragon-ui/" layout={false}>
-        <HashRouter>
+      <HashRouter>
+        <Main>
           <MainView>
             <App />
           </MainView>
-        </HashRouter>
-      </Main>
+        </Main>
+      </HashRouter>
     </AppStateProvider>
   </WalletProvider>,
   document.getElementById('root')

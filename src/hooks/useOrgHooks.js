@@ -79,7 +79,10 @@ export function useAppData(organization) {
         addressesEqual(appAddress, convictionApp.address)
       )
 
-      const convictionVoting = await ConvictionVoting(convictionApp)
+      const convictionVoting = await ConvictionVoting(
+        convictionApp,
+        'https://api.thegraph.com/subgraphs/name/evalir/aragon-cv-rinkeby-staging'
+      )
 
       const config = await convictionVoting.config()
 
