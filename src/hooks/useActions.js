@@ -59,11 +59,12 @@ export default function useActions(onDone) {
 
   const executeProposal = useCallback(
     proposalId => {
+      console.log(proposalId, 'sent')
       sendIntent(
         organization,
         convictionVoting.address,
         'executeProposal',
-        [proposalId, true],
+        [proposalId],
         { ethers, from: account }
       )
 

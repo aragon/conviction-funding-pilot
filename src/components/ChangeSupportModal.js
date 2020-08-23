@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback, useMemo, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import TokenAmount from 'token-amount'
+import { useViewport } from 'use-viewport'
 import {
   Button,
   Modal,
@@ -27,6 +28,9 @@ function ChangeSupportModal({
   const [tokensToStake, setTokensToStake] = useState(currentStakedTokens)
   const [movedSlider, setMovedSlider] = useState(false)
   const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
 
   useEffect(() => setMovedSlider(true), [percentage])
 
@@ -172,6 +176,11 @@ function ChangeSupportModal({
             display: flex;
             justify-content: space-between;
             margin-top: ${2 * GU}px;
+            ${compactMode &&
+              `
+                flex-direction: column;
+
+              `}
           `}
         >
           <AntToken />

@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
+import { useViewport } from 'use-viewport'
 import { Button, GU, Info } from '@aragon/ui'
 
 import useAccountTotalStaked from '../hooks/useAccountTotalStaked'
@@ -12,8 +13,10 @@ import ChangeSupportModal from './ChangeSupportModal'
 import ProposalSupported from './ProposalSupported'
 
 function ProposalActions({
+  hasCancelRole,
   myStakes,
   proposal,
+  onCancelProposal,
   onExecuteProposal,
   onRequestSupportProposal,
   onStakeToProposal,
@@ -22,6 +25,9 @@ function ProposalActions({
   const [modalVisible, setModalVisible] = useState(false)
   const { stakeToken, accountBalance } = useAppState()
   const { account: connectedAccount } = useWallet()
+  const { below } = useViewport()
+
+  const compactMode = below('large')
   const { id, currentConviction, stakes, threshold } = proposal
 
   const totalStaked = useAccountTotalStaked()
@@ -99,8 +105,14 @@ function ProposalActions({
 
   return connectedAccount ? (
     <>
-      <div>
-        {mode === 'update' && (
+      <div
+        css={`
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+        `}
+      >
+        {!myStake.amount.eq('0') && (
           <>
             <div
               css={`
@@ -111,28 +123,57 @@ function ProposalActions({
             </div>
           </>
         )}
-        <Button
-          mode="strong"
-          onClick={openModal}
+        <div
           css={`
-            width: 215px;
+            width: 100%;
+            display: flex;
+            ${compactMode &&
+              `
+            flex-direction: column;
+          `}
+          `}
+        >
+          <Button
+            mode="strong"
+            wide
+            onClick={buttonProps.action}
+            css={`
+            ${!compactMode && `width: 215px;`}
             margin-top: ${3 * GU}px;
             box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
           `}
-        >
-          {buttonProps.text}
-        </Button>
-        <Button
-          onClick={openModal}
-          css={`
-            width: 215px;
+          >
+            {buttonProps.text}
+          </Button>
+          <Button
+            wide
+            onClick={openModal}
+            css={`
+            ${!compactMode && `width: 215px;`}
             margin-top: ${3 * GU}px;
             margin-left: ${1.5 * GU}px;
             box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
+            ${compactMode && `margin-left: 0px;`}
           `}
-        >
-          Withdraw proposal
-        </Button>
+          >
+            Change support
+          </Button>
+          {hasCancelRole && (
+            <Button
+              wide
+              onClick={onCancelProposal}
+              css={`
+            ${!compactMode && `width: 215px;`}
+            margin-top: ${3 * GU}px;
+            margin-left: ${1.5 * GU}px;
+            box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
+            ${compactMode && `margin-left: 0px;`}
+          `}
+            >
+              Withdraw proposal
+            </Button>
+          )}
+        </div>
         {mode === 'support' && buttonProps.disabled && (
           <Info
             mode="warning"

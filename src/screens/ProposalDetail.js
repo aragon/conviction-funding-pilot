@@ -68,6 +68,9 @@ function ProposalDetail({
   const panelState = usePanelState()
   const { vaultBalance, permissions } = useAppState()
   const { account: connectedAccount } = useWallet()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
   const {
     currentConviction,
     id,
@@ -149,6 +152,10 @@ function ProposalDetail({
           <div
             css={`
               display: flex;
+              ${compactMode &&
+                `
+                  flex-direction: column-reverse;
+                `}
             `}
           >
             <h1
@@ -183,6 +190,10 @@ function ProposalDetail({
               display: flex;
               flex-wrap: wrap;
               justify-content: space-between;
+              ${compactMode &&
+                `
+                  flex-direction: column;
+              `}
             `}
           >
             {requestToken && (
@@ -329,6 +340,9 @@ function DataField({ label, value }) {
 
 const Outcome = ({ result, positive }) => {
   const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
 
   return (
     <div
@@ -337,6 +351,11 @@ const Outcome = ({ result, positive }) => {
         display: flex;
         align-items: center;
         justify-content: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        `}
         text-transform: uppercase;
         font-size: 14px;
       `}

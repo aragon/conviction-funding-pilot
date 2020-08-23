@@ -10,7 +10,6 @@ function VoteCast({ amountOfTokens }) {
       css={`
         border-radius: ${RADIUS}px;
         background: #f8fdfe;
-        height: ${15.5 * GU}px;
         padding: ${3.5 * GU}px ${10 * GU}px;
         text-align: center;
       `}

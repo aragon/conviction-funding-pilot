@@ -84,6 +84,10 @@ function AccountModule({ compact }) {
       setActivatingDelayed(connector)
     }
 
+    if (status === 'connected') {
+      setActivatingDelayed(null)
+    }
+
     return () => clearTimeout(timer)
   }, [connector, status])
 
