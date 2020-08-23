@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useMemo } from 'react'
 import Ethers, {
   Contract as EthersContract,
@@ -6,7 +7,11 @@ import Ethers, {
 import { getNetwork } from '../networks'
 
 export function useContractReadOnly(address, abi) {
-  const { defaultEthNode: readProvider, type: networkName } = getNetwork()
+  const {
+    defaultEthNode: readProvider,
+    ensRegistry,
+    type: networkName,
+  } = getNetwork()
 
   const ethProvider = useMemo(
     () =>

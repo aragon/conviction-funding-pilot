@@ -89,7 +89,7 @@ function getProviderString(string, providerId = 'unknown') {
 
 // Get an identifier for the provider, if it can be detected.
 function identifyProvider(provider) {
-  if (provider && provider.isMetaMask) {
+  if (provider?.isMetaMask) {
     return 'metamask'
   }
   return 'unknown'
@@ -98,9 +98,7 @@ function identifyProvider(provider) {
 // Get a provider from its useWallet() identifier.
 function getProviderFromUseWalletId(id) {
   if (id === 'injected') {
-    return (
-      getProvider(identifyProvider(window.ethereum)) || getProvider('unknown')
-    )
+    return getProvider(identifyProvider(window.ethereum))
   }
   return getProvider(id) || getProvider('unknown')
 }

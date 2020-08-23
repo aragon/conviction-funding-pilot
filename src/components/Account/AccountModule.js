@@ -82,9 +82,6 @@ function AccountModule({ compact }) {
 
     if (status === 'connecting') {
       setActivatingDelayed(connector)
-      timer = setTimeout(() => {
-        setActivatingDelayed(null)
-      }, 400)
     }
 
     return () => clearTimeout(timer)
@@ -217,10 +214,7 @@ function AccountModule({ compact }) {
                   }
                   if (screen.id === 'error') {
                     return (
-                      <ScreenError
-                        error={wallet.error}
-                        onBack={wallet.reset()}
-                      />
+                      <ScreenError error={wallet.error} onBack={wallet.reset} />
                     )
                   }
                   return <ScreenProviders onActivate={activate} />
