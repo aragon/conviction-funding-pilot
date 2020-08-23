@@ -79,15 +79,8 @@ const Metrics = React.memo(function Metrics({
           >
             This application requires the use of a Ethereum wallet. New to
             Ethereum?{' '}
-            <Link
-              external
-              href="https://ethereum.org/en/wallets/"
-              css={`
-                display: inline;
-              `}
-            >
-              Learn <br />
-              more about wallets
+            <Link external href="https://ethereum.org/en/wallets/">
+              Learn more about wallets
             </Link>
           </Info>
         )}
@@ -124,6 +117,7 @@ const Metrics = React.memo(function Metrics({
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    margin-bottom: ${2.5 * GU}px;
                   `}
                 >
                   <h3
@@ -145,29 +139,32 @@ const Metrics = React.memo(function Metrics({
                   </Help>
                 </div>
               </div>
-              <div
-                css={`
-                  width: 100%;
-                  height: 1px;
-                  border: 1px solid ${theme.border};
-                  margin: ${3 * GU}px 0;l`}
-              />
-              <div
-                css={`
+              {!myActiveTokens.eq('0') && (
+                <>
+                  <LineSeparator
+                    border={theme.border}
+                    css={`
+                      margin-top: 0px;
+                    `}
+                  />
+                  <div
+                    css={`
                   ${textStyle('body4')}
                   color: ${theme.contentSecondary};
                   text-transform: uppercase;
                   margin-bottom: ${1 * GU}px;
                   margin-top: ${1 * GU}px;
                 `}
-              >
-                Supported Proposals
-              </div>
-              <StakingTokens
-                myStakes={myStakes}
-                totalActiveTokens={totalActiveTokens}
-              />
-              <LineSeparator border={theme.border} />
+                  >
+                    Supported Proposals
+                  </div>
+                  <StakingTokens
+                    myStakes={myStakes}
+                    totalActiveTokens={totalActiveTokens}
+                  />
+                  <LineSeparator border={theme.border} />
+                </>
+              )}
             </>
           )}
           <TokenPrice token={antPrice} uppercased />

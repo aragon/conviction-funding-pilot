@@ -5,7 +5,7 @@ import { Distribution, GU, useTheme, useViewport } from '@aragon/ui'
 import BigNumber from '../lib/bigNumber'
 import { stakesPercentages } from '../lib/math-utils'
 
-const DISTRIBUTION_ITEMS_MAX = 6
+const DISTRIBUTION_ITEMS_MAX = 5
 
 function displayedStakes(stakes, total) {
   return stakesPercentages(
@@ -14,7 +14,7 @@ function displayedStakes(stakes, total) {
       total,
       maxIncluded: DISTRIBUTION_ITEMS_MAX,
     }
-  ).map((stake, index) => ({
+  ).map(stake => ({
     item: {
       proposalId: stake.index === -1 ? null : stakes[stake.index].proposalId,
       proposalName:
@@ -24,7 +24,9 @@ function displayedStakes(stakes, total) {
   }))
 }
 
-const StakingTokens = React.memo(function StakingTokens({ myStakes }) {
+const SupportDistribution = React.memo(function SupportDistribution({
+  myStakes,
+}) {
   const theme = useTheme()
   const { below } = useViewport()
   const compact = below('large')
@@ -61,23 +63,21 @@ const StakingTokens = React.memo(function StakingTokens({ myStakes }) {
   const colors = [theme.purple, theme.red, theme.positive, theme.yellow]
 
   return (
-    <div>
-      <Distribution
-        colors={colors}
-        heading="Voting influence distribution"
-        items={stakes}
-        renderLegendItem={({ item }) => {
-          return (
-            <DistributionItem
-              compact={compact}
-              proposalName={item.proposalName}
-              proposalId={item.proposalId}
-              selectProposal={handleSelectProposal}
-            />
-          )
-        }}
-      />
-    </div>
+    <Distribution
+      colors={colors}
+      heading="Voting influence distribution"
+      items={stakes}
+      renderLegendItem={({ item }) => {
+        return (
+          <DistributionItem
+            compact={compact}
+            proposalName={item.proposalName}
+            proposalId={item.proposalId}
+            selectProposal={handleSelectProposal}
+          />
+        )
+      }}
+    />
   )
 })
 
@@ -116,4 +116,4 @@ const DistributionItem = ({
   )
 }
 
-export default StakingTokens
+export default SupportDistribution
