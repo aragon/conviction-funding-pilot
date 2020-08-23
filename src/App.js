@@ -20,7 +20,7 @@ const App = React.memo(function App() {
   const selectedProposal = useSelectedProposal(proposals)
 
   return (
-    <div>
+    <>
       <SyncIndicator visible={isLoading} />
       <MainScreen
         isLoading={isLoading}
@@ -42,7 +42,7 @@ const App = React.memo(function App() {
       >
         <AddProposalPanel onSubmit={actions.newProposal} />
       </SidePanel>
-    </div>
+    </>
   )
 })
 

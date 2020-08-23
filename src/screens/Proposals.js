@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react'
-import { useLayout } from '@aragon/ui'
 
 import FilterBar from '../components/FilterBar/FilterBar'
 import ProposalsView from '../components/ProposalsView'
@@ -18,9 +17,6 @@ const Proposals = React.memo(
     requestToken,
     onRequestNewProposal,
   }) => {
-    const { layoutName } = useLayout()
-    const compactMode = layoutName === 'small'
-
     const sortedProposals = useMemo(
       () =>
         filteredProposals.sort(
@@ -38,33 +34,28 @@ const Proposals = React.memo(
 
     return (
       <div>
-        {!compactMode && (
-          <div
-            css={`
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-            `}
-          >
-            <FilterBar
-              proposalsSize={filteredProposals.length}
-              proposalExecutionStatusFilter={proposalExecutionStatusFilter}
-              proposalStatusFilter={proposalSupportStatusFilter}
-              proposalTextFilter={proposalTextFilter}
-              proposalTypeFilter={proposalTypeFilter}
-              handleExecutionStatusFilterChange={
-                handleExecutionStatusFilterChange
-              }
-              handleProposalStatusFilterChange={
-                handleProposalSupportFilterChange
-              }
-              handleRequestNewProposal={onRequestNewProposal}
-              handleTextFilterChange={updateTextFilter}
-              handleProposalTypeFilterChange={handleProposalTypeFilterChange}
-            />
-          </div>
-        )}
-
+        <div
+          css={`
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          `}
+        >
+          <FilterBar
+            proposalsSize={filteredProposals.length}
+            proposalExecutionStatusFilter={proposalExecutionStatusFilter}
+            proposalStatusFilter={proposalSupportStatusFilter}
+            proposalTextFilter={proposalTextFilter}
+            proposalTypeFilter={proposalTypeFilter}
+            handleExecutionStatusFilterChange={
+              handleExecutionStatusFilterChange
+            }
+            handleProposalStatusFilterChange={handleProposalSupportFilterChange}
+            handleRequestNewProposal={onRequestNewProposal}
+            handleTextFilterChange={updateTextFilter}
+            handleProposalTypeFilterChange={handleProposalTypeFilterChange}
+          />
+        </div>
         <ProposalsView
           proposals={sortedProposals}
           requestToken={requestToken}

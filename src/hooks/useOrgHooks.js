@@ -11,6 +11,7 @@ import { addressesEqual } from '../lib/web3-utils.js'
 import {
   useProposalsSubscription,
   useStakesHistorySubscription,
+  // useConfigSubscription,
 } from './useSubscriptions'
 import { useContractReadOnly } from './useContract'
 import minimeTokenAbi from '../abi/minimeToken.json'
@@ -79,7 +80,10 @@ export function useAppData(organization) {
         addressesEqual(appAddress, convictionApp.address)
       )
 
-      const convictionVoting = await ConvictionVoting(convictionApp)
+      const convictionVoting = await ConvictionVoting(
+        convictionApp,
+        'https://api.thegraph.com/subgraphs/name/evalir/aragon-cv-rinkeby-staging'
+      )
 
       const config = await convictionVoting.config()
 
@@ -104,17 +108,23 @@ export function useAppData(organization) {
 
   const proposals = useProposalsSubscription(appData.convictionVoting)
 
+  // const config = useConfigSubscription(appData.convictionVoting)
+
   // Stakes done across all proposals on this app
   // Includes old and current stakes
   const stakesHistory = useStakesHistorySubscription(appData.convictionVoting)
 
-  return { ...appData, proposals, stakesHistory }
+  return {
+    ...appData,
+    // ...transformConfigData(config),
+    proposals,
+    stakesHistory,
+  }
 }
 
 export function useVaultBalance(installedApps, token, timeout = 1000) {
   const vaultAddress = getAppAddressByName(installedApps, 'vault')
   const vaultContract = useContractReadOnly(vaultAddress, vaultAbi)
-
   const [vaultBalance, setVaultBalance] = useState(new BigNumber(-1))
 
   // We are starting in 0 in order to immediately make the fetch call

@@ -1,11 +1,15 @@
 import React, { useCallback } from 'react'
-import { useHistory } from 'react-router'
 import { ButtonBase, textStyle, IconSettings, GU } from '@aragon/ui'
+import { useAppState } from '../providers/AppState'
 import logoAaSvg from '../assets/logo-aa.svg'
 
 function Header() {
-  const history = useHistory()
-  const navigateHome = useCallback(() => history.push('/'), [history])
+  const { appearance, setAppearance } = useAppState()
+
+  const toggleAppearance = useCallback(
+    () => setAppearance(appearance === 'light' ? 'dark' : 'light'),
+    [appearance, setAppearance]
+  )
 
   return (
     <div
@@ -25,7 +29,7 @@ function Header() {
         <img
           src={logoAaSvg}
           width="40"
-          onClick={navigateHome}
+          onClick={toggleAppearance}
           css={`
             position: relative;
             cursor: pointer;

@@ -21,6 +21,7 @@ const spin = keyframes`
 function AccountModuleConnectingScreen({ onCancel, providerId }) {
   const theme = useTheme()
   const provider = getProviderFromUseWalletId(providerId)
+
   return (
     <section
       css={`

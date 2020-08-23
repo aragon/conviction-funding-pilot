@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { toChecksumAddress } from 'web3-utils'
@@ -103,35 +104,35 @@ export function addressesEqualNoSum(first, second) {
  * @returns {String} the amount of the token in USD
  */
 export function useTokenBalanceToUsd(symbol, decimals, balance) {
-  const [usd, setUsd] = useState('-')
+  const [usd, setUsd] = useState(BigNumber('0'))
   useEffect(() => {
     let cancelled = false
+    setUsd(BigNumber('0'))
+    // fetch(
+    //   `https://min-api.cryptocompare.com/data/price?fsym=${symbol}&tsyms=USD`
+    // )
+    //   .then(res => res.json())
+    //   .then(price => {
+    //     if (cancelled || !balance || !(parseFloat(price.USD) > 0)) {
+    //       return
+    //     }
 
-    fetch(
-      `https://min-api.cryptocompare.com/data/price?fsym=${symbol}&tsyms=USD`
-    )
-      .then(res => res.json())
-      .then(price => {
-        if (cancelled || !balance || !(parseFloat(price.USD) > 0)) {
-          return
-        }
+    //     const usdDigits = 2
+    //     const precision = 6
 
-        const usdDigits = 2
-        const precision = 6
-
-        const usdBalance = balance
-          .times(
-            BigNumber(parseInt(price.USD * 10 ** (precision + usdDigits), 10))
-          )
-          .div(10 ** precision)
-          .div(BigNumber(10).pow(decimals))
-        setUsd(usdBalance)
-      })
+    //     const usdBalance = balance
+    //       .times(
+    //         BigNumber(parseInt(price.USD * 10 ** (precision + usdDigits), 10))
+    //       )
+    //       .div(10 ** precision)
+    //       .div(BigNumber(10).pow(decimals))
+    //     setUsd(usdBalance)
+    //   })
 
     return () => {
       cancelled = true
     }
-  }, [balance, decimals, symbol])
+  }, [])
 
   return usd
 }

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 
 import {
@@ -12,6 +12,7 @@ import { useWallet } from '../providers/Wallet'
 const AppStateContext = React.createContext()
 
 function AppStateProvider({ children }) {
+  const [appearance, setAppearance] = useState('light')
   const { account } = useWallet()
   const organization = useOrganzation()
   const {
@@ -32,6 +33,8 @@ function AppStateProvider({ children }) {
       value={{
         ...appData,
         accountBalance: balance,
+        appearance,
+        setAppearance,
         convictionVoting,
         installedApps,
         isLoading: appLoading,

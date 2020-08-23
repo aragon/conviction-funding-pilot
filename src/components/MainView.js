@@ -1,12 +1,13 @@
 import React from 'react'
 import { animated, config, useSpring } from 'react-spring'
-import { GU, useViewport } from '@aragon/ui'
+import { GU, useTheme, useViewport } from '@aragon/ui'
 
 import Footer from './Footer'
 import Header from './Header'
 import Layout from './Layout'
 
 function MainView({ children }) {
+  const theme = useTheme()
   const { below } = useViewport()
   const compactMode = below('medium')
 
@@ -31,7 +32,7 @@ function MainView({ children }) {
       <animated.div
         style={revealProps}
         css={`
-          background: #f9fafc;
+          background: ${theme.background};
           display: flex;
           flex-direction: column;
           height: 100vh;
@@ -48,6 +49,7 @@ function MainView({ children }) {
         >
           <div
             css={`
+              min-height: 100vh;
               height: 100%;
             `}
           >

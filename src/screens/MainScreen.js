@@ -60,6 +60,7 @@ const MainScreen = React.memo(
           <Split
             primary={
               <ProposalDetail
+                myStakes={myStakes}
                 onBack={handleBack}
                 onCancelProposal={onCancelProposal}
                 onExecuteProposal={onExecuteProposal}

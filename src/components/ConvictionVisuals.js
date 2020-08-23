@@ -84,7 +84,7 @@ export function ConvictionBar({
           `}
         >
           {Math.round(stakedConviction * 100)}%{' '}
-          {withThreshold ? (
+          {withThreshold && !hideSeparator && (
             <span
               css={`
                 color: ${theme.contentSecondary};
@@ -96,17 +96,6 @@ export function ConvictionBar({
                     neededConviction.multipliedBy(new BigNumber('100'))
                   )}% Conviction Needed)`
                 : `(&infin; Needed)`}
-            </span>
-          ) : (
-            <span
-              css={`
-                color: ${theme.contentSecondary};
-              `}
-            >
-              {Math.round(stakedConviction * 100) !==
-              Math.round(futureStakedConviction * 100)
-                ? `(predicted: ${Math.round(futureStakedConviction * 100)}%)`
-                : `(stable)`}
             </span>
           )}
         </span>

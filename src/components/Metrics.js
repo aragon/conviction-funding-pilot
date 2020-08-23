@@ -30,7 +30,7 @@ const Metrics = React.memo(function Metrics({
   totalSupply,
 }) {
   const { accountBalance } = useAppState()
-  const { connected } = useWallet()
+  const { status } = useWallet()
   const { layoutName } = useLayout()
   const theme = useTheme()
   const compactMode = layoutName === 'small'
@@ -56,8 +56,9 @@ const Metrics = React.memo(function Metrics({
     () => [
       <CarouselBalance label="Active" amount={myActiveTokens} />,
       <CarouselBalance label="Inactive" amount={inactiveTokens} />,
+      <CarouselBalance label="Total" amount={accountBalance} />,
     ],
-    [myActiveTokens, inactiveTokens]
+    [accountBalance, myActiveTokens, inactiveTokens]
   )
 
   return (
@@ -69,7 +70,7 @@ const Metrics = React.memo(function Metrics({
         `}
       >
         <AccountModule compact={compactMode} />
-        {!connected && (
+        {status === 'disconnected' && (
           <Info
             css={`
               margin-top: ${3 * GU}px;
@@ -78,15 +79,8 @@ const Metrics = React.memo(function Metrics({
           >
             This application requires the use of a Ethereum wallet. New to
             Ethereum?{' '}
-            <Link
-              external
-              href="https://ethereum.org/en/wallets/"
-              css={`
-                display: inline;
-              `}
-            >
-              Learn <br />
-              more about wallets
+            <Link external href="https://ethereum.org/en/wallets/">
+              Learn more about wallets
             </Link>
           </Info>
         )}
@@ -98,7 +92,7 @@ const Metrics = React.memo(function Metrics({
             justify-content: space-between;
           `}
         >
-          {connected && (
+          {status === 'connected' && (
             <>
               <p
                 css={`
@@ -118,40 +112,59 @@ const Metrics = React.memo(function Metrics({
                   display: flex;
                 `}
               >
-                <h3
+                <div
                   css={`
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-bottom: ${2.5 * GU}px;
+                  `}
+                >
+                  <h3
+                    css={`
                     color: ${theme.help};
                     ${textStyle('body2')}
                     margin-right: ${1 * GU}px;
+                    padding-top: ${0.5 * GU}px;
                   `}
-                >
-                  What is voting influence?
-                </h3>
-                <Help hint="What is voting influence?">
-                  We captured a snapshot of your ANT balance on 2020/08/24 that
-                  has been translated into your current voting influence.{' '}
-                  <Link external href="https://blog.aragon.org/">
-                    Learn more
-                  </Link>
-                </Help>
+                  >
+                    What is voting influence?
+                  </h3>
+                  <Help hint="What is voting influence?">
+                    We captured a snapshot of your ANT balance on 2020/08/24
+                    that has been translated into your current voting influence.{' '}
+                    <Link external href="https://blog.aragon.org/">
+                      Learn more
+                    </Link>
+                  </Help>
+                </div>
               </div>
-              <LineSeparator border={theme.border} />
-              <div
-                css={`
+              {!myActiveTokens.eq('0') && (
+                <>
+                  <LineSeparator
+                    border={theme.border}
+                    css={`
+                      margin-top: 0px;
+                    `}
+                  />
+                  <div
+                    css={`
                   ${textStyle('body4')}
                   color: ${theme.contentSecondary};
                   text-transform: uppercase;
                   margin-bottom: ${1 * GU}px;
                   margin-top: ${1 * GU}px;
                 `}
-              >
-                Supported Proposals
-              </div>
-              <StakingTokens
-                myStakes={myStakes}
-                totalActiveTokens={totalActiveTokens}
-              />
-              <LineSeparator border={theme.border} />
+                  >
+                    Supported Proposals
+                  </div>
+                  <StakingTokens
+                    myStakes={myStakes}
+                    totalActiveTokens={totalActiveTokens}
+                  />
+                  <LineSeparator border={theme.border} />
+                </>
+              )}
             </>
           )}
           <TokenPrice token={antPrice} uppercased />
@@ -162,8 +175,8 @@ const Metrics = React.memo(function Metrics({
               position: relative;
               width: 100%;
               height: 40px;
-              background: #ffffff;
-              border: 1px solid #dde4e9;
+              background: ${theme.surfaceInteractive};
+              border: 1px solid ${theme.border};
               box-sizing: border-box;
               box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
               border-radius: 4px;
@@ -179,7 +192,13 @@ const Metrics = React.memo(function Metrics({
           >
             Get ANT
           </ButtonBase>
-          <LineSeparator />
+          <div
+            css={`
+                  width: 100%;
+                  height: 1px;
+                  border: 1px solid ${theme.border};
+                  margin: ${3 * GU}px 0;l`}
+          />
           <TokenBalance
             label="Pilot Funds"
             value={commonPool}
@@ -337,7 +356,7 @@ function TokenPrice({ token, uppercased }) {
 const LineSeparator = styled.div`
   width: 100%;
   height: 1px;
-  border: 1px solid rgba(221, 228, 233, 0.7);
+  border: 1px solid ${props => props.border};
   margin: ${3 * GU}px 0;
 `
 

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useViewport } from 'use-viewport'
 import {
   Button,
   ButtonBase,
@@ -6,6 +7,7 @@ import {
   IconCheck,
   IconCopy,
   RADIUS,
+  shortenAddress,
   textStyle,
   useTheme,
 } from '@aragon/ui'
@@ -15,10 +17,13 @@ import { useCopyToClipboard } from '../../hooks/useCopyToClipboard'
 function AccountScreenConnected({ wallet }) {
   const theme = useTheme()
   const copy = useCopyToClipboard()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
 
   const walletNetworkName = wallet.networkName
 
-  const providerInfo = getProviderFromUseWalletId(wallet.activated)
+  const providerInfo = getProviderFromUseWalletId(wallet.connector)
 
   return (
     <div
@@ -101,13 +106,14 @@ function AccountScreenConnected({ wallet }) {
           background: ${theme.infoSurface};
           ${textStyle('label1')}
           display: flex;
+          width: auto;
           align-items: center;
           justify-content: center;
           margin-top: ${1.5 * GU}px;
           margin-bottom: ${1.5 * GU}px;
         `}
       >
-        {wallet.account}
+        {compactMode ? shortenAddress(wallet.account, 16) : wallet.account}
       </div>
 
       <div
@@ -122,7 +128,6 @@ function AccountScreenConnected({ wallet }) {
         >
           Current block:&nbsp;
         </span>{' '}
-        Block {wallet.getBlockNumber()}
       </div>
       <div
         css={`
@@ -144,7 +149,7 @@ function AccountScreenConnected({ wallet }) {
       </div>
 
       <Button
-        onClick={() => wallet.deactivate()}
+        onClick={() => wallet.reset()}
         wide
         css={`
           margin-top: ${1 * GU}px;

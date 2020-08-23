@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
+import { useViewport } from 'use-viewport'
 import {
   BackButton,
   Bar,
@@ -54,6 +55,7 @@ function getOutcomeText(proposalState) {
 }
 
 function ProposalDetail({
+  myStakes,
   proposal,
   onBack,
   onCancelProposal,
@@ -66,6 +68,9 @@ function ProposalDetail({
   const panelState = usePanelState()
   const { vaultBalance, permissions } = useAppState()
   const { account: connectedAccount } = useWallet()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
   const {
     currentConviction,
     id,
@@ -147,6 +152,10 @@ function ProposalDetail({
           <div
             css={`
               display: flex;
+              ${compactMode &&
+                `
+                  flex-direction: column-reverse;
+                `}
             `}
           >
             <h1
@@ -181,6 +190,10 @@ function ProposalDetail({
               display: flex;
               flex-wrap: wrap;
               justify-content: space-between;
+              ${compactMode &&
+                `
+                  flex-direction: column;
+              `}
             `}
           >
             {requestToken && (
@@ -239,10 +252,12 @@ function ProposalDetail({
                   <ConvictionBar
                     proposal={proposal}
                     withThreshold={!!requestToken}
+                    hideSeparator={proposal.beneficiary === ZERO_ADDR}
                   />
                 }
               />
               <ProposalActions
+                myStakes={myStakes}
                 proposal={proposal}
                 onExecuteProposal={onExecuteProposal}
                 onRequestSupportProposal={panelState.requestOpen}
@@ -291,9 +306,16 @@ export const Amount = ({
 
 function DataField({ label, value }) {
   const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
 
   return (
-    <div>
+    <div
+      css={`
+        ${compactMode && `margin-top:${2 * GU}px;`}
+      `}
+    >
       <h2
         css={`
           ${textStyle('label2')};
@@ -318,6 +340,9 @@ function DataField({ label, value }) {
 
 const Outcome = ({ result, positive }) => {
   const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
 
   return (
     <div
@@ -326,6 +351,11 @@ const Outcome = ({ result, positive }) => {
         display: flex;
         align-items: center;
         justify-content: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        `}
         text-transform: uppercase;
         font-size: 14px;
       `}

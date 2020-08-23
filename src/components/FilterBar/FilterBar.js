@@ -1,5 +1,6 @@
-import React, { useState, useRef, useCallback } from 'react'
-import { Button, DropDown, useLayout, useTheme, GU, IconPlus } from '@aragon/ui'
+import React, { useState, useRef, useCallback, useMemo } from 'react'
+import { useViewport } from 'use-viewport'
+import { Button, DropDown, useTheme, IconAdd, GU } from '@aragon/ui'
 import PropTypes from 'prop-types'
 
 import TextFilter from './TextFilter'
@@ -21,10 +22,20 @@ const FilterBar = React.memo(
   }) => {
     const [textFieldVisible, setTextFieldVisible] = useState(false)
     const textFilterOpener = useRef(null)
-    const { connected } = useWallet()
+    const { status } = useWallet()
     const theme = useTheme()
-    const { layoutName } = useLayout()
-    const compactMode = layoutName === 'small'
+    const { below } = useViewport()
+
+    const tabletMode = below(1152)
+    const compactMode = below(900)
+
+    const buttonDisplay = useMemo(() => {
+      if (!compactMode && tabletMode) {
+        return 'icon'
+      }
+
+      return 'label'
+    }, [tabletMode, compactMode])
 
     const handlerTextFilterClick = useCallback(() => {
       setTextFieldVisible(true)
@@ -37,8 +48,6 @@ const FilterBar = React.memo(
         css={`
           margin-top: 32px;
           width: 100%;
-          display: flex;
-          flex-direction: column;
           margin-bottom: ${3 * GU}px;
         `}
       >
@@ -54,63 +63,67 @@ const FilterBar = React.memo(
             justify-content: space-between;
           `}
         >
-          <div
-            css={`
-              width: 100%;
-              display: flex;
-            `}
-          >
-            <DropDown
-              header="Type"
-              placeholder="Type"
-              selected={proposalTypeFilter}
-              onChange={handleProposalTypeFilterChange}
-              items={['Funding', 'Signaling']}
-            />
-            <DropDown
-              header="Status"
-              selected={proposalExecutionStatusFilter}
-              onChange={handleExecutionStatusFilterChange}
-              items={['Open', 'Closed']}
-              css={`
-                margin-left: ${1.5 * GU}px;
-              `}
-            />
-            {!statusFilterDisabled && (
-              <DropdownFilter
-                proposalsSize={proposalsSize}
-                proposalStatusFilter={proposalStatusFilter}
-                handleProposalStatusFilterChange={
-                  handleProposalStatusFilterChange
-                }
-              />
-            )}
+          {!compactMode && (
             <div
               css={`
-                flex-grow: 1;
+                width: 100%;
+                display: flex;
               `}
-            />
-            <TextFilter
-              textFilter={proposalTextFilter}
-              updateTextFilter={handleTextFilterChange}
-              placeholder="Search"
-              visible={textFieldVisible}
-              setVisible={setTextFieldVisible}
-              openerRef={textFilterOpener}
-              onClick={handlerTextFilterClick}
-            />
-          </div>
-          {connected && (
+            >
+              <DropDown
+                header="Type"
+                placeholder="Type"
+                selected={proposalTypeFilter}
+                onChange={handleProposalTypeFilterChange}
+                items={['Funding', 'Signaling']}
+              />
+              <DropDown
+                header="Status"
+                selected={proposalExecutionStatusFilter}
+                onChange={handleExecutionStatusFilterChange}
+                items={['Open', 'Closed']}
+                css={`
+                  margin-left: ${1.5 * GU}px;
+                `}
+              />
+              {!statusFilterDisabled && (
+                <DropdownFilter
+                  proposalsSize={proposalsSize}
+                  proposalStatusFilter={proposalStatusFilter}
+                  handleProposalStatusFilterChange={
+                    handleProposalStatusFilterChange
+                  }
+                />
+              )}
+              <div
+                css={`
+                  flex-grow: 1;
+                `}
+              />
+              <TextFilter
+                textFilter={proposalTextFilter}
+                updateTextFilter={handleTextFilterChange}
+                placeholder="Search"
+                visible={textFieldVisible}
+                setVisible={setTextFieldVisible}
+                openerRef={textFilterOpener}
+                onClick={handlerTextFilterClick}
+              />
+            </div>
+          )}
+          {status === 'connected' && (
             <Button
               mode="strong"
+              wide={compactMode}
               onClick={handleRequestNewProposal}
               label="Create new proposal"
-              icon={<IconPlus />}
-              display={compactMode ? 'icon' : 'label'}
+              display={buttonDisplay}
+              icon={<IconAdd />}
               css={`
+                ${!compactMode &&
+                  `
                 justify-self: flex-end;
-                margin-left: ${1 * GU}px;
-                width: 215px;
+                margin-left: ${1 * GU}px;`}
               `}
             />
           )}

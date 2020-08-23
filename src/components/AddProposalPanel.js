@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import {
   Button,
+  Checkbox,
   DropDown,
   Field,
   GU,
@@ -33,6 +34,7 @@ const DEFAULT_FORM_DATA = {
 }
 
 const AddProposalPanel = React.memo(({ onSubmit }) => {
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const theme = useTheme()
   const {
     alpha,
@@ -176,7 +178,8 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
     formData.proposalType === NULL_PROPOSAL_TYPE ||
     (formData.proposalType === FUNDING_PROPOSAL &&
       (formData.amount.value === '0' || !formData.beneficiary)) ||
-    !formData.title
+    !formData.title ||
+    !termsAccepted
 
   return (
     <form onSubmit={handleFormSubmit}>
@@ -250,11 +253,24 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
       <Field label="Link">
         <TextInput onChange={handleLinkChange} value={formData.link} wide />
       </Field>
+      <div
+        css={`
+          margin-bottom: ${2 * GU}px;
+        `}
+      >
+        <label>
+          <Checkbox checked={termsAccepted} onChange={setTermsAccepted} /> I
+          accept the Terms and Conditions
+        </label>
+      </div>
       <Button
         wide
         mode="strong"
         type="submit"
         disabled={errors.length > 0 || submitDisabled}
+        css={`
+          margin-bottom: ${2 * GU}px;
+        `}
       >
         Submit
       </Button>
