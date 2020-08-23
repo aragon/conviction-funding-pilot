@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
+import { useViewport } from 'use-viewport'
 import {
   BackButton,
   Bar,
@@ -294,9 +295,16 @@ export const Amount = ({
 
 function DataField({ label, value }) {
   const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
 
   return (
-    <div>
+    <div
+      css={`
+        ${compactMode && `margin-top:${2 * GU}px;`}
+      `}
+    >
       <h2
         css={`
           ${textStyle('label2')};

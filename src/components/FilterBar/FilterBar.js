@@ -60,45 +60,49 @@ const FilterBar = React.memo(
               display: flex;
             `}
           >
-            <DropDown
-              header="Type"
-              placeholder="Type"
-              selected={proposalTypeFilter}
-              onChange={handleProposalTypeFilterChange}
-              items={['Funding', 'Signaling']}
-            />
-            <DropDown
-              header="Status"
-              selected={proposalExecutionStatusFilter}
-              onChange={handleExecutionStatusFilterChange}
-              items={['Open', 'Closed']}
-              css={`
-                margin-left: ${1.5 * GU}px;
-              `}
-            />
-            {!statusFilterDisabled && (
-              <DropdownFilter
-                proposalsSize={proposalsSize}
-                proposalStatusFilter={proposalStatusFilter}
-                handleProposalStatusFilterChange={
-                  handleProposalStatusFilterChange
-                }
-              />
+            {!compactMode && (
+              <>
+                <DropDown
+                  header="Type"
+                  placeholder="Type"
+                  selected={proposalTypeFilter}
+                  onChange={handleProposalTypeFilterChange}
+                  items={['Funding', 'Signaling']}
+                />
+                <DropDown
+                  header="Status"
+                  selected={proposalExecutionStatusFilter}
+                  onChange={handleExecutionStatusFilterChange}
+                  items={['Open', 'Closed']}
+                  css={`
+                    margin-left: ${1.5 * GU}px;
+                  `}
+                />
+                {!statusFilterDisabled && (
+                  <DropdownFilter
+                    proposalsSize={proposalsSize}
+                    proposalStatusFilter={proposalStatusFilter}
+                    handleProposalStatusFilterChange={
+                      handleProposalStatusFilterChange
+                    }
+                  />
+                )}
+                <div
+                  css={`
+                    flex-grow: 1;
+                  `}
+                />
+                <TextFilter
+                  textFilter={proposalTextFilter}
+                  updateTextFilter={handleTextFilterChange}
+                  placeholder="Search"
+                  visible={textFieldVisible}
+                  setVisible={setTextFieldVisible}
+                  openerRef={textFilterOpener}
+                  onClick={handlerTextFilterClick}
+                />
+              </>
             )}
-            <div
-              css={`
-                flex-grow: 1;
-              `}
-            />
-            <TextFilter
-              textFilter={proposalTextFilter}
-              updateTextFilter={handleTextFilterChange}
-              placeholder="Search"
-              visible={textFieldVisible}
-              setVisible={setTextFieldVisible}
-              openerRef={textFilterOpener}
-              onClick={handlerTextFilterClick}
-            />
           </div>
           {status === 'connected' && (
             <Button

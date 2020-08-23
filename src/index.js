@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { HashRouter } from 'react-router-dom'
+import { ViewportProvider } from 'use-viewport'
 
 import App from './App'
 import Main from './components/Main'
@@ -11,13 +12,15 @@ import { AppStateProvider } from './providers/AppState'
 ReactDOM.render(
   <WalletProvider>
     <AppStateProvider>
-      <HashRouter>
-        <Main>
-          <MainView>
-            <App />
-          </MainView>
-        </Main>
-      </HashRouter>
+      <ViewportProvider>
+        <HashRouter>
+          <Main>
+            <MainView>
+              <App />
+            </MainView>
+          </Main>
+        </HashRouter>
+      </ViewportProvider>
     </AppStateProvider>
   </WalletProvider>,
   document.getElementById('root')

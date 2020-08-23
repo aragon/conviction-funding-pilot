@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
+import { useViewport } from 'use-viewport'
 import { Link, Pagination, textStyle, useTheme, GU } from '@aragon/ui'
 import { ConvictionBar } from './ConvictionVisuals'
 import IdentityBadge from './IdentityBadge'
@@ -13,6 +14,9 @@ function ProposalsView({ proposals }) {
   const [page, setPage] = useState(0)
   const theme = useTheme()
   const history = useHistory()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
 
   const handleSelectProposal = useCallback(
     id => {
@@ -41,14 +45,27 @@ function ProposalsView({ proposals }) {
       `}
     >
       {shownProposals.map(proposal => (
-        <ProposalCard key={proposal.id} background={theme.surface}>
+        <ProposalCard
+          key={proposal.id}
+          background={theme.surface}
+          onClick={() => handleSelectProposal(proposal.id)}
+        >
           <div
             css={`
               width: 100%;
               display: flex;
+              ${compactMode &&
+                `
+                flex-direction: column;
+              `}
             `}
           >
-            <ProposalProperty title="Proposal Title">
+            <ProposalProperty
+              title="Proposal Title"
+              css={`
+                margin-top: ${2 * GU}px;
+              `}
+            >
               <ProposalTitleLink
                 handleSelectProposal={handleSelectProposal}
                 title={proposal.name}
@@ -66,7 +83,7 @@ function ProposalsView({ proposals }) {
             />
             <div
               css={`
-                margin-left: ${10 * GU}px;
+                ${!compactMode && `margin-left: ${10 * GU}px;`}
               `}
             >
               <ProposalProperty title="Submitted by">
@@ -131,6 +148,9 @@ function ProposalTitleLink({ handleSelectProposal, id, title }) {
 
 function ProposalProperty({ title, children }) {
   const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
 
   return (
     <div
@@ -139,6 +159,7 @@ function ProposalProperty({ title, children }) {
         flex-direction: column;
         width: 200px;
         overflow: visible;
+        ${compactMode && `margin-top: ${2 * GU}px;`}
       `}
     >
       <h2
@@ -163,6 +184,7 @@ const ProposalCard = styled.div`
   padding: ${3 * GU}px;
   background: ${props => props.background};
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
 `
 
 export default ProposalsView
