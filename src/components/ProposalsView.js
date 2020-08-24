@@ -2,7 +2,14 @@ import React, { useState, useCallback, useMemo } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { useViewport } from 'use-viewport'
-import { Link, Pagination, textStyle, useTheme, GU } from '@aragon/ui'
+import {
+  Link,
+  Pagination,
+  IconWarning,
+  textStyle,
+  useTheme,
+  GU,
+} from '@aragon/ui'
 import { ConvictionBar } from './ConvictionVisuals'
 import IdentityBadge from './IdentityBadge'
 import { Amount } from '../screens/ProposalDetail'
@@ -37,7 +44,7 @@ function ProposalsView({ proposals }) {
     () => proposals.slice(displayFrom, displayTo),
     [displayFrom, displayTo, proposals]
   )
-
+  console.log(proposals, 'proposals')
   return (
     <div
       css={`
@@ -73,14 +80,18 @@ function ProposalsView({ proposals }) {
               />
             </ProposalProperty>
             <div css="flex-grow: 0.8;" />
-            <Amount
-              requestedAmount={proposal.requestedAmount}
-              requestToken={{
-                symbol: 'ANT',
-                decimals: 18,
-                verified: true,
-              }}
-            />
+            {proposal.beneficiary === ZERO_ADDR ? (
+              <SignalingIndicator />
+            ) : (
+              <Amount
+                requestedAmount={proposal.requestedAmount}
+                requestToken={{
+                  symbol: 'ANT',
+                  decimals: 18,
+                  verified: true,
+                }}
+              />
+            )}
             <div
               css={`
                 ${!compactMode && `margin-left: ${10 * GU}px;`}
@@ -173,6 +184,42 @@ function ProposalProperty({ title, children }) {
         {title}
       </h2>
       {children}
+    </div>
+  )
+}
+
+const SignalingIndicator = () => {
+  const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
+
+  return (
+    <div
+      css={`
+        margin-top: ${2 * GU}px;
+        color: ${theme.infoSurfaceContent};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        `}
+        text-transform: uppercase;
+        font-size: 14px;
+      `}
+    >
+      <IconWarning />
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        Signaling proposal
+      </span>
     </div>
   )
 }

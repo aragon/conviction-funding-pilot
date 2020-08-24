@@ -7,6 +7,7 @@ import {
   GU,
   IconCheck,
   IconCross,
+  IconWarning,
   Link,
   SidePanel,
   textStyle,
@@ -198,11 +199,15 @@ function ProposalDetail({
               `}
             `}
           >
-            {requestToken && (
-              <Amount
-                requestedAmount={requestedAmount}
-                requestToken={requestToken}
-              />
+            {beneficiary === ZERO_ADDR ? (
+              <SignalingIndicator />
+            ) : (
+              requestToken && (
+                <Amount
+                  requestedAmount={requestedAmount}
+                  requestToken={requestToken}
+                />
+              )
             )}
             <DataField
               label="Submitted By"
@@ -371,6 +376,41 @@ const Outcome = ({ result, positive }) => {
         `}
       >
         {result}
+      </span>
+    </div>
+  )
+}
+
+const SignalingIndicator = () => {
+  const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
+
+  return (
+    <div
+      css={`
+        color: ${theme.infoSurfaceContent};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        `}
+        text-transform: uppercase;
+        font-size: 14px;
+      `}
+    >
+      <IconWarning />
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        Signaling proposal
       </span>
     </div>
   )
