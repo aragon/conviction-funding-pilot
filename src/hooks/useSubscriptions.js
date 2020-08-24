@@ -11,8 +11,8 @@ export function useConfigSubscription(convictionVoting) {
   const configSubscription = useRef(null)
 
   const onConfigHandler = useCallback((configs = []) => {
-    const transformedConfigs = transformConfigData(configs[1])
-    setConfig(transformedConfigs)
+    const transformedConfig = configs.map(transformConfigData)
+    setConfig(transformedConfig)
   }, [])
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export function useConfigSubscription(convictionVoting) {
     return () => configSubscription.current.unsubscribe()
   }, [convictionVoting, onConfigHandler])
 
-  return config
+  return config?.[0]
 }
 
 export function useProposalsSubscription(convictionVoting) {

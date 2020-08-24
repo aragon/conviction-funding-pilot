@@ -15,7 +15,10 @@ import {
   useTheme,
 } from '@aragon/ui'
 import Balance from '../components/Balance'
-import { ConvictionBar } from '../components/ConvictionVisuals'
+import {
+  ConvictionCountdown,
+  ConvictionBar,
+} from '../components/ConvictionVisuals'
 import IdentityBadge from '../components/IdentityBadge'
 import ProposalActions from '../components/ProposalActions'
 import SupportProposal from '../components/panels/SupportProposal'
@@ -108,8 +111,6 @@ function ProposalDetail({
         addressesEqual(granteeAddress, connectedAccount)
     )
   }, [connectedAccount, creator, permissions])
-
-  console.log(handleCancelProposal, hasCancelRole)
 
   const proposalState = useMemo(() => {
     if (executed) {
@@ -240,6 +241,17 @@ function ProposalDetail({
                 }
               />
             )}
+            {!signalingProposal &&
+              proposalState !== UNABLE_TO_PASS &&
+              proposalState !== EXECUTED && (
+                <div
+                  css={`
+                    ${compactMode && `margin-top: ${2 * GU}px;`}
+                  `}
+                >
+                  <ConvictionCountdown proposal={proposal} />
+                </div>
+              )}
             <DataField
               label="Link"
               value={
@@ -277,7 +289,6 @@ function ProposalDetail({
                 proposal={proposal}
                 onCancelProposal={handleCancelProposal}
                 onExecuteProposal={onExecuteProposal}
-                onRequestSupportProposal={panelState.requestOpen}
                 onStakeToProposal={onStakeToProposal}
                 onWithdrawFromProposal={onWithdrawFromProposal}
               />

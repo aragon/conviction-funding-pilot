@@ -19,11 +19,11 @@ export function useProposals() {
   const { account } = useWallet()
   const {
     alpha,
+    effectiveSupply,
     isLoading,
     maxRatio,
     proposals = [],
     stakesHistory = [],
-    totalSupply,
     vaultBalance,
     weight,
   } = useAppState()
@@ -49,14 +49,14 @@ export function useProposals() {
       const threshold = calculateThreshold(
         proposal.requestedAmount,
         vaultBalance || new BigNumber('0'),
-        totalSupply || new BigNumber('0'),
+        effectiveSupply || new BigNumber('0'),
         alpha,
         maxRatio,
         weight
       )
 
       const maxConviction = getMaxConviction(
-        totalSupply || new BigNumber('0'),
+        effectiveSupply || new BigNumber('0'),
         alpha
       )
 
@@ -116,13 +116,13 @@ export function useProposals() {
     })
   }, [
     account,
+    effectiveSupply,
     alpha,
     isLoading,
     latestBlock,
     maxRatio,
     proposals,
     stakesHistory,
-    totalSupply,
     vaultBalance,
     weight,
   ])
