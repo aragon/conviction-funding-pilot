@@ -115,6 +115,9 @@ function ProposalDetail({
     if (executed) {
       return EXECUTED
     }
+    if (threshold.toString() === '-1') {
+      return UNABLE_TO_PASS
+    }
     if (
       !neededConviction.toString().includes('Infinity') &&
       currentConviction.gte(threshold)
