@@ -41,13 +41,22 @@ function AccountButton({ label, onClick }) {
           `}
         >
           {profile?.image ? (
-            <img
-              src={`https://ipfs.io/ipfs/${profile.image[0].contentUrl['/']}`}
-              width="52px"
+            <div
               css={`
-                border-radius: 50%;
+                width: 52px;
+                height: 52px;
               `}
-            />
+            >
+              <img
+                src={`https://ipfs.io/ipfs/${profile.image[0].contentUrl['/']}`}
+                css={`
+                  width: 100%;
+                  height: 100%;
+                  border-radius: 50%;
+                  object-fit: cover;
+                `}
+              />
+            </div>
           ) : (
             <EthIdenticon address={wallet.account} radius={50} scale={2} />
           )}

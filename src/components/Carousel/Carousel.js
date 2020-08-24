@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { animated, useTransition } from 'react-spring'
 import { ButtonBase, useTheme, GU } from '@aragon/ui'
+import { useAppState } from '../../providers/AppState'
 
 const AnimDiv = animated.div
 
@@ -20,6 +21,7 @@ function safeGetPage(pageNumber, contentLength) {
 function Carousel({ content }) {
   const [page, setPage] = useState(0)
   const theme = useTheme()
+  const { appearance } = useAppState()
 
   const safePage = safeGetPage(page)
   const pagesArray = content.map((_, i) => i)
@@ -45,7 +47,7 @@ function Carousel({ content }) {
         width: 100%;
         height: 135px;
         padding: ${1.5 * GU}px 0 ${2 * GU}px ${2.5 * GU}px;
-        background: ${theme.infoSurface};
+        background: ${appearance === 'light' ? '#F8FDFE' : theme.infoSurface};
         border-radius: ${0.5 * GU}px;
         box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
       `}

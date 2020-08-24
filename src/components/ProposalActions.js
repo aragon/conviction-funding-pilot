@@ -97,11 +97,11 @@ function ProposalActions({
     }
     return {
       text: 'Support this proposal',
-      action: onRequestSupportProposal,
+      action: openModal,
       mode: 'strong',
       disabled: !accountBalance.gt(0),
     }
-  }, [accountBalance, handleExecute, mode, onRequestSupportProposal])
+  }, [accountBalance, handleExecute, mode, openModal])
 
   return connectedAccount ? (
     <>
@@ -145,19 +145,21 @@ function ProposalActions({
           >
             {buttonProps.text}
           </Button>
-          <Button
-            wide
-            onClick={openModal}
-            css={`
+          {mode === 'execute' && (
+            <Button
+              wide
+              onClick={openModal}
+              css={`
             ${!compactMode && `width: 215px;`}
             margin-top: ${3 * GU}px;
             margin-left: ${1.5 * GU}px;
             box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
             ${compactMode && `margin-left: 0px;`}
           `}
-          >
-            Change support
-          </Button>
+            >
+              Change support
+            </Button>
+          )}
           {hasCancelRole && (
             <Button
               wide
