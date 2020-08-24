@@ -1,15 +1,17 @@
 import React from 'react'
 import TokenAmount from 'token-amount'
 import { GU, IconCheck, RADIUS, textStyle, useTheme } from '@aragon/ui'
+import { useAppState } from '../providers/AppState'
 
 function VoteCast({ amountOfTokens }) {
   const theme = useTheme()
+  const { appearance } = useAppState()
 
   return (
     <div
       css={`
         border-radius: ${RADIUS}px;
-        background: #f8fdfe;
+        background: ${appearance === 'light' ? '#F8FDFE' : theme.infoSurface};
         padding: ${3.5 * GU}px ${10 * GU}px;
         text-align: center;
       `}

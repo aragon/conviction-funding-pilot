@@ -46,12 +46,6 @@ export function useProposals() {
         new BigNumber('0')
       )
 
-      console.log(
-        proposal.requestedAmount.toString(),
-        vaultBalance.toString(),
-        'proposal'
-      )
-
       const threshold = calculateThreshold(
         proposal.requestedAmount,
         vaultBalance || new BigNumber('0'),
