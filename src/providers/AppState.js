@@ -1,6 +1,8 @@
+/* eslint-disable no-unreachable */
 import React, { useState, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 
+import { bigNum } from '../lib/bigNumber'
 import {
   useAppData,
   useVaultBalance,
@@ -36,12 +38,12 @@ function AppStateProvider({ children }) {
     ) {
       return
     }
+
     const percentageOfTotalSupply = totalSupply
       .multipliedBy(minThresholdStakePercentage)
-      .div(pctBase)
+      .div(bigNum('1'))
 
     if (totalStaked.lt(percentageOfTotalSupply)) {
-      console.log('using percentage', minThresholdStakePercentage.toString())
       return percentageOfTotalSupply
     }
     return totalStaked

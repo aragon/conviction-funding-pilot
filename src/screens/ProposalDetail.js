@@ -89,12 +89,12 @@ function ProposalDetail({
     executed,
   } = proposal
 
-  console.log(
-    currentConviction.toFixed(0),
-    neededConviction.toFixed(0),
-    threshold.toFixed(0),
-    name
-  )
+  // console.log(
+  // currentConviction.toFixed(0),
+  // neededConviction.toFixed(0),
+  // threshold.toFixed(0),
+  // name
+  // )
 
   const handleCancelProposal = useCallback(() => {
     onCancelProposal(id)

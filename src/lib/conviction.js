@@ -295,6 +295,7 @@ export function getMinNeededStake(threshold, alpha) {
 export function getMaxConviction(amount, alpha) {
   const x = amount
   const a = alpha
+
   return x.div(oneBN.minus(a))
 }
 
