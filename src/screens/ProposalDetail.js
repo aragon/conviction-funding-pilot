@@ -72,9 +72,8 @@ function ProposalDetail({
   const { account: connectedAccount } = useWallet()
   const { below } = useViewport()
 
-  console.log('request', requestToken)
-
   const compactMode = below('medium')
+
   const {
     currentConviction,
     id,

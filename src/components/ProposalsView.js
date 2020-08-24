@@ -45,7 +45,7 @@ function ProposalsView({ proposals }) {
     () => proposals.slice(displayFrom, displayTo),
     [displayFrom, displayTo, proposals]
   )
-  console.log(proposals, 'proposals')
+
   return (
     <div
       css={`
