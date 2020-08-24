@@ -70,6 +70,8 @@ function ProposalDetail({
   const { account: connectedAccount } = useWallet()
   const { below } = useViewport()
 
+  console.log('request', requestToken)
+
   const compactMode = below('medium')
   const {
     currentConviction,
@@ -288,6 +290,7 @@ export const Amount = ({
   requestToken: { symbol, decimals, verified },
 }) => {
   const tokenIcon = getTokenIconBySymbol(symbol)
+
   return (
     <DataField
       label="Amount Requested"

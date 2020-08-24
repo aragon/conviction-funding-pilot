@@ -1,16 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import TokenAmount from 'token-amount'
-import { useTheme, GU, tokenIconUrl } from '@aragon/ui'
+import { useTheme, GU } from '@aragon/ui'
 
 import { useTokenBalanceToUsd } from '../lib/web3-utils'
-import { ETHER_TOKEN_VERIFIED_BY_SYMBOL } from '../lib/verified-tokens'
-import { getNetwork } from '../networks'
+import logoAnt from '../assets/logo-ant.svg'
 
-const BalanceToken = ({ amount, symbol, color, size, icon }) => {
-  const network = getNetwork()
-  const tokenAddress =
-    symbol && ETHER_TOKEN_VERIFIED_BY_SYMBOL.get(symbol.toUpperCase())
+const BalanceToken = ({ amount, symbol, color, size }) => {
   const theme = useTheme()
   const antBalance = useTokenBalanceToUsd(symbol, 18, amount)
 
@@ -23,11 +19,7 @@ const BalanceToken = ({ amount, symbol, color, size, icon }) => {
         ${size}
       `}
     >
-      <TokenIcon
-        src={
-          icon || tokenIconUrl(tokenAddress, symbol, network && network.type)
-        }
-      />
+      <TokenIcon src={logoAnt} />
       {TokenAmount.format(amount, 18)}
       &nbsp;
       <span
@@ -35,7 +27,7 @@ const BalanceToken = ({ amount, symbol, color, size, icon }) => {
           color: ${theme.contentSecondary};
         `}
       >
-        {` ${symbol}` || ''}
+        {` ${'ANT'}` || ''}
       </span>
       <div
         css={`

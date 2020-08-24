@@ -178,6 +178,7 @@ function ProposalProperty({ title, children }) {
 }
 
 const ProposalCard = styled.div`
+  position: relative;
   width: 100%;
   margin-bottom: ${2 * GU}px;
   border-radius: 4px;
@@ -185,6 +186,9 @@ const ProposalCard = styled.div`
   background: ${props => props.background};
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
   cursor: pointer;
+  &:active {
+    top: 1px;
+  }
 `
 
 export default ProposalsView
