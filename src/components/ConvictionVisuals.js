@@ -1,14 +1,5 @@
 import React, { useMemo } from 'react'
-import {
-  GU,
-  IconCheck,
-  IconCross,
-  Tag,
-  textStyle,
-  Timer,
-  useLayout,
-  useTheme,
-} from '@aragon/ui'
+import { GU, Tag, textStyle, Timer, useLayout, useTheme } from '@aragon/ui'
 import styled from 'styled-components'
 import LineChart from './ModifiedLineChart'
 import SummaryBar from './SummaryBar'
@@ -66,13 +57,6 @@ export function ConvictionBar({
 
   const secondSize = stakedConviction.minus(userStakedConviction)
   const thirdSize = futureStakedConviction.minus(stakedConviction)
-  // console.log(
-  // userStakedConviction.toFixed(),
-  // stakedConviction.toFixed(),
-  // secondSize.toFixed(),
-  // thirdSize.toFixed(),
-  // 'stuff'
-  // )
 
   return (
     <div>
@@ -158,7 +142,6 @@ export function ConvictionCountdown({ proposal, shorter }) {
     >
       {view === UNABLE_TO_PASS ? (
         <>
-          <Outcome result="Won't pass" positive={false} />
           {!shorter && (
             <>
               <span
@@ -243,21 +226,15 @@ const PositiveOutcome = ({ remainingTimeToPass, shorter, view }) => {
     !isNaN(new Date(NOW + remainingTimeToPass * BLOCK_TIME).getTime()) &&
     new Date(NOW + remainingTimeToPass * BLOCK_TIME)
 
-  const text =
-    view === MAY_PASS
-      ? 'May pass'
-      : view === EXECUTED
-      ? 'Executed'
-      : 'Available for execution'
-
   return (
     <>
-      <Outcome result={text} positive />
       {!shorter && view === MAY_PASS && (
         <>
           <span
             css={`
               color: ${theme.contentSecondary};
+              text-transform: uppercase;
+              ${textStyle('body4')}
             `}
           >
             Estimate until pass
@@ -266,22 +243,6 @@ const PositiveOutcome = ({ remainingTimeToPass, shorter, view }) => {
         </>
       )}
     </>
-  )
-}
-
-const Outcome = ({ result, positive }) => {
-  const theme = useTheme()
-
-  return (
-    <div
-      css={`
-        color: ${theme[positive ? 'positive' : 'negative']};
-        display: flex;
-        align-items: center;
-      `}
-    >
-      {positive ? <IconCheck /> : <IconCross />} {result}
-    </div>
   )
 }
 

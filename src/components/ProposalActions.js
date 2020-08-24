@@ -18,7 +18,6 @@ function ProposalActions({
   proposal,
   onCancelProposal,
   onExecuteProposal,
-  onRequestSupportProposal,
   onStakeToProposal,
   onWithdrawFromProposal,
 }) {

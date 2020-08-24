@@ -77,17 +77,7 @@ export function useProposals() {
       const futureConviction = getMaxConviction(totalTokensStaked, alpha)
       const futureStakedConviction = futureConviction.div(maxConviction)
       const neededConviction = threshold.div(maxConviction)
-      console.log(
-        'needed for',
-        proposal.name,
-        neededConviction.toFixed(),
-        maxConviction.toFixed(0),
-        threshold.toFixed(0),
-        effectiveSupply.toFixed(0),
-        'effective last',
-        'current',
-        currentConviction.toFixed()
-      )
+
       const minTokensNeeded = getMinNeededStake(threshold, alpha)
 
       const neededTokens = minTokensNeeded.minus(totalTokensStaked)

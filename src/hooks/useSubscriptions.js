@@ -25,8 +25,6 @@ export function useConfigSubscription(convictionVoting) {
     return () => configSubscription.current.unsubscribe()
   }, [convictionVoting, onConfigHandler])
 
-  console.log('config', config)
-
   return config?.[0]
 }
 
