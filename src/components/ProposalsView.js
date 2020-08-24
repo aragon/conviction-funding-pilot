@@ -6,6 +6,7 @@ import {
   Link,
   Pagination,
   IconWarning,
+  IconVote,
   textStyle,
   useTheme,
   GU,
@@ -97,15 +98,19 @@ function ProposalsView({ proposals }) {
                 ${!compactMode && `margin-left: ${10 * GU}px;`}
               `}
             >
-              <ProposalProperty title="Submitted by">
-                <p
-                  css={`
-                    ${textStyle('body2')}
-                  `}
-                >
-                  <IdentityBadge entity={proposal.creator} />
-                </p>
-              </ProposalProperty>
+              {proposal.status !== 'Cancelled' ? (
+                <ProposalProperty title="Submitted by">
+                  <p
+                    css={`
+                      ${textStyle('body2')}
+                    `}
+                  >
+                    <IdentityBadge entity={proposal.creator} />
+                  </p>
+                </ProposalProperty>
+              ) : (
+                <CancelledIndicator />
+              )}
             </div>
           </div>
           <h2
@@ -199,6 +204,42 @@ const SignalingIndicator = () => {
       css={`
         margin-top: ${2 * GU}px;
         color: ${theme.infoSurfaceContent};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        `}
+        text-transform: uppercase;
+        font-size: 14px;
+      `}
+    >
+      <IconVote />
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        Signaling proposal
+      </span>
+    </div>
+  )
+}
+
+const CancelledIndicator = () => {
+  const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
+
+  return (
+    <div
+      css={`
+        margin-top: ${2 * GU}px;
+        color: ${theme.warningSurfaceContent};
         display: flex;
         align-items: center;
         justify-content: center;

@@ -8,6 +8,7 @@ import {
   IconCheck,
   IconCross,
   IconWarning,
+  IconVote,
   Link,
   SidePanel,
   textStyle,
@@ -84,6 +85,7 @@ function ProposalDetail({
     link,
     remainingTimeToPass,
     requestedAmount,
+    status,
     threshold,
     executed,
   } = proposal
@@ -174,18 +176,20 @@ function ProposalDetail({
               positive={proposalState !== UNABLE_TO_PASS}
             />
           </div>
-          <p
-            css={`
+          {!signalingProposal && (
+            <p
+              css={`
                   margin-top: ${1 * GU}px;
                   ${textStyle('body2')}
                   color: ${theme.contentSecondary};
                 `}
-          >
-            This proposal is requesting{' '}
-            {formatTokenAmount(requestedAmount, requestToken.decimals)} ANT out
-            of {formatTokenAmount(vaultBalance, requestToken.decimals)} ANT
-            currently in the common pool.
-          </p>
+            >
+              This proposal is requesting{' '}
+              {formatTokenAmount(requestedAmount, requestToken.decimals)} ANT
+              out of {formatTokenAmount(vaultBalance, requestToken.decimals)}{' '}
+              ANT currently in the common pool.
+            </p>
+          )}
           <div
             css={`
               margin-top: ${4 * GU}px;
@@ -201,13 +205,15 @@ function ProposalDetail({
           >
             {beneficiary === ZERO_ADDR ? (
               <SignalingIndicator />
-            ) : (
+            ) : status !== 'Cancelled' ? (
               requestToken && (
                 <Amount
                   requestedAmount={requestedAmount}
                   requestToken={requestToken}
                 />
               )
+            ) : (
+              <CancelledIndicator />
             )}
             <DataField
               label="Submitted By"
@@ -391,6 +397,42 @@ const SignalingIndicator = () => {
     <div
       css={`
         color: ${theme.infoSurfaceContent};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        `}
+        text-transform: uppercase;
+        font-size: 14px;
+      `}
+    >
+      <IconVote />
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        Signaling proposal
+      </span>
+    </div>
+  )
+}
+
+const CancelledIndicator = () => {
+  const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
+
+  return (
+    <div
+      css={`
+        margin-top: ${2 * GU}px;
+        color: ${theme.warningSurfaceContent};
         display: flex;
         align-items: center;
         justify-content: center;
