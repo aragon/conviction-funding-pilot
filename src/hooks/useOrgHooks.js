@@ -87,8 +87,6 @@ export function useAppData(organization) {
 
       const config = await convictionVoting.config()
 
-      console.log(convictionVoting, config)
-
       if (!cancelled) {
         setAppData(appData => ({
           ...appData,
@@ -128,7 +126,7 @@ export function useVaultBalance(installedApps, token, timeout = 1000) {
   const vaultAddress = getAppAddressByName(installedApps, 'vault')
   const vaultContract = useContractReadOnly(vaultAddress, vaultAbi)
   const [vaultBalance, setVaultBalance] = useState(new BigNumber(-1))
-  console.log(installedApps)
+
   // We are starting in 0 in order to immediately make the fetch call
   const controlledTimeout = useRef(0)
 

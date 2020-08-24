@@ -26,7 +26,7 @@ const FilterBar = React.memo(
     const theme = useTheme()
     const { below } = useViewport()
 
-    const tabletMode = below(1152)
+    const tabletMode = below(1400)
     const compactMode = below(900)
 
     const buttonDisplay = useMemo(() => {
