@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 
 import {
@@ -20,13 +20,35 @@ function AppStateProvider({ children }) {
     installedApps,
     requestToken,
     stakeToken,
+    totalStaked,
+    minThresholdStakePercentage,
+    pctBase,
     ...appData
   } = useAppData(organization)
 
   const vaultBalance = useVaultBalance(installedApps, requestToken)
+
   const { balance, totalSupply } = useTokenBalances(account, stakeToken)
+
+  const effectiveSupply = useMemo(() => {
+    if (
+      !(totalSupply && totalStaked && minThresholdStakePercentage && pctBase)
+    ) {
+      return
+    }
+    const percentageOfTotalSupply = totalSupply
+      .multipliedBy(minThresholdStakePercentage)
+      .div(pctBase)
+
+    if (totalStaked.lt(percentageOfTotalSupply)) {
+      console.log('using percentage', minThresholdStakePercentage.toString())
+      return percentageOfTotalSupply
+    }
+    return totalStaked
+  }, [totalSupply, totalStaked, minThresholdStakePercentage, pctBase])
+
   const balancesLoading = vaultBalance.eq(-1) || totalSupply.eq(-1)
-  const appLoading = !convictionVoting || balancesLoading
+  const appLoading = !convictionVoting || balancesLoading || !effectiveSupply
 
   return (
     <AppStateContext.Provider
@@ -34,12 +56,14 @@ function AppStateProvider({ children }) {
         ...appData,
         accountBalance: balance,
         appearance,
+        effectiveSupply,
         setAppearance,
         convictionVoting,
         installedApps,
         isLoading: appLoading,
         requestToken,
         stakeToken,
+        totalStaked,
         totalSupply: totalSupply,
         vaultBalance,
       }}

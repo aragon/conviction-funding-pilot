@@ -4,14 +4,14 @@ import { connect } from '@aragon/connect'
 import env from '../environment'
 import { getNetwork } from '../networks'
 import BigNumber from '../lib/bigNumber'
-import { transformConfigData, getAppAddressByName } from '../lib/data-utils'
+import { getAppAddressByName } from '../lib/data-utils'
 import { getDefaultChain } from '../local-settings'
 import { useWallet } from '../providers/Wallet'
 import { addressesEqual } from '../lib/web3-utils.js'
 import {
+  useConfigSubscription,
   useProposalsSubscription,
   useStakesHistorySubscription,
-  // useConfigSubscription,
 } from './useSubscriptions'
 import { useContractReadOnly } from './useContract'
 import minimeTokenAbi from '../abi/minimeToken.json'
@@ -85,12 +85,9 @@ export function useAppData(organization) {
         'https://api.thegraph.com/subgraphs/name/evalir/aragon-cv-rinkeby-staging'
       )
 
-      const config = await convictionVoting.config()
-
       if (!cancelled) {
         setAppData(appData => ({
           ...appData,
-          ...transformConfigData(config),
           installedApps: apps,
           convictionVoting,
           organization,
@@ -108,7 +105,7 @@ export function useAppData(organization) {
 
   const proposals = useProposalsSubscription(appData.convictionVoting)
 
-  // const config = useConfigSubscription(appData.convictionVoting)
+  const config = useConfigSubscription(appData.convictionVoting)
 
   // Stakes done across all proposals on this app
   // Includes old and current stakes
@@ -116,7 +113,7 @@ export function useAppData(organization) {
 
   return {
     ...appData,
-    // ...transformConfigData(config),
+    ...config,
     proposals,
     stakesHistory,
   }
