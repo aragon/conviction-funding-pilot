@@ -66,6 +66,13 @@ export function ConvictionBar({
 
   const secondSize = stakedConviction.minus(userStakedConviction)
   const thirdSize = futureStakedConviction.minus(stakedConviction)
+  // console.log(
+  // userStakedConviction.toFixed(),
+  // stakedConviction.toFixed(),
+  // secondSize.toFixed(),
+  // thirdSize.toFixed(),
+  // 'stuff'
+  // )
 
   return (
     <div>

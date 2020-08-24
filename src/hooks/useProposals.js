@@ -19,11 +19,11 @@ export function useProposals() {
   const { account } = useWallet()
   const {
     alpha,
+    effectiveSupply,
     isLoading,
     maxRatio,
     proposals = [],
     stakesHistory = [],
-    totalSupply,
     vaultBalance,
     weight,
   } = useAppState()
@@ -49,14 +49,14 @@ export function useProposals() {
       const threshold = calculateThreshold(
         proposal.requestedAmount,
         vaultBalance || new BigNumber('0'),
-        totalSupply || new BigNumber('0'),
+        effectiveSupply || new BigNumber('0'),
         alpha,
         maxRatio,
         weight
       )
 
       const maxConviction = getMaxConviction(
-        totalSupply || new BigNumber('0'),
+        effectiveSupply || new BigNumber('0'),
         alpha
       )
 
@@ -77,7 +77,17 @@ export function useProposals() {
       const futureConviction = getMaxConviction(totalTokensStaked, alpha)
       const futureStakedConviction = futureConviction.div(maxConviction)
       const neededConviction = threshold.div(maxConviction)
-
+      console.log(
+        'needed for',
+        proposal.name,
+        neededConviction.toFixed(),
+        maxConviction.toFixed(0),
+        threshold.toFixed(0),
+        effectiveSupply.toFixed(0),
+        'effective last',
+        'current',
+        currentConviction.toFixed()
+      )
       const minTokensNeeded = getMinNeededStake(threshold, alpha)
 
       const neededTokens = minTokensNeeded.minus(totalTokensStaked)
@@ -116,13 +126,13 @@ export function useProposals() {
     })
   }, [
     account,
+    effectiveSupply,
     alpha,
     isLoading,
     latestBlock,
     maxRatio,
     proposals,
     stakesHistory,
-    totalSupply,
     vaultBalance,
     weight,
   ])
