@@ -67,7 +67,7 @@ function AccountButton({ label, onClick }) {
               scale={0.8}
               css={`
                 position: absolute;
-                bottom: 4px;
+                bottom: 0px;
                 right: 0px;
               `}
             />

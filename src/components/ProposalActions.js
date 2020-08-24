@@ -93,8 +93,10 @@ function ProposalActions({
       return {
         text: 'Change support',
         mode: 'normal',
+        action: openModal,
       }
     }
+
     return {
       text: 'Support this proposal',
       action: openModal,
