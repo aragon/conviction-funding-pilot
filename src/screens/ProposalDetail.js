@@ -259,8 +259,10 @@ function ProposalDetail({
                 }
               />
               <ProposalActions
+                hasCancelRole={hasCancelRole}
                 myStakes={myStakes}
                 proposal={proposal}
+                onCancelProposal={handleCancelProposal}
                 onExecuteProposal={onExecuteProposal}
                 onRequestSupportProposal={panelState.requestOpen}
                 onStakeToProposal={onStakeToProposal}
