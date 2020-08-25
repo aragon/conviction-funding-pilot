@@ -27,6 +27,7 @@ function ChangeSupportModal({
   const [percentage, setPercentage] = useState(0)
   const [tokensToStake, setTokensToStake] = useState(currentStakedTokens)
   const [movedSlider, setMovedSlider] = useState(false)
+  const [buttonDisabled, setButtonDisabled] = useState(false)
   const theme = useTheme()
   const { below } = useViewport()
 
@@ -112,22 +113,31 @@ function ChangeSupportModal({
     setTokensToStake(amountToStake)
   }, [accountBalance, availableTokens, fixedPercentage])
 
+  const toggleDisabled = useCallback(
+    () => setButtonDisabled(disabled => !disabled),
+    [setButtonDisabled]
+  )
+
   const handleChangeSupport = useCallback(() => {
+    toggleDisabled()
     if (tokensToStake.lt(currentStakedTokens)) {
       onWithdrawFromProposal(
         proposalId,
-        currentStakedTokens.minus(tokensToStake).toFixed(0)
+        currentStakedTokens.minus(tokensToStake).toFixed(0),
+        toggleDisabled
       )
       return
     }
 
     onStakeToProposal(
       proposalId,
-      tokensToStake.minus(currentStakedTokens).toFixed(0)
+      tokensToStake.minus(currentStakedTokens).toFixed(0),
+      toggleDisabled
     )
   }, [
     currentStakedTokens,
     proposalId,
+    toggleDisabled,
     tokensToStake,
     onStakeToProposal,
     onWithdrawFromProposal,
@@ -247,7 +257,7 @@ function ChangeSupportModal({
         </Info>
 
         <Button
-          disabled={disabled}
+          disabled={disabled || buttonDisabled}
           mode="strong"
           wide
           css={`
