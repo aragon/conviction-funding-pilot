@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import {
   Box,
-  ButtonBase,
   GU,
   Help,
   Link,
@@ -133,7 +132,10 @@ const Metrics = React.memo(function Metrics({
                   <Help hint="What is voting influence?">
                     We captured a snapshot of your ANT balance on 2020/08/24
                     that has been translated into your current voting influence.{' '}
-                    <Link external href="https://blog.aragon.org/">
+                    <Link
+                      external
+                      href="https://aragon.org/blog/introducing-the-conviction-funding-pilot"
+                    >
                       Learn more
                     </Link>
                   </Help>
@@ -168,36 +170,13 @@ const Metrics = React.memo(function Metrics({
             </>
           )}
           <TokenPrice token={antPrice} uppercased />
-          <ButtonBase
-            wide
-            href="https://aragon.org/token/ant"
-            css={`
-              position: relative;
-              width: 100%;
-              height: 40px;
-              background: ${theme.surfaceInteractive};
-              border: 1px solid ${theme.border};
-              box-sizing: border-box;
-              box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
-              border-radius: 4px;
-              margin-top: ${2.5 * GU}px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              ${textStyle('body2')}
-              &:active {
-                top: 1px;
-              }
-            `}
-          >
-            Get ANT
-          </ButtonBase>
           <div
             css={`
-                  width: 100%;
-                  height: 1px;
-                  border: 1px solid ${theme.border};
-                  margin: ${3 * GU}px 0;l`}
+              width: 100%;
+              height: 1px;
+              border: 1px solid ${theme.border};
+              margin: ${3 * GU}px 0;
+            `}
           />
           <TokenBalance
             label="Pilot Funds"
