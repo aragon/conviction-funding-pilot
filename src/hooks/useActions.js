@@ -3,7 +3,6 @@ import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 import { toHex } from 'web3-utils'
 
-const GAS_LIMIT = 450000
 const EMPTY_HEX_STRING = '0x'
 
 const noop = () => {}
@@ -129,7 +128,7 @@ async function sendIntent(
 
     const txPath = await intent.paths(from)
     const { to, data } = txPath.transactions[0] // TODO: Handle errors when no tx path is found
-    await ethers.getSigner().sendTransaction({ data, to, gasLimit: GAS_LIMIT })
+    await ethers.getSigner().sendTransaction({ data, to })
   } catch (err) {
     console.error('Could not create tx:', err)
   }
