@@ -5,6 +5,7 @@ import { useViewport } from 'use-viewport'
 import {
   Link,
   Pagination,
+  IconCheck,
   IconWarning,
   IconVote,
   textStyle,
@@ -98,7 +99,9 @@ function ProposalsView({ proposals }) {
                 ${!compactMode && `margin-left: ${10 * GU}px;`}
               `}
             >
-              {proposal.status !== 'Cancelled' ? (
+              {proposal.status.toLowerCase() === 'executed' ? (
+                <ExecutedIndicator />
+              ) : proposal.status.toLowerCase() !== 'cancelled' ? (
                 <ProposalProperty title="Submitted by">
                   <p
                     css={`
@@ -210,7 +213,7 @@ const SignalingIndicator = () => {
         ${compactMode &&
           `
             justify-content: flex-start;
-            margin-bottom: 8px;
+            margin-bottom: ${1 * GU}px;
         `}
         text-transform: uppercase;
         font-size: 14px;
@@ -246,7 +249,7 @@ const CancelledIndicator = () => {
         ${compactMode &&
           `
             justify-content: flex-start;
-            margin-bottom: 8px;
+            margin-bottom: ${1 * GU}px;
         `}
         text-transform: uppercase;
         font-size: 14px;
@@ -259,7 +262,43 @@ const CancelledIndicator = () => {
           margin-top: ${0.5 * GU}px;
         `}
       >
-        Signaling proposal
+        Proposal Withdrawn
+      </span>
+    </div>
+  )
+}
+
+const ExecutedIndicator = () => {
+  const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('medium')
+
+  return (
+    <div
+      css={`
+        margin-top: ${2 * GU}px;
+        color: ${theme.positive};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: ${1 * GU}px;
+        `}
+        text-transform: uppercase;
+        font-size: 14px;
+      `}
+    >
+      <IconCheck />
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        Proposal Executed
       </span>
     </div>
   )

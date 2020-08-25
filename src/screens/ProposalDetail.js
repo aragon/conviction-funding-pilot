@@ -79,7 +79,7 @@ function ProposalDetail({
   const { account: connectedAccount } = useWallet()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   const {
     currentConviction,
@@ -169,13 +169,13 @@ function ProposalDetail({
                 `}
             `}
           >
-            <h1
+            <h2
               css={`
                 ${textStyle('title2')};
               `}
             >
               {name}
-            </h1>
+            </h2>
             <div css="flex-grow: 1;" />
             {!signalingProposal && (
               <Outcome
@@ -347,7 +347,7 @@ function DataField({ label, value }) {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   return (
     <div
@@ -381,19 +381,17 @@ const Outcome = ({ result, positive }) => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   return (
     <div
       css={`
         color: ${theme[positive ? 'positive' : 'negative']};
         display: flex;
-        align-items: center;
-        justify-content: center;
         ${compactMode &&
           `
             justify-content: flex-start;
-            margin-bottom: 8px;
+            margin-bottom: ${2 * GU}px;
         `}
         text-transform: uppercase;
         font-size: 14px;
@@ -416,7 +414,7 @@ const SignalingIndicator = () => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   return (
     <div
@@ -424,7 +422,6 @@ const SignalingIndicator = () => {
         color: ${theme.infoSurfaceContent};
         display: flex;
         align-items: center;
-        justify-content: center;
         ${compactMode &&
           `
             justify-content: flex-start;
@@ -451,7 +448,7 @@ const CancelledIndicator = () => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   return (
     <div
@@ -460,7 +457,6 @@ const CancelledIndicator = () => {
         color: ${theme.warningSurfaceContent};
         display: flex;
         align-items: center;
-        justify-content: center;
         ${compactMode &&
           `
             justify-content: flex-start;
@@ -477,7 +473,7 @@ const CancelledIndicator = () => {
           margin-top: ${0.5 * GU}px;
         `}
       >
-        Signaling proposal
+        Proposal Withdrawn
       </span>
     </div>
   )
