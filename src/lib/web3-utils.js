@@ -5,7 +5,7 @@ import { toChecksumAddress } from 'web3-utils'
 import env from '../environment'
 import { getDefaultChain } from '../local-settings'
 
-const DEFAULT_LOCAL_CHAIN = ''
+const DEFAULT_LOCAL_CHAIN = 'i'
 
 export function getUseWalletProviders() {
   const providers = [{ id: 'injected' }]
@@ -21,6 +21,13 @@ export function getUseWalletProviders() {
     providers.push({
       id: 'portis',
       useWalletConf: { dAppId: env('PORTIS_DAPP_ID') },
+    })
+  }
+
+  if (env('WALLETCONNECT_RPC_URL')) {
+    providers.push({
+      id: 'walletconnect',
+      useWalletConf: { rpcUrl: env('WALLETCONNECT_RPC_URL') },
     })
   }
 

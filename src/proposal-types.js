@@ -1,5 +1,8 @@
+import { ZERO_ADDR } from './constants'
+
 export const PROPOSAL_STATUS_OPEN = 1
-export const PROPOSAL_STATUS_ACCEPTED = 2
+export const PROPOSAL_STATUS_EXECUTED = 2
+export const PROPOSAL_STATUS_CANCELLED = 3
 
 export const PROPOSAL_STATUS_SUPPORTED = 1
 export const PROPOSAL_STATUS_NOT_SUPPORTED = 2
@@ -15,16 +18,22 @@ export function getProposalSupportStatus(stakes, proposal) {
   return PROPOSAL_STATUS_NOT_SUPPORTED
 }
 
-export function getProposalExecutionStatus({ executed }) {
-  if (executed) {
-    return PROPOSAL_STATUS_ACCEPTED
-  } else {
-    return PROPOSAL_STATUS_OPEN
+export function getProposalExecutionStatus({ status }) {
+  const proposalStatus = status.toLowerCase()
+
+  if (proposalStatus === 'executed') {
+    return PROPOSAL_STATUS_EXECUTED
   }
+
+  if (proposalStatus === 'cancelled') {
+    return PROPOSAL_STATUS_CANCELLED
+  }
+
+  return PROPOSAL_STATUS_OPEN
 }
 
-export function getProposalType({ requestedAmount }) {
-  if (requestedAmount.eq(0)) {
+export function getProposalType({ beneficiary, name }) {
+  if (beneficiary === ZERO_ADDR) {
     return PROPOSAL_TYPE_SIGNALING
   }
   return PROPOSAL_TYPE_FUNDING
