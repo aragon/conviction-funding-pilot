@@ -77,17 +77,6 @@ const useFilterProposals = (proposals, myStakes) => {
         )
         const proposalTypeStatus = getProposalType(proposal)
 
-        console.log(
-          'statuses',
-          proposalExecutionStatus,
-          proposalSupportStatus,
-          proposalTypeStatus,
-          'filters',
-          supportFilter,
-          executionFilter,
-          typeFilter
-        )
-
         return (
           testExecutionFilter(executionFilter, proposalExecutionStatus) &&
           testTypeFilter(typeFilter, proposalTypeStatus) &&

@@ -20,7 +20,6 @@ const FilterBar = React.memo(
     handleTextFilterChange,
     handleProposalTypeFilterChange,
   }) => {
-    console.log(proposalTypeFilter)
     const [textFieldVisible, setTextFieldVisible] = useState(false)
     const textFilterOpener = useRef(null)
     const { status } = useWallet()
@@ -41,8 +40,6 @@ const FilterBar = React.memo(
     const handlerTextFilterClick = useCallback(() => {
       setTextFieldVisible(true)
     }, [setTextFieldVisible])
-
-    console.log(status, 'status')
 
     const statusFilterDisabled =
       proposalExecutionStatusFilter === 2 || status !== 'connected'
