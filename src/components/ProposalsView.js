@@ -26,7 +26,7 @@ function ProposalsView({ proposals }) {
   const history = useHistory()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   const handleSelectProposal = useCallback(
     id => {
@@ -60,6 +60,11 @@ function ProposalsView({ proposals }) {
           background={theme.surface}
           onClick={() => handleSelectProposal(proposal.id)}
           focusRingRadius={RADIUS}
+          css={`
+            text-align: left;
+            word-wrap: break-word;
+            text-overflow: ellipsis;
+          `}
         >
           <div
             css={`
@@ -148,6 +153,9 @@ function ProposalTitleLink({ title }) {
     <p
       css={`
         ${textStyle('body2')}
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       `}
     >
       {' '}
@@ -166,7 +174,7 @@ function ProposalProperty({ title, children }) {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   return (
     <div
@@ -174,7 +182,9 @@ function ProposalProperty({ title, children }) {
         display: flex;
         flex-direction: column;
         width: 200px;
-        overflow: visible;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         ${compactMode && `margin-top: ${2 * GU}px;`}
       `}
     >
@@ -197,7 +207,7 @@ const SignalingIndicator = () => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   return (
     <div
@@ -233,7 +243,7 @@ const CancelledIndicator = () => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   return (
     <div
@@ -269,7 +279,7 @@ const ExecutedIndicator = () => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   return (
     <div
@@ -301,9 +311,6 @@ const ExecutedIndicator = () => {
   )
 }
 
-// function CardButton({ children }) {
-// return <ButtonBase focusRingRadius
-// }
 const ProposalCard = styled(ButtonBase)`
   position: relative;
   width: 100%;
