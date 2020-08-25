@@ -254,22 +254,22 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
       <Field label="Link">
         <TextInput onChange={handleLinkChange} value={formData.link} wide />
       </Field>
-      <div
+      <label
         css={`
           margin-bottom: ${2 * GU}px;
+          display: flex;
+          align-items: center;
         `}
       >
-        <label>
-          <Checkbox checked={termsAccepted} onChange={setTermsAccepted} />I
-          accept the&nbsp;
-          <Link
-            href="https://ipfs.eth.aragon.network/ipfs/QmVwTFJRkCkp9h8enqk8WZcu7GuqpJprCBDuejo6QL9QCm"
-            external
-          >
-            Terms and Conditions
-          </Link>
-        </label>
-      </div>
+        <Checkbox checked={termsAccepted} onChange={setTermsAccepted} />I accept
+        the&nbsp;
+        <Link
+          href="https://ipfs.eth.aragon.network/ipfs/QmVwTFJRkCkp9h8enqk8WZcu7GuqpJprCBDuejo6QL9QCm"
+          external
+        >
+          Terms and Conditions
+        </Link>
+      </label>
       <Button
         wide
         mode="strong"
