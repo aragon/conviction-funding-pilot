@@ -182,7 +182,7 @@ function ProposalDetail({
               />
             )}
           </div>
-          {!signalingProposal && (
+          {!signalingProposal && proposalState !== EXECUTED && (
             <p
               css={`
                   margin-top: ${1 * GU}px;
