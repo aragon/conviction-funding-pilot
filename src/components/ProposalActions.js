@@ -74,7 +74,11 @@ function ProposalActions({
       return 'executed'
     }
 
-    if (currentConviction.gte(threshold) && !vaultBalance.eq('0')) {
+    if (
+      currentConviction.gte(threshold) &&
+      !vaultBalance.eq('0') &&
+      threshold.toFixed(0) !== '-1'
+    ) {
       return 'execute'
     }
 
