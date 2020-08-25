@@ -6,6 +6,7 @@ import {
   Field,
   GU,
   Info,
+  Link,
   isAddress,
   TextInput,
   useTheme,
@@ -259,8 +260,14 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
         `}
       >
         <label>
-          <Checkbox checked={termsAccepted} onChange={setTermsAccepted} /> I
-          accept the Terms and Conditions
+          <Checkbox checked={termsAccepted} onChange={setTermsAccepted} />I
+          accept the&nbsp;
+          <Link
+            href="https://ipfs.eth.aragon.network/ipfs/QmVwTFJRkCkp9h8enqk8WZcu7GuqpJprCBDuejo6QL9QCm"
+            external
+          >
+            Terms and Conditions
+          </Link>
         </label>
       </div>
       <Button
