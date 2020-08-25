@@ -66,6 +66,10 @@ function ProposalActions({
   const didIStake = myStake?.amount.gt(0)
 
   const mode = useMemo(() => {
+    if (status.toLowerCase() === 'cancelled') {
+      return 'cancelled'
+    }
+
     if (status.toLowerCase() === 'executed') {
       return 'executed'
     }
@@ -206,7 +210,7 @@ function ProposalActions({
               Change support
             </Button>
           )}
-          {hasCancelRole && mode !== 'executed' && (
+          {hasCancelRole && mode !== 'executed' && mode !== 'cancelled' && (
             <Button
               wide
               onClick={onCancelProposal}

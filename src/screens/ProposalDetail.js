@@ -42,10 +42,6 @@ const AVAILABLE = 2
 const EXECUTED = 3
 
 function getOutcomeText(proposalState) {
-  if (proposalState === EXECUTED) {
-    return 'Executed'
-  }
-
   if (proposalState === UNABLE_TO_PASS) {
     return "Won't pass"
   }
@@ -179,7 +175,7 @@ function ProposalDetail({
               {name}
             </h2>
             <div css="flex-grow: 1;" />
-            {!signalingProposal && (
+            {!signalingProposal && status.toLowerCase() !== 'cancelled' && (
               <Outcome
                 result={outcomeText}
                 positive={proposalState !== UNABLE_TO_PASS}
