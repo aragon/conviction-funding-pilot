@@ -2,6 +2,7 @@ import React from 'react'
 import { animated, config, useSpring } from 'react-spring'
 import { GU, useTheme, useViewport } from '@aragon/ui'
 
+import ConvictionBanner from './ConvictionBanner'
 import Footer from './Footer'
 import Header from './Header'
 import Layout from './Layout'
@@ -35,9 +36,9 @@ function MainView({ children }) {
           background: ${theme.background};
           display: flex;
           flex-direction: column;
-          height: 100vh;
         `}
       >
+        <ConvictionBanner />
         <Layout>
           <Header compact={compactMode} />
         </Layout>
