@@ -75,7 +75,7 @@ function ProposalActions({
       return 'update'
     }
     return 'support'
-  }, [currentConviction, didIStake, threshold])
+  }, [currentConviction, didIStake, status, threshold])
 
   const closeModal = useCallback(() => {
     setModalVisible(false)
@@ -91,7 +91,7 @@ function ProposalActions({
 
   const handleWithdraw = useCallback(() => {
     onWithdrawFromProposal(id, myStake.amount)
-  })
+  }, [id, myStake.amount, onWithdrawFromProposal])
 
   const signalingProposal = addressesEqual(beneficiary, ZERO_ADDR)
 
@@ -127,7 +127,15 @@ function ProposalActions({
       mode: 'strong',
       disabled: !accountBalance.gt(0),
     }
-  }, [accountBalance, handleExecute, mode, openModal])
+  }, [
+    accountBalance,
+    handleExecute,
+    handleWithdraw,
+    mode,
+    myStake.amount,
+    openModal,
+    signalingProposal,
+  ])
 
   return connectedAccount ? (
     <>
