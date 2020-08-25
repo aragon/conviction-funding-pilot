@@ -12,6 +12,12 @@ const ENV_VARS = {
   PORTIS_DAPP_ID() {
     return process.env.REACT_APP_PORTIS_DAPP_ID || ''
   },
+  WALLETCONNECT_RPC_URL() {
+    return (
+      process.env.REACT_APP_WALLETCONNECT_RPC_URL ||
+      'https://mainnet.eth.aragon.network/'
+    )
+  },
 }
 
 export default function env(name) {

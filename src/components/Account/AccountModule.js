@@ -73,6 +73,8 @@ function AccountModule({ compact }) {
     return () => clearTimeout(timer)
   }, [opened])
 
+  console.log(status, 'status')
+
   useEffect(() => {
     let timer
 
