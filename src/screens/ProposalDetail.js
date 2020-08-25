@@ -79,7 +79,7 @@ function ProposalDetail({
   const { account: connectedAccount } = useWallet()
   const { below } = useViewport()
 
-  const compactMode = below('large')
+  const compactMode = below(1400)
 
   const {
     currentConviction,
@@ -158,11 +158,13 @@ function ProposalDetail({
           css={`
             display: flex;
             flex-direction: column;
+            flex-wrap: wrap;
           `}
         >
           <div
             css={`
               display: flex;
+              flex-wrap: wrap;
               ${compactMode &&
                 `
                   flex-direction: column-reverse;
@@ -347,7 +349,7 @@ function DataField({ label, value }) {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('large')
+  const compactMode = below(1400)
 
   return (
     <div
@@ -381,7 +383,7 @@ const Outcome = ({ result, positive }) => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('large')
+  const compactMode = below(1400)
 
   return (
     <div
@@ -414,7 +416,7 @@ const SignalingIndicator = () => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('large')
+  const compactMode = below(1400)
 
   return (
     <div
@@ -448,7 +450,7 @@ const CancelledIndicator = () => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('large')
+  const compactMode = below(1400)
 
   return (
     <div

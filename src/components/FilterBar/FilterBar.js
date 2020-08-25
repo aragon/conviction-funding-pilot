@@ -20,6 +20,7 @@ const FilterBar = React.memo(
     handleTextFilterChange,
     handleProposalTypeFilterChange,
   }) => {
+    console.log(proposalTypeFilter)
     const [textFieldVisible, setTextFieldVisible] = useState(false)
     const textFilterOpener = useRef(null)
     const { status } = useWallet()
@@ -41,7 +42,10 @@ const FilterBar = React.memo(
       setTextFieldVisible(true)
     }, [setTextFieldVisible])
 
-    const statusFilterDisabled = proposalExecutionStatusFilter === 1
+    console.log(status, 'status')
+
+    const statusFilterDisabled =
+      proposalExecutionStatusFilter === 2 || status !== 'connected'
 
     return (
       <div
@@ -72,16 +76,15 @@ const FilterBar = React.memo(
             >
               <DropDown
                 header="Type"
-                placeholder="Type"
                 selected={proposalTypeFilter}
                 onChange={handleProposalTypeFilterChange}
-                items={['Funding', 'Signaling']}
+                items={['All', 'Funding', 'Signaling']}
               />
               <DropDown
                 header="Status"
                 selected={proposalExecutionStatusFilter}
                 onChange={handleExecutionStatusFilterChange}
-                items={['Open', 'Closed']}
+                items={['All', 'Open', 'Closed']}
                 css={`
                   margin-left: ${1.5 * GU}px;
                 `}
