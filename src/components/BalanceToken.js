@@ -20,7 +20,7 @@ const BalanceToken = ({ amount, symbol, color, size }) => {
       `}
     >
       <TokenIcon src={logoAnt} />
-      {TokenAmount.format(amount, 18)}
+      {TokenAmount.format(amount.toFixed(0), 18)}
       &nbsp;
       <span
         css={`
