@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { useViewport } from 'use-viewport'
 import {
-  Link,
+  ButtonBase,
   Pagination,
   IconCheck,
   IconWarning,
@@ -11,6 +11,7 @@ import {
   textStyle,
   useTheme,
   GU,
+  RADIUS,
 } from '@aragon/ui'
 import { ConvictionBar } from './ConvictionVisuals'
 import IdentityBadge from './IdentityBadge'
@@ -58,6 +59,7 @@ function ProposalsView({ proposals }) {
           key={proposal.id}
           background={theme.surface}
           onClick={() => handleSelectProposal(proposal.id)}
+          focusRingRadius={RADIUS}
         >
           <div
             css={`
@@ -108,7 +110,7 @@ function ProposalsView({ proposals }) {
                       ${textStyle('body2')}
                     `}
                   >
-                    <IdentityBadge entity={proposal.creator} />
+                    <IdentityBadge entity={proposal.creator} badgeOnly />
                   </p>
                 </ProposalProperty>
               ) : (
@@ -139,12 +141,8 @@ function ProposalsView({ proposals }) {
   )
 }
 
-function ProposalTitleLink({ handleSelectProposal, id, title }) {
+function ProposalTitleLink({ title }) {
   const theme = useTheme()
-
-  const handleClick = useCallback(() => {
-    handleSelectProposal(id)
-  }, [handleSelectProposal, id])
 
   return (
     <p
@@ -153,14 +151,13 @@ function ProposalTitleLink({ handleSelectProposal, id, title }) {
       `}
     >
       {' '}
-      <Link
-        onClick={handleClick}
+      <span
         css={`
           color: ${theme.content};
         `}
       >
         {title}
-      </Link>
+      </span>
     </p>
   )
 }
@@ -304,7 +301,10 @@ const ExecutedIndicator = () => {
   )
 }
 
-const ProposalCard = styled.div`
+// function CardButton({ children }) {
+// return <ButtonBase focusRingRadius
+// }
+const ProposalCard = styled(ButtonBase)`
   position: relative;
   width: 100%;
   margin-bottom: ${2 * GU}px;

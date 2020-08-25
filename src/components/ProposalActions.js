@@ -23,6 +23,7 @@ function ProposalActions({
   onWithdrawFromProposal,
 }) {
   const [modalVisible, setModalVisible] = useState(false)
+  const [mainButtonDisabled, setMainButtonDisabled] = useState(false)
   const { stakeToken, accountBalance, vaultBalance } = useAppState()
   const { account: connectedAccount } = useWallet()
   const { below } = useViewport()
@@ -80,6 +81,11 @@ function ProposalActions({
     return 'support'
   }, [currentConviction, didIStake, status, threshold, vaultBalance])
 
+  const toggleMainButtonDisabled = useCallback(
+    () => setMainButtonDisabled(disabled => !disabled),
+    [setMainButtonDisabled]
+  )
+
   const closeModal = useCallback(() => {
     setModalVisible(false)
   }, [setModalVisible])
@@ -89,12 +95,14 @@ function ProposalActions({
   }, [setModalVisible])
 
   const handleExecute = useCallback(() => {
-    onExecuteProposal(id)
-  }, [id, onExecuteProposal])
+    toggleMainButtonDisabled()
+    onExecuteProposal(id, toggleMainButtonDisabled)
+  }, [id, onExecuteProposal, toggleMainButtonDisabled])
 
   const handleWithdraw = useCallback(() => {
-    onWithdrawFromProposal(id, myStake.amount)
-  }, [id, myStake.amount, onWithdrawFromProposal])
+    toggleMainButtonDisabled()
+    onWithdrawFromProposal(id, myStake.amount, toggleMainButtonDisabled)
+  }, [id, myStake.amount, onWithdrawFromProposal, toggleMainButtonDisabled])
 
   const signalingProposal = addressesEqual(beneficiary, ZERO_ADDR)
 
@@ -173,7 +181,7 @@ function ProposalActions({
           <Button
             mode="strong"
             wide
-            disabled={buttonProps.disabled}
+            disabled={buttonProps.disabled || mainButtonDisabled}
             onClick={buttonProps.action}
             css={`
             ${!compactMode && `width: 215px;`}
