@@ -68,14 +68,17 @@ function ProposalActions({
     if (status.toLowerCase() === 'executed') {
       return 'executed'
     }
+
     if (currentConviction.gte(threshold) && !vaultBalance.eq('0')) {
       return 'execute'
     }
+
     if (didIStake) {
       return 'update'
     }
+
     return 'support'
-  }, [currentConviction, didIStake, status, threshold])
+  }, [currentConviction, didIStake, status, threshold, vaultBalance])
 
   const closeModal = useCallback(() => {
     setModalVisible(false)
