@@ -15,7 +15,7 @@ const networks = {
     ensRegistry: '0x98df287b6c145399aaa709692c8d308357bc085d',
     defaultEthNode: 'wss://rinkeby.eth.aragon.network/ws',
     name: 'Rinkeby',
-    orgAddress: '0xccee96a88fe7d166601b0af6db3fbbbb5b4fa8b8',
+    orgAddress: '0x9dfabe3a472b39f254078f96ba36b6da4bf41b02',
     type: 'rinkeby',
   },
   xdai: {
