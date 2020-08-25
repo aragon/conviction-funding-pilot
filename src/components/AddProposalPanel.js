@@ -131,7 +131,7 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
       event.preventDefault()
 
       const { amount, beneficiary = ZERO_ADDR, link, title } = formData
-      const convertedAmount = amount.valueBN.toString()
+      const convertedAmount = amount.valueBN.toFixed(0)
       onSubmit({
         title,
         link,
