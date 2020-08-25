@@ -11,6 +11,7 @@ import BigNumber from '../lib/bigNumber'
 import AccountNotConnected from './AccountNotConnected'
 import ChangeSupportModal from './ChangeSupportModal'
 import ProposalSupported from './ProposalSupported'
+import { ZERO_ADDR } from '../constants'
 
 function ProposalActions({
   hasCancelRole,
@@ -27,7 +28,14 @@ function ProposalActions({
   const { below } = useViewport()
 
   const compactMode = below('large')
-  const { id, currentConviction, stakes, threshold } = proposal
+  const {
+    beneficiary,
+    currentConviction,
+    id,
+    stakes,
+    status,
+    threshold,
+  } = proposal
 
   const totalStaked = useAccountTotalStaked()
 
@@ -57,6 +65,9 @@ function ProposalActions({
   const didIStake = myStake?.amount.gt(0)
 
   const mode = useMemo(() => {
+    if (status.toLowerCase() === 'executed') {
+      return 'executed'
+    }
     if (currentConviction.gte(threshold)) {
       return 'execute'
     }
@@ -78,8 +89,22 @@ function ProposalActions({
     onExecuteProposal(id)
   }, [id, onExecuteProposal])
 
+  const handleWithdraw = useCallback(() => {
+    onWithdrawFromProposal(id, myStake.amount)
+  })
+
+  const signalingProposal = addressesEqual(beneficiary, ZERO_ADDR)
+
   const buttonProps = useMemo(() => {
-    if (mode === 'execute') {
+    if (mode === 'executed') {
+      return {
+        text: 'Withdraw staked tokens',
+        action: handleWithdraw,
+        mode: 'strong',
+        disabled: myStake.amount.eq('0'),
+      }
+    }
+    if (mode === 'execute' && !signalingProposal) {
       return {
         text: 'Execute proposal',
         action: handleExecute,
@@ -137,6 +162,7 @@ function ProposalActions({
           <Button
             mode="strong"
             wide
+            disabled={buttonProps.disabled}
             onClick={buttonProps.action}
             css={`
             ${!compactMode && `width: 215px;`}
@@ -146,7 +172,7 @@ function ProposalActions({
           >
             {buttonProps.text}
           </Button>
-          {mode === 'execute' && (
+          {mode === 'execute' && !signalingProposal && (
             <Button
               wide
               onClick={openModal}
@@ -161,7 +187,7 @@ function ProposalActions({
               Change support
             </Button>
           )}
-          {hasCancelRole && (
+          {hasCancelRole && mode !== 'executed' && (
             <Button
               wide
               onClick={onCancelProposal}

@@ -42,6 +42,10 @@ const AVAILABLE = 2
 const EXECUTED = 3
 
 function getOutcomeText(proposalState) {
+  if (proposalState === EXECUTED) {
+    return 'Executed'
+  }
+
   if (proposalState === UNABLE_TO_PASS) {
     return "Won't pass"
   }
@@ -89,7 +93,6 @@ function ProposalDetail({
     requestedAmount,
     status,
     threshold,
-    executed,
   } = proposal
 
   const handleCancelProposal = useCallback(() => {
@@ -113,7 +116,7 @@ function ProposalDetail({
   }, [connectedAccount, creator, permissions])
 
   const proposalState = useMemo(() => {
-    if (executed) {
+    if (status.toLowerCase() === 'executed') {
       return EXECUTED
     }
     if (threshold.toString() === '-1') {
@@ -131,10 +134,10 @@ function ProposalDetail({
     return UNABLE_TO_PASS
   }, [
     currentConviction,
-    executed,
     neededConviction,
     threshold,
     remainingTimeToPass,
+    status,
   ])
 
   const outcomeText = getOutcomeText(proposalState)
@@ -174,10 +177,12 @@ function ProposalDetail({
               {name}
             </h1>
             <div css="flex-grow: 1;" />
-            <Outcome
-              result={outcomeText}
-              positive={proposalState !== UNABLE_TO_PASS}
-            />
+            {!signalingProposal && (
+              <Outcome
+                result={outcomeText}
+                positive={proposalState !== UNABLE_TO_PASS}
+              />
+            )}
           </div>
           {!signalingProposal && (
             <p
@@ -187,7 +192,12 @@ function ProposalDetail({
                   color: ${theme.contentSecondary};
                 `}
             >
-              This proposal is requesting{' '}
+              This proposal{' '}
+              {status.toLowerCase() === 'cancelled' ||
+              status.toLowerCase() === 'executed'
+                ? 'was'
+                : 'is'}{' '}
+              requesting{' '}
               {formatTokenAmount(requestedAmount, requestToken.decimals)} ANT
               out of {formatTokenAmount(vaultBalance, requestToken.decimals)}{' '}
               ANT currently in the common pool.
@@ -271,7 +281,7 @@ function ProposalDetail({
               }
             />
           </div>
-          {!executed && (
+          {status.toLowerCase() !== 'executed' && (
             <>
               <DataField
                 label="Conviction Progress"
