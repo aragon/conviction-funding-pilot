@@ -176,10 +176,11 @@ function ChangeSupportModal({
             display: flex;
             justify-content: space-between;
             margin-top: ${2 * GU}px;
+            align-items: center;
             ${compactMode &&
               `
                 flex-direction: column;
-
+                justify-content: center;
               `}
           `}
         >
@@ -199,6 +200,10 @@ function ChangeSupportModal({
             css={`
               width: ${20 * GU}px;
               display: flex;
+              ${compactMode &&
+                `
+                justify-content: center;
+              `}
             `}
           >
             <p
