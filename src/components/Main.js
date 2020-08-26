@@ -14,7 +14,7 @@ export default function MainWrapper({ children }) {
   }, [scrollTop])
 
   return (
-    <Main assetsUrl="/aragon-ui/" layout={false} theme={appearance}>
+    <Main assetsUrl="./aragon-ui/" layout={false} theme={appearance}>
       {children}
     </Main>
   )
