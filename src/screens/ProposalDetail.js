@@ -16,8 +16,8 @@ import {
 } from '@aragon/ui'
 import Balance from '../components/Balance'
 import {
-  ConvictionCountdown,
   ConvictionBar,
+  ConvictionCountdown,
 } from '../components/ConvictionVisuals'
 import IdentityBadge from '../components/IdentityBadge'
 import ProposalActions from '../components/ProposalActions'
@@ -27,7 +27,7 @@ import { useAppState } from '../providers/AppState'
 import usePanelState from '../hooks/usePanelState'
 import { useWallet } from '../providers/Wallet'
 
-import { getTokenIconBySymbol, formatTokenAmount } from '../lib/token-utils'
+import { formatTokenAmount, getTokenIconBySymbol } from '../lib/token-utils'
 import {
   addressesEqualNoSum as addressesEqual,
   soliditySha3,
@@ -61,17 +61,17 @@ function getOutcomeText(proposalState) {
 
 function ProposalDetail({
   myStakes,
-  proposal,
   onBack,
   onCancelProposal,
   onExecuteProposal,
   onStakeToProposal,
   onWithdrawFromProposal,
+  proposal,
   requestToken,
 }) {
   const theme = useTheme()
   const panelState = usePanelState()
-  const { vaultBalance, permissions } = useAppState()
+  const { permissions, vaultBalance } = useAppState()
   const { account: connectedAccount } = useWallet()
   const { below } = useViewport()
 

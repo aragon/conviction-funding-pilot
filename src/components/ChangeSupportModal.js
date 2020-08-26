@@ -118,13 +118,18 @@ function ChangeSupportModal({
     [setButtonDisabled]
   )
 
+  const onDone = useCallback(() => {
+    toggleDisabled()
+    onModalClose()
+  }, [onModalClose, toggleDisabled])
+
   const handleChangeSupport = useCallback(() => {
     toggleDisabled()
     if (tokensToStake.lt(currentStakedTokens)) {
       onWithdrawFromProposal(
         proposalId,
         currentStakedTokens.minus(tokensToStake).toFixed(0),
-        toggleDisabled
+        onDone
       )
       return
     }
@@ -132,15 +137,16 @@ function ChangeSupportModal({
     onStakeToProposal(
       proposalId,
       tokensToStake.minus(currentStakedTokens).toFixed(0),
-      toggleDisabled
+      onDone
     )
   }, [
     currentStakedTokens,
+    onDone,
+    onStakeToProposal,
+    onWithdrawFromProposal,
     proposalId,
     toggleDisabled,
     tokensToStake,
-    onStakeToProposal,
-    onWithdrawFromProposal,
   ])
 
   return (
@@ -186,7 +192,6 @@ function ChangeSupportModal({
             display: flex;
             justify-content: space-between;
             margin-top: ${2 * GU}px;
-            align-items: center;
             ${compactMode &&
               `
                 flex-direction: column;
@@ -210,10 +215,6 @@ function ChangeSupportModal({
             css={`
               width: ${20 * GU}px;
               display: flex;
-              ${compactMode &&
-                `
-                justify-content: center;
-              `}
             `}
           >
             <p

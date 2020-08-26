@@ -104,8 +104,7 @@ function ProposalActions({
 
   const onDone = useCallback(() => {
     toggleMainButtonDisabled()
-    closeModal()
-  }, [closeModal, toggleMainButtonDisabled])
+  }, [toggleMainButtonDisabled])
 
   const handleExecute = useCallback(() => {
     toggleMainButtonDisabled()
