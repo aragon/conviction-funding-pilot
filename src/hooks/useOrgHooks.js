@@ -19,6 +19,8 @@ import vaultAbi from '../abi/vault-balance.json'
 
 // Organzation
 const APP_NAME = 'conviction-beta'
+const SUBGRAPH_URL =
+  'https://api.thegraph.com/subgraphs/name/evalir/aragon-cv-rinkeby-staging'
 
 const DEFAULT_APP_DATA = {
   convictionVoting: null,
@@ -82,7 +84,7 @@ export function useAppData(organization) {
 
       const convictionVoting = await ConvictionVoting(
         convictionApp,
-        'https://api.thegraph.com/subgraphs/name/evalir/aragon-cv-rinkeby-staging'
+        SUBGRAPH_URL
       )
 
       if (!cancelled) {

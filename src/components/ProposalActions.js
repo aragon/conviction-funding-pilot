@@ -16,11 +16,11 @@ import { ZERO_ADDR } from '../constants'
 function ProposalActions({
   hasCancelRole,
   myStakes,
-  proposal,
   onCancelProposal,
   onExecuteProposal,
   onStakeToProposal,
   onWithdrawFromProposal,
+  proposal,
 }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [mainButtonDisabled, setMainButtonDisabled] = useState(false)
@@ -102,31 +102,50 @@ function ProposalActions({
     setModalVisible(true)
   }, [setModalVisible])
 
+  const onDone = useCallback(() => {
+    toggleMainButtonDisabled()
+    closeModal()
+  }, [closeModal, toggleMainButtonDisabled])
+
   const handleExecute = useCallback(() => {
     toggleMainButtonDisabled()
-    onExecuteProposal(id, toggleMainButtonDisabled)
-  }, [id, onExecuteProposal, toggleMainButtonDisabled])
+    onExecuteProposal(id, onDone)
+  }, [id, onDone, onExecuteProposal, toggleMainButtonDisabled])
 
   const handleWithdraw = useCallback(() => {
     toggleMainButtonDisabled()
-    onWithdrawFromProposal(
-      id,
-      myStake.amount.toFixed(0),
-      toggleMainButtonDisabled
-    )
-  }, [id, myStake.amount, onWithdrawFromProposal, toggleMainButtonDisabled])
+    onWithdrawFromProposal(id, myStake.amount.toFixed(0), onDone)
+  }, [
+    id,
+    myStake.amount,
+    onDone,
+    onWithdrawFromProposal,
+    toggleMainButtonDisabled,
+  ])
 
   const signalingProposal = addressesEqual(beneficiary, ZERO_ADDR)
 
+  const isExecutable = useMemo(() => !signalingProposal && mode === 'execute', [
+    mode,
+    signalingProposal,
+  ])
+  const isCancellable = useMemo(
+    () => hasCancelRole && mode !== 'executed' && mode !== 'active',
+    [hasCancelRole, mode]
+  )
+  const isSupportable = useMemo(() => accountBalance.gt('0'), [accountBalance])
+
   const buttonProps = useMemo(() => {
+    // In both cases, we wanna let the users be able to withdraw the tokens manually.
     if (mode === 'executed' || mode === 'cancelled') {
       return {
         text: 'Withdraw staked tokens',
         action: handleWithdraw,
         mode: 'strong',
-        disabled: myStake.amount.eq('0'),
+        disabled: !didIStake,
       }
     }
+    // Signaling proposals cannot be executed, so we exclude this case.
     if (mode === 'execute' && !signalingProposal) {
       return {
         text: 'Execute proposal',
@@ -136,6 +155,7 @@ function ProposalActions({
       }
     }
 
+    // We have supported the proposal, but we may wanna change the current support.
     if (mode === 'update') {
       return {
         text: 'Change support',
@@ -144,6 +164,7 @@ function ProposalActions({
       }
     }
 
+    // We haven't supported this proposal, and it's not executed or cancelled.
     return {
       text: 'Support this proposal',
       action: openModal,
@@ -152,10 +173,10 @@ function ProposalActions({
     }
   }, [
     accountBalance,
+    didIStake,
     handleExecute,
     handleWithdraw,
     mode,
-    myStake.amount,
     openModal,
     signalingProposal,
   ])
@@ -169,7 +190,7 @@ function ProposalActions({
           flex-direction: column;
         `}
       >
-        {!myStake.amount.eq('0') && (
+        {didIStake && (
           <>
             <div
               css={`
@@ -186,8 +207,8 @@ function ProposalActions({
             display: flex;
             ${compactMode &&
               `
-            flex-direction: column;
-          `}
+                flex-direction: column;
+            `}
           `}
         >
           <Button
@@ -196,14 +217,15 @@ function ProposalActions({
             disabled={buttonProps.disabled || mainButtonDisabled}
             onClick={buttonProps.action}
             css={`
-            ${!compactMode && `width: 215px;`}
-            margin-top: ${3 * GU}px;
-            box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
-          `}
+              ${!compactMode && `width: 215px;`}
+              margin-top: ${3 * GU}px;
+              box-shadow: 0px ${0.5 * GU}px ${0.75 *
+              GU}px rgba(7, 146, 175, 0.08);
+            `}
           >
             {buttonProps.text}
           </Button>
-          {mode === 'execute' && !signalingProposal && (
+          {isExecutable && (
             <Button
               wide
               onClick={openModal}
@@ -213,40 +235,41 @@ function ProposalActions({
                 margin-left: ${1.5 * GU}px;
                 box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
                 ${compactMode && `margin-left: 0px;`}
-            `}
+              `}
             >
               Change support
             </Button>
           )}
-          {hasCancelRole && mode !== 'executed' && mode !== 'cancelled' && (
+          {isCancellable && (
             <Button
               wide
               onClick={onCancelProposal}
               css={`
-            ${!compactMode && `width: 215px;`}
-            margin-top: ${3 * GU}px;
-            margin-left: ${1.5 * GU}px;
-            box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
-            ${compactMode && `margin-left: 0px;`}
-          `}
+                margin-top: ${3 * GU}px;
+                margin-left: ${1.5 * GU}px;
+                box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
+                ${!compactMode && `width: 215px;`}
+                ${compactMode && `margin-left: 0px;`}
+              `}
             >
               Withdraw proposal
             </Button>
           )}
         </div>
-        {mode === 'support' && buttonProps.disabled && (
-          <Info
-            mode="warning"
-            css={`
-              margin-top: ${2 * GU}px;
-            `}
-          >
-            The currently connected account does not hold any{' '}
-            <strong>{stakeToken.symbol}</strong> tokens and therefore cannot
-            participate in this proposal. Make sure your account is holding{' '}
-            <strong>{stakeToken.symbol}</strong>.
-          </Info>
-        )}
+        {mode === 'support' &&
+          !isSupportable(
+            <Info
+              mode="warning"
+              css={`
+                margin-top: ${2 * GU}px;
+              `}
+            >
+              The currently connected account does not hold any{' '}
+              <strong>{stakeToken.symbol}</strong> tokens and therefore cannot
+              participate in this proposal. Make sure your account is holding{' '}
+              <strong>{stakeToken.symbol}</strong>.
+            </Info>
+          )}
       </div>
       <ChangeSupportModal
         accountBalance={accountBalance}
