@@ -10,6 +10,13 @@ const DEFAULT_LOCAL_CHAIN = '1337'
 export function getUseWalletProviders() {
   const providers = [{ id: 'injected' }]
 
+  if (env('WALLETCONNECT_RPC_URL')) {
+    providers.push({
+      id: 'walletconnect',
+      useWalletConf: { rpcUrl: env('WALLETCONNECT_RPC_URL') },
+    })
+  }
+
   if (env('FORTMATIC_API_KEY')) {
     providers.push({
       id: 'fortmatic',
@@ -21,13 +28,6 @@ export function getUseWalletProviders() {
     providers.push({
       id: 'portis',
       useWalletConf: { dAppId: env('PORTIS_DAPP_ID') },
-    })
-  }
-
-  if (env('WALLETCONNECT_RPC_URL')) {
-    providers.push({
-      id: 'walletconnect',
-      useWalletConf: { rpcUrl: env('WALLETCONNECT_RPC_URL') },
     })
   }
 
