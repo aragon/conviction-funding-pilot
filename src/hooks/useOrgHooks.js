@@ -17,10 +17,8 @@ import { useContractReadOnly } from './useContract'
 import minimeTokenAbi from '../abi/minimeToken.json'
 import vaultAbi from '../abi/vault-balance.json'
 
-// Organzation
+// Organization
 const APP_NAME = 'conviction-beta'
-const SUBGRAPH_URL =
-  'https://api.thegraph.com/subgraphs/name/evalir/aragon-cv-rinkeby-staging'
 
 const DEFAULT_APP_DATA = {
   convictionVoting: null,
@@ -34,7 +32,7 @@ const DEFAULT_APP_DATA = {
 }
 
 export function useOrganzation() {
-  const [organzation, setOrganization] = useState(null)
+  const [organization, setOrganization] = useState(null)
   const { ethereum, ethers } = useWallet()
 
   useEffect(() => {
@@ -59,7 +57,7 @@ export function useOrganzation() {
     }
   }, [ethers, ethereum])
 
-  return organzation
+  return organization
 }
 
 export function useAppData(organization) {
@@ -75,6 +73,7 @@ export function useAppData(organization) {
     const fetchAppData = async () => {
       const apps = await organization.apps()
       const permissions = await organization.permissions()
+      const { defaultSubgraphUrl } = getNetwork(env('CHAIN_ID'))
 
       const convictionApp = apps.find(app => app.name === APP_NAME)
 
@@ -84,7 +83,7 @@ export function useAppData(organization) {
 
       const convictionVoting = await ConvictionVoting(
         convictionApp,
-        SUBGRAPH_URL
+        defaultSubgraphUrl
       )
 
       if (!cancelled) {

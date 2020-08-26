@@ -4,10 +4,10 @@ import styled from 'styled-components'
 import { useViewport } from 'use-viewport'
 import {
   ButtonBase,
-  Pagination,
   IconCheck,
   IconWarning,
   IconVote,
+  Pagination,
   textStyle,
   useTheme,
   GU,

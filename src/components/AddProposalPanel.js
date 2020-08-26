@@ -264,7 +264,7 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
         <Checkbox checked={termsAccepted} onChange={setTermsAccepted} />I accept
         the&nbsp;
         <Link
-          href="https://ipfs.eth.aragon.network/ipfs/QmVwTFJRkCkp9h8enqk8WZcu7GuqpJprCBDuejo6QL9QCm"
+          href="https://ipfs.eth.aragon.network/ipfs/QmU13GnuG9qo8NUi1WfJP19qTrViHwZ2dRzAnmJKG2i8hA"
           external
         >
           Terms and Conditions

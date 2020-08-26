@@ -3,6 +3,8 @@ import TokenAmount from 'token-amount'
 import { GU, IconCheck, RADIUS, textStyle, useTheme } from '@aragon/ui'
 import { useAppState } from '../providers/AppState'
 
+const LIGHT_INFO_SURFACE_COLOR = '#F8DFE'
+
 function VoteCast({ amountOfTokens }) {
   const theme = useTheme()
   const { appearance } = useAppState()
@@ -11,7 +13,9 @@ function VoteCast({ amountOfTokens }) {
     <div
       css={`
         border-radius: ${RADIUS}px;
-        background: ${appearance === 'light' ? '#F8FDFE' : theme.infoSurface};
+        background: ${appearance === 'light'
+          ? LIGHT_INFO_SURFACE_COLOR
+          : theme.infoSurface};
         padding: ${3.5 * GU}px ${10 * GU}px;
         text-align: center;
       `}
