@@ -34,6 +34,7 @@
     "start:xdai": "cross-env REACT_APP_CHAIN_ID=100 yarn start",
     "build": "cross-env REACT_APP_CHAIN_ID=1 npm run sync-assets && react-app-rewired build",
     "build:mainnet": "cross-env REACT_APP_CHAIN_ID=1 npm run sync-assets && react-app-rewired build",
+    "build:rinkeby": "cross-env REACT_APP_CHAIN_ID=4 npm run sync-assets && react-app-rewired build",
     "build:xdai": "cross-env REACT_APP_CHAIN=100 npm run sync-assets && react-app-rewired build",
     "test": "react-app-rewired test",
     "sync-assets": "copy-aragon-ui-assets ./public"
