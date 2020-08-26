@@ -34,6 +34,8 @@ import {
 } from '../lib/web3-utils'
 import { ZERO_ADDR } from '../constants'
 
+const ANT_SYMBOL = 'ANT'
+
 const CANCEL_ROLE_HASH = soliditySha3('CANCEL_PROPOSAL_ROLE')
 
 const UNABLE_TO_PASS = 0
@@ -320,12 +322,14 @@ function ProposalDetail({
 
 export const Amount = ({
   requestedAmount = 0,
-  requestToken: { symbol, decimals, verified },
+  requestToken: { symbol, decimals, verified = true },
+  hasTopSpacing = true,
 }) => {
-  const tokenIcon = getTokenIconBySymbol(symbol)
+  const tokenIcon = getTokenIconBySymbol(ANT_SYMBOL)
 
   return (
     <DataField
+      hasTopSpacing={hasTopSpacing}
       label="Amount Requested"
       value={
         <Balance
@@ -340,7 +344,7 @@ export const Amount = ({
   )
 }
 
-function DataField({ label, value }) {
+function DataField({ label, value, hasTopSpacing = true }) {
   const theme = useTheme()
   const { below } = useViewport()
 
@@ -349,7 +353,7 @@ function DataField({ label, value }) {
   return (
     <div
       css={`
-        ${compactMode && `margin-top:${2 * GU}px;`}
+        ${compactMode && hasTopSpacing && `margin-top:${2 * GU}px;`}
       `}
     >
       <h2

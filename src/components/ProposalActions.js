@@ -255,20 +255,19 @@ function ProposalActions({
             </Button>
           )}
         </div>
-        {mode === 'support' &&
-          !isSupportable(
-            <Info
-              mode="warning"
-              css={`
-                margin-top: ${2 * GU}px;
-              `}
-            >
-              The currently connected account does not hold any{' '}
-              <strong>{stakeToken.symbol}</strong> tokens and therefore cannot
-              participate in this proposal. Make sure your account is holding{' '}
-              <strong>{stakeToken.symbol}</strong>.
-            </Info>
-          )}
+        {mode === 'support' && !isSupportable && (
+          <Info
+            mode="warning"
+            css={`
+              margin-top: ${2 * GU}px;
+            `}
+          >
+            The currently connected account does not hold any{' '}
+            <strong>{stakeToken.symbol}</strong> tokens and therefore cannot
+            participate in this proposal. Make sure your account is holding{' '}
+            <strong>{stakeToken.symbol}</strong>.
+          </Info>
+        )}
       </div>
       <ChangeSupportModal
         accountBalance={accountBalance}

@@ -20,7 +20,7 @@ import { ZERO_ADDR } from '../constants'
 
 const PROPOSALS_PER_PAGE = 5
 
-function ProposalsView({ proposals }) {
+function ProposalsView({ proposals, requestToken }) {
   const [page, setPage] = useState(0)
   const theme = useTheme()
   const history = useHistory()
@@ -94,15 +94,13 @@ function ProposalsView({ proposals }) {
             ) : (
               <Amount
                 requestedAmount={proposal.requestedAmount}
-                requestToken={{
-                  symbol: 'ANT',
-                  decimals: 18,
-                  verified: true,
-                }}
+                requestToken={requestToken}
+                hasTopSpacing={compactMode}
               />
             )}
             <div
               css={`
+                display: flex;
                 ${!compactMode && `margin-left: ${10 * GU}px;`}
               `}
             >

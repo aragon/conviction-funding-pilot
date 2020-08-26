@@ -19,6 +19,8 @@ import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 import StakingTokens from '../screens/StakingTokens'
 
+const USD_DECIMALS = 2
+
 const Metrics = React.memo(function Metrics({
   amountOfProposals,
   commonPool,
@@ -53,11 +55,23 @@ const Metrics = React.memo(function Metrics({
 
   const carouselContent = useMemo(
     () => [
-      <CarouselBalance label="Total" amount={accountBalance} />,
-      <CarouselBalance label="Active" amount={myActiveTokens} />,
-      <CarouselBalance label="Inactive" amount={inactiveTokens} />,
+      <CarouselBalance
+        label="Total"
+        amount={accountBalance}
+        symbol={stakeToken.symbol}
+      />,
+      <CarouselBalance
+        label="Active"
+        amount={myActiveTokens}
+        symbol={stakeToken.symbol}
+      />,
+      <CarouselBalance
+        label="Inactive"
+        amount={inactiveTokens}
+        symbol={stakeToken.symbol}
+      />,
     ],
-    [accountBalance, myActiveTokens, inactiveTokens]
+    [accountBalance, myActiveTokens, inactiveTokens, stakeToken]
   )
 
   return (
@@ -130,7 +144,7 @@ const Metrics = React.memo(function Metrics({
                     What is voting influence?
                   </h3>
                   <Help hint="What is voting influence?">
-                    We captured a snapshot of your ANT balance on 2020/08/24
+                    We captured a snapshot of your ANT balance on 2020/08/26
                     that has been translated into your current voting influence.{' '}
                     <Link
                       external
@@ -258,7 +272,7 @@ function Metric({ label, value, color, secondaryValue, uppercased }) {
   )
 }
 
-function CarouselBalance({ amount, label, symbol = 'ANT' }) {
+function CarouselBalance({ amount, decimals = 18, label, symbol = 'ANT' }) {
   const theme = useTheme()
 
   return (
@@ -282,7 +296,7 @@ function CarouselBalance({ amount, label, symbol = 'ANT' }) {
           ${textStyle('title1')}
         `}
       >
-        {formatTokenAmount(amount.toFixed(), 18)}{' '}
+        {formatTokenAmount(amount.toFixed(), decimals)}&nbsp;
         <span
           css={`
             color: ${theme.contentSecondary};
@@ -325,7 +339,7 @@ function TokenPrice({ token, uppercased }) {
     <div>
       <Metric
         label="ANT price"
-        value={`$${formatTokenAmount(token, 2)}`}
+        value={`$${formatTokenAmount(token, USD_DECIMALS)}`}
         uppercased={uppercased}
       />
     </div>

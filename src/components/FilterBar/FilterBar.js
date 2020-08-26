@@ -44,10 +44,21 @@ const FilterBar = React.memo(
     const statusFilterDisabled =
       proposalExecutionStatusFilter === 2 || status !== 'connected'
 
+    if (compactMode && status !== 'connected') {
+      return (
+        <div
+          css={`
+            margin-top: ${4 * GU}px;
+            margin-bottom: ${3 * GU}px;
+          `}
+        />
+      )
+    }
+
     return (
       <div
         css={`
-          margin-top: 32px;
+          margin-top: ${4 * GU}px;
           width: 100%;
           margin-bottom: ${3 * GU}px;
         `}
