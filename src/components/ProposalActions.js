@@ -109,13 +109,17 @@ function ProposalActions({
 
   const handleWithdraw = useCallback(() => {
     toggleMainButtonDisabled()
-    onWithdrawFromProposal(id, myStake.amount, toggleMainButtonDisabled)
+    onWithdrawFromProposal(
+      id,
+      myStake.amount.toFixed(0),
+      toggleMainButtonDisabled
+    )
   }, [id, myStake.amount, onWithdrawFromProposal, toggleMainButtonDisabled])
 
   const signalingProposal = addressesEqual(beneficiary, ZERO_ADDR)
 
   const buttonProps = useMemo(() => {
-    if (mode === 'executed') {
+    if (mode === 'executed' || mode === 'cancelled') {
       return {
         text: 'Withdraw staked tokens',
         action: handleWithdraw,
@@ -204,12 +208,12 @@ function ProposalActions({
               wide
               onClick={openModal}
               css={`
-            ${!compactMode && `width: 215px;`}
-            margin-top: ${3 * GU}px;
-            margin-left: ${1.5 * GU}px;
-            box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
-            ${compactMode && `margin-left: 0px;`}
-          `}
+                ${!compactMode && `width: 215px;`}
+                margin-top: ${3 * GU}px;
+                margin-left: ${1.5 * GU}px;
+                box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
+                ${compactMode && `margin-left: 0px;`}
+            `}
             >
               Change support
             </Button>

@@ -129,7 +129,10 @@ async function sendIntent(
 
     const txPath = await intent.paths(from)
     const { to, data } = txPath.transactions[0]
-    await ethers.getSigner().sendTransaction({ data, to, gasLimit: GAS_LIMIT })
+    const tx = await ethers
+      .getSigner()
+      .sendTransaction({ data, to, gasLimit: GAS_LIMIT })
+    await tx.wait()
   } catch (err) {
     console.error('Could not create tx:', err)
   }

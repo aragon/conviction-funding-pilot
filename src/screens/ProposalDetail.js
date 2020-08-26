@@ -214,9 +214,8 @@ function ProposalDetail({
               `}
             `}
           >
-            {beneficiary === ZERO_ADDR ? (
-              <SignalingIndicator />
-            ) : status !== 'Cancelled' ? (
+            {beneficiary === ZERO_ADDR && <SignalingIndicator />}{' '}
+            {status !== 'Cancelled' ? (
               requestToken && (
                 <Amount
                   requestedAmount={requestedAmount}
@@ -291,17 +290,17 @@ function ProposalDetail({
                   />
                 }
               />
-              <ProposalActions
-                hasCancelRole={hasCancelRole}
-                myStakes={myStakes}
-                proposal={proposal}
-                onCancelProposal={handleCancelProposal}
-                onExecuteProposal={onExecuteProposal}
-                onStakeToProposal={onStakeToProposal}
-                onWithdrawFromProposal={onWithdrawFromProposal}
-              />
             </>
           )}
+          <ProposalActions
+            hasCancelRole={hasCancelRole}
+            myStakes={myStakes}
+            proposal={proposal}
+            onCancelProposal={handleCancelProposal}
+            onExecuteProposal={onExecuteProposal}
+            onStakeToProposal={onStakeToProposal}
+            onWithdrawFromProposal={onWithdrawFromProposal}
+          />
         </section>
       </Box>
       <SidePanel
