@@ -11,6 +11,7 @@ const DropwdownFilter = React.memo(
     proposalsSize = -1,
   }) => {
     const theme = useTheme()
+
     return (
       <DropDown
         header="Support"

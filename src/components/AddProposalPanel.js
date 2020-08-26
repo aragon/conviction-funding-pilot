@@ -6,6 +6,7 @@ import {
   Field,
   GU,
   Info,
+  Link,
   isAddress,
   TextInput,
   useTheme,
@@ -130,7 +131,7 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
       event.preventDefault()
 
       const { amount, beneficiary = ZERO_ADDR, link, title } = formData
-      const convertedAmount = amount.valueBN.toString()
+      const convertedAmount = amount.valueBN.toFixed(0)
       onSubmit({
         title,
         link,
@@ -253,16 +254,22 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
       <Field label="Link">
         <TextInput onChange={handleLinkChange} value={formData.link} wide />
       </Field>
-      <div
+      <label
         css={`
           margin-bottom: ${2 * GU}px;
+          display: flex;
+          align-items: center;
         `}
       >
-        <label>
-          <Checkbox checked={termsAccepted} onChange={setTermsAccepted} /> I
-          accept the Terms and Conditions
-        </label>
-      </div>
+        <Checkbox checked={termsAccepted} onChange={setTermsAccepted} />I accept
+        the&nbsp;
+        <Link
+          href="https://ipfs.eth.aragon.network/ipfs/QmU13GnuG9qo8NUi1WfJP19qTrViHwZ2dRzAnmJKG2i8hA"
+          external
+        >
+          Terms and Conditions
+        </Link>
+      </label>
       <Button
         wide
         mode="strong"

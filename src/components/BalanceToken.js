@@ -6,9 +6,13 @@ import { useTheme, GU } from '@aragon/ui'
 import { useTokenBalanceToUsd } from '../lib/web3-utils'
 import logoAnt from '../assets/logo-ant.svg'
 
+const ANT_SYMBOL = 'ANT'
+const ANT_DECIMALS = 18
+const USD_DECIMALS = 2
+
 const BalanceToken = ({ amount, symbol, color, size }) => {
   const theme = useTheme()
-  const antBalance = useTokenBalanceToUsd(symbol, 18, amount)
+  const antBalance = useTokenBalanceToUsd(ANT_SYMBOL, ANT_DECIMALS, amount)
 
   return (
     <div
@@ -20,14 +24,14 @@ const BalanceToken = ({ amount, symbol, color, size }) => {
       `}
     >
       <TokenIcon src={logoAnt} />
-      {TokenAmount.format(amount, 18)}
+      {TokenAmount.format(amount.toFixed(0), ANT_DECIMALS)}
       &nbsp;
       <span
         css={`
           color: ${theme.contentSecondary};
         `}
       >
-        {` ${'ANT'}` || ''}
+        {` ${symbol}` || ''}
       </span>
       <div
         css={`
@@ -36,7 +40,9 @@ const BalanceToken = ({ amount, symbol, color, size }) => {
         `}
       >
         (${' '}
-        {antBalance === '-' ? '' : TokenAmount.format(antBalance.toFixed(0), 2)}
+        {antBalance === '-'
+          ? ''
+          : TokenAmount.format(antBalance.toFixed(0), USD_DECIMALS)}
         )
       </div>
     </div>

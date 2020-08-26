@@ -2,7 +2,17 @@ import React, { useState, useCallback, useMemo } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { useViewport } from 'use-viewport'
-import { Link, Pagination, textStyle, useTheme, GU } from '@aragon/ui'
+import {
+  ButtonBase,
+  IconCheck,
+  IconWarning,
+  IconVote,
+  Pagination,
+  textStyle,
+  useTheme,
+  GU,
+  RADIUS,
+} from '@aragon/ui'
 import { ConvictionBar } from './ConvictionVisuals'
 import IdentityBadge from './IdentityBadge'
 import { Amount } from '../screens/ProposalDetail'
@@ -10,13 +20,13 @@ import { ZERO_ADDR } from '../constants'
 
 const PROPOSALS_PER_PAGE = 5
 
-function ProposalsView({ proposals }) {
+function ProposalsView({ proposals, requestToken }) {
   const [page, setPage] = useState(0)
   const theme = useTheme()
   const history = useHistory()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   const handleSelectProposal = useCallback(
     id => {
@@ -49,6 +59,12 @@ function ProposalsView({ proposals }) {
           key={proposal.id}
           background={theme.surface}
           onClick={() => handleSelectProposal(proposal.id)}
+          focusRingRadius={RADIUS}
+          css={`
+            text-align: left;
+            word-wrap: break-word;
+            text-overflow: ellipsis;
+          `}
         >
           <div
             css={`
@@ -73,28 +89,36 @@ function ProposalsView({ proposals }) {
               />
             </ProposalProperty>
             <div css="flex-grow: 0.8;" />
-            <Amount
-              requestedAmount={proposal.requestedAmount}
-              requestToken={{
-                symbol: 'ANT',
-                decimals: 18,
-                verified: true,
-              }}
-            />
+            {proposal.beneficiary === ZERO_ADDR ? (
+              <SignalingIndicator />
+            ) : (
+              <Amount
+                requestedAmount={proposal.requestedAmount}
+                requestToken={requestToken}
+                hasTopSpacing={compactMode}
+              />
+            )}
             <div
               css={`
+                display: flex;
                 ${!compactMode && `margin-left: ${10 * GU}px;`}
               `}
             >
-              <ProposalProperty title="Submitted by">
-                <p
-                  css={`
-                    ${textStyle('body2')}
-                  `}
-                >
-                  <IdentityBadge entity={proposal.creator} />
-                </p>
-              </ProposalProperty>
+              {proposal.status.toLowerCase() === 'executed' ? (
+                <ExecutedIndicator />
+              ) : proposal.status.toLowerCase() !== 'cancelled' ? (
+                <ProposalProperty title="Submitted by">
+                  <p
+                    css={`
+                      ${textStyle('body2')}
+                    `}
+                  >
+                    <IdentityBadge entity={proposal.creator} badgeOnly />
+                  </p>
+                </ProposalProperty>
+              ) : (
+                <CancelledIndicator />
+              )}
             </div>
           </div>
           <h2
@@ -120,28 +144,26 @@ function ProposalsView({ proposals }) {
   )
 }
 
-function ProposalTitleLink({ handleSelectProposal, id, title }) {
+function ProposalTitleLink({ title }) {
   const theme = useTheme()
-
-  const handleClick = useCallback(() => {
-    handleSelectProposal(id)
-  }, [handleSelectProposal, id])
 
   return (
     <p
       css={`
         ${textStyle('body2')}
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       `}
     >
       {' '}
-      <Link
-        onClick={handleClick}
+      <span
         css={`
           color: ${theme.content};
         `}
       >
         {title}
-      </Link>
+      </span>
     </p>
   )
 }
@@ -150,7 +172,7 @@ function ProposalProperty({ title, children }) {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below('large')
 
   return (
     <div
@@ -158,7 +180,9 @@ function ProposalProperty({ title, children }) {
         display: flex;
         flex-direction: column;
         width: 200px;
-        overflow: visible;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         ${compactMode && `margin-top: ${2 * GU}px;`}
       `}
     >
@@ -177,7 +201,115 @@ function ProposalProperty({ title, children }) {
   )
 }
 
-const ProposalCard = styled.div`
+const SignalingIndicator = () => {
+  const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('large')
+
+  return (
+    <div
+      css={`
+        margin-top: ${2 * GU}px;
+        color: ${theme.infoSurfaceContent};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: ${1 * GU}px;
+        `}
+        text-transform: uppercase;
+        font-size: 14px;
+      `}
+    >
+      <IconVote />
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        Signaling proposal
+      </span>
+    </div>
+  )
+}
+
+const CancelledIndicator = () => {
+  const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('large')
+
+  return (
+    <div
+      css={`
+        margin-top: ${2 * GU}px;
+        color: ${theme.warningSurfaceContent};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: ${1 * GU}px;
+        `}
+        text-transform: uppercase;
+        font-size: 14px;
+      `}
+    >
+      <IconWarning />
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        Proposal Withdrawn
+      </span>
+    </div>
+  )
+}
+
+const ExecutedIndicator = () => {
+  const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below('large')
+
+  return (
+    <div
+      css={`
+        margin-top: ${2 * GU}px;
+        color: ${theme.positive};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: ${1 * GU}px;
+        `}
+        text-transform: uppercase;
+        font-size: 14px;
+      `}
+    >
+      <IconCheck />
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        Proposal Executed
+      </span>
+    </div>
+  )
+}
+
+const ProposalCard = styled(ButtonBase)`
   position: relative;
   width: 100%;
   margin-bottom: ${2 * GU}px;

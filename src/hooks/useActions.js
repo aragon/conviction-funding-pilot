@@ -2,104 +2,114 @@ import { useCallback } from 'react'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 import { toHex } from 'web3-utils'
-import { getAppAddressByName } from '../lib/data-utils'
 
 const GAS_LIMIT = 450000
 const EMPTY_HEX_STRING = '0x'
 
-export default function useActions(onDone) {
+const noop = () => {}
+
+export default function useActions() {
   const { account, ethers } = useWallet()
 
-  const { convictionVoting, installedApps, organization } = useAppState()
+  const { convictionVoting, organization } = useAppState()
 
   const newProposal = useCallback(
-    async ({ title, link, amount, beneficiary }) => {
-      sendIntent(
-        organization,
-        convictionVoting.address,
-        'addProposal',
-        [title, link ? toHex(link) : EMPTY_HEX_STRING, amount, beneficiary],
-        { ethers, from: account }
-      )
-
-      onDone()
+    async ({ title, link, amount, beneficiary }, onDone = noop) => {
+      try {
+        await sendIntent(
+          organization,
+          convictionVoting.address,
+          'addProposal',
+          [title, link ? toHex(link) : EMPTY_HEX_STRING, amount, beneficiary],
+          { ethers, from: account }
+        )
+      } catch (err) {
+        console.log(err)
+      } finally {
+        onDone()
+      }
     },
-    [account, convictionVoting, ethers, onDone, organization]
+    [account, convictionVoting, ethers, organization]
   )
 
   const stakeToProposal = useCallback(
-    (proposalId, amount) => {
-      sendIntent(
-        organization,
-        convictionVoting.address,
-        'stakeToProposal',
-        [proposalId, amount],
-        { ethers, from: account }
-      )
-
-      onDone()
+    async (proposalId, amount, onDone = noop) => {
+      try {
+        await sendIntent(
+          organization,
+          convictionVoting.address,
+          'stakeToProposal',
+          [proposalId, amount],
+          { ethers, from: account }
+        )
+      } catch (err) {
+        console.log(err)
+      } finally {
+        onDone()
+      }
     },
-    [account, convictionVoting, ethers, onDone, organization]
+    [account, convictionVoting, ethers, organization]
   )
 
   const withdrawFromProposal = useCallback(
-    (proposalId, amount) => {
-      sendIntent(
-        organization,
-        convictionVoting.address,
-        'withdrawFromProposal',
-        [proposalId, amount],
-        { ethers, from: account }
-      )
-
-      onDone()
+    async (proposalId, amount, onDone = noop) => {
+      try {
+        await sendIntent(
+          organization,
+          convictionVoting.address,
+          'withdrawFromProposal',
+          [proposalId, amount],
+          { ethers, from: account }
+        )
+      } catch (err) {
+        console.log(err)
+      } finally {
+        onDone()
+      }
     },
-    [account, convictionVoting, ethers, onDone, organization]
+    [account, convictionVoting, ethers, organization]
   )
 
   const executeProposal = useCallback(
-    proposalId => {
-      console.log(proposalId, 'sent')
-      sendIntent(
-        organization,
-        convictionVoting.address,
-        'executeProposal',
-        [proposalId],
-        { ethers, from: account }
-      )
-
-      onDone()
+    async (proposalId, onDone = noop) => {
+      try {
+        await sendIntent(
+          organization,
+          convictionVoting.address,
+          'executeProposal',
+          [proposalId],
+          { ethers, from: account }
+        )
+      } catch (err) {
+        console.log(err)
+      } finally {
+        onDone()
+      }
     },
-    [account, convictionVoting, ethers, onDone, organization]
+    [account, convictionVoting, ethers, organization]
   )
 
   const cancelProposal = useCallback(
-    async proposalId => {
-      sendIntent(
-        organization,
-        convictionVoting.address,
-        'cancelProposal',
-        [proposalId],
-        { ethers, from: account }
-      )
-
-      onDone()
+    async (proposalId, onDone = noop) => {
+      try {
+        await sendIntent(
+          organization,
+          convictionVoting.address,
+          'cancelProposal',
+          [proposalId],
+          { ethers, from: account }
+        )
+      } catch (err) {
+        console.log(err)
+      } finally {
+        onDone()
+      }
     },
-    [account, convictionVoting, ethers, onDone, organization]
+    [account, convictionVoting, ethers, organization]
   )
-
-  const executeIssuance = useCallback(() => {
-    const issuanceAddress = getAppAddressByName(installedApps, 'issuance')
-
-    sendIntent(organization, issuanceAddress, 'executeIssuance', [], {
-      ethers,
-      from: account,
-    })
-  }, [account, ethers, installedApps, organization])
 
   return {
     cancelProposal,
-    executeIssuance,
     executeProposal,
     newProposal,
     stakeToProposal,
@@ -118,8 +128,11 @@ async function sendIntent(
     const intent = organization.appIntent(appAddress, fn, params)
 
     const txPath = await intent.paths(from)
-    const { to, data } = txPath.transactions[0] // TODO: Handle errors when no tx path is found
-    ethers.getSigner().sendTransaction({ data, to, gasLimit: GAS_LIMIT })
+    const { to, data } = txPath.transactions[0]
+    const tx = await ethers
+      .getSigner()
+      .sendTransaction({ data, to, gasLimit: GAS_LIMIT })
+    await tx.wait()
   } catch (err) {
     console.error('Could not create tx:', err)
   }

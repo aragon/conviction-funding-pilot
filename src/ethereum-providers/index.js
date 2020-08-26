@@ -1,23 +1,14 @@
-import frame from './icons/Frame.png'
 import cipher from './icons/Cipher.png'
 import metamask from './icons/Metamask.png'
 import status from './icons/Status.png'
 import wallet from './icons/wallet.svg'
+import walletconnect from './icons/WalletConnect.svg'
 import fortmatic from './icons/Fortmatic.svg'
 import portis from './icons/Portis.svg'
 
 // See the corresponding prop type, EthereumProviderType, in prop-types.js.
 const PROVIDERS = new Map(
   [
-    {
-      id: 'frame',
-      name: 'Frame',
-      type: 'Desktop',
-      image: frame,
-      strings: {
-        'your Ethereum provider': 'Frame',
-      },
-    },
     {
       id: 'metamask',
       name: 'Metamask',
@@ -34,6 +25,15 @@ const PROVIDERS = new Map(
       image: status,
       strings: {
         'your Ethereum provider': 'Status',
+      },
+    },
+    {
+      id: 'walletconnect',
+      name: 'WalletConnect',
+      type: 'Any',
+      image: walletconnect,
+      strings: {
+        'your Ethereum provider': 'WalletConnect',
       },
     },
     {

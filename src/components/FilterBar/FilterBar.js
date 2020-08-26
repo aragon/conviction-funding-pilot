@@ -7,18 +7,22 @@ import TextFilter from './TextFilter'
 import DropdownFilter from './DropdownFilter'
 import { useWallet } from '../../providers/Wallet'
 
+const PROPOSAL_TYPE_LABELS = ['All', 'Funding', 'Signaling']
+
+const PROPOSAL_STATUS_LABELS = ['All', 'Open', 'Closed']
+
 const FilterBar = React.memo(
   ({
-    proposalsSize = 0,
+    handleExecutionStatusFilterChange,
+    handleProposalStatusFilterChange,
+    handleProposalTypeFilterChange,
+    handleRequestNewProposal,
+    handleTextFilterChange,
     proposalExecutionStatusFilter,
+    proposalsSize = 0,
     proposalStatusFilter,
     proposalTextFilter,
     proposalTypeFilter,
-    handleExecutionStatusFilterChange,
-    handleProposalStatusFilterChange,
-    handleRequestNewProposal,
-    handleTextFilterChange,
-    handleProposalTypeFilterChange,
   }) => {
     const [textFieldVisible, setTextFieldVisible] = useState(false)
     const textFilterOpener = useRef(null)
@@ -26,7 +30,7 @@ const FilterBar = React.memo(
     const theme = useTheme()
     const { below } = useViewport()
 
-    const tabletMode = below(1152)
+    const tabletMode = below(1400)
     const compactMode = below(900)
 
     const buttonDisplay = useMemo(() => {
@@ -41,12 +45,24 @@ const FilterBar = React.memo(
       setTextFieldVisible(true)
     }, [setTextFieldVisible])
 
-    const statusFilterDisabled = proposalExecutionStatusFilter === 1
+    const statusFilterDisabled =
+      proposalExecutionStatusFilter === 2 || status !== 'connected'
+
+    if (compactMode && status !== 'connected') {
+      return (
+        <div
+          css={`
+            margin-top: ${4 * GU}px;
+            margin-bottom: ${3 * GU}px;
+          `}
+        />
+      )
+    }
 
     return (
       <div
         css={`
-          margin-top: 32px;
+          margin-top: ${4 * GU}px;
           width: 100%;
           margin-bottom: ${3 * GU}px;
         `}
@@ -72,16 +88,15 @@ const FilterBar = React.memo(
             >
               <DropDown
                 header="Type"
-                placeholder="Type"
                 selected={proposalTypeFilter}
                 onChange={handleProposalTypeFilterChange}
-                items={['Funding', 'Signaling']}
+                items={PROPOSAL_TYPE_LABELS}
               />
               <DropDown
                 header="Status"
                 selected={proposalExecutionStatusFilter}
                 onChange={handleExecutionStatusFilterChange}
-                items={['Open', 'Closed']}
+                items={PROPOSAL_STATUS_LABELS}
                 css={`
                   margin-left: ${1.5 * GU}px;
                 `}

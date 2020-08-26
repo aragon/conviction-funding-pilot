@@ -27,6 +27,7 @@ function ChangeSupportModal({
   const [percentage, setPercentage] = useState(0)
   const [tokensToStake, setTokensToStake] = useState(currentStakedTokens)
   const [movedSlider, setMovedSlider] = useState(false)
+  const [buttonDisabled, setButtonDisabled] = useState(false)
   const theme = useTheme()
   const { below } = useViewport()
 
@@ -112,25 +113,40 @@ function ChangeSupportModal({
     setTokensToStake(amountToStake)
   }, [accountBalance, availableTokens, fixedPercentage])
 
+  const toggleDisabled = useCallback(
+    () => setButtonDisabled(disabled => !disabled),
+    [setButtonDisabled]
+  )
+
+  const onDone = useCallback(() => {
+    toggleDisabled()
+    onModalClose()
+  }, [onModalClose, toggleDisabled])
+
   const handleChangeSupport = useCallback(() => {
+    toggleDisabled()
     if (tokensToStake.lt(currentStakedTokens)) {
       onWithdrawFromProposal(
         proposalId,
-        currentStakedTokens.minus(tokensToStake).toFixed(0)
+        currentStakedTokens.minus(tokensToStake).toFixed(0),
+        onDone
       )
       return
     }
 
     onStakeToProposal(
       proposalId,
-      tokensToStake.minus(currentStakedTokens).toFixed(0)
+      tokensToStake.minus(currentStakedTokens).toFixed(0),
+      onDone
     )
   }, [
     currentStakedTokens,
-    proposalId,
-    tokensToStake,
+    onDone,
     onStakeToProposal,
     onWithdrawFromProposal,
+    proposalId,
+    toggleDisabled,
+    tokensToStake,
   ])
 
   return (
@@ -179,7 +195,7 @@ function ChangeSupportModal({
             ${compactMode &&
               `
                 flex-direction: column;
-
+                justify-content: center;
               `}
           `}
         >
@@ -242,7 +258,7 @@ function ChangeSupportModal({
         </Info>
 
         <Button
-          disabled={disabled}
+          disabled={disabled || buttonDisabled}
           mode="strong"
           wide
           css={`

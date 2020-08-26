@@ -7,13 +7,18 @@ import {
   GU,
   IconCheck,
   IconCross,
+  IconWarning,
+  IconVote,
   Link,
   SidePanel,
   textStyle,
   useTheme,
 } from '@aragon/ui'
 import Balance from '../components/Balance'
-import { ConvictionBar } from '../components/ConvictionVisuals'
+import {
+  ConvictionBar,
+  ConvictionCountdown,
+} from '../components/ConvictionVisuals'
 import IdentityBadge from '../components/IdentityBadge'
 import ProposalActions from '../components/ProposalActions'
 import SupportProposal from '../components/panels/SupportProposal'
@@ -22,12 +27,14 @@ import { useAppState } from '../providers/AppState'
 import usePanelState from '../hooks/usePanelState'
 import { useWallet } from '../providers/Wallet'
 
-import { getTokenIconBySymbol, formatTokenAmount } from '../lib/token-utils'
+import { formatTokenAmount, getTokenIconBySymbol } from '../lib/token-utils'
 import {
   addressesEqualNoSum as addressesEqual,
   soliditySha3,
 } from '../lib/web3-utils'
 import { ZERO_ADDR } from '../constants'
+
+const ANT_SYMBOL = 'ANT'
 
 const CANCEL_ROLE_HASH = soliditySha3('CANCEL_PROPOSAL_ROLE')
 
@@ -56,23 +63,22 @@ function getOutcomeText(proposalState) {
 
 function ProposalDetail({
   myStakes,
-  proposal,
   onBack,
   onCancelProposal,
   onExecuteProposal,
   onStakeToProposal,
   onWithdrawFromProposal,
+  proposal,
   requestToken,
 }) {
   const theme = useTheme()
   const panelState = usePanelState()
-  const { vaultBalance, permissions } = useAppState()
+  const { permissions, vaultBalance } = useAppState()
   const { account: connectedAccount } = useWallet()
   const { below } = useViewport()
 
-  console.log('request', requestToken)
+  const compactMode = below(1400)
 
-  const compactMode = below('medium')
   const {
     currentConviction,
     id,
@@ -83,8 +89,8 @@ function ProposalDetail({
     link,
     remainingTimeToPass,
     requestedAmount,
+    status,
     threshold,
-    executed,
   } = proposal
 
   const handleCancelProposal = useCallback(() => {
@@ -107,11 +113,12 @@ function ProposalDetail({
     )
   }, [connectedAccount, creator, permissions])
 
-  console.log(handleCancelProposal, hasCancelRole)
-
   const proposalState = useMemo(() => {
-    if (executed) {
+    if (status.toLowerCase() === 'executed') {
       return EXECUTED
+    }
+    if (threshold.toString() === '-1') {
+      return UNABLE_TO_PASS
     }
     if (
       !neededConviction.toString().includes('Infinity') &&
@@ -125,10 +132,10 @@ function ProposalDetail({
     return UNABLE_TO_PASS
   }, [
     currentConviction,
-    executed,
     neededConviction,
     threshold,
     remainingTimeToPass,
+    status,
   ])
 
   const outcomeText = getOutcomeText(proposalState)
@@ -149,42 +156,53 @@ function ProposalDetail({
           css={`
             display: flex;
             flex-direction: column;
+            flex-wrap: wrap;
           `}
         >
           <div
             css={`
               display: flex;
+              flex-wrap: wrap;
               ${compactMode &&
                 `
                   flex-direction: column-reverse;
                 `}
             `}
           >
-            <h1
+            <h2
               css={`
                 ${textStyle('title2')};
               `}
             >
               {name}
-            </h1>
+            </h2>
             <div css="flex-grow: 1;" />
-            <Outcome
-              result={outcomeText}
-              positive={proposalState !== UNABLE_TO_PASS}
-            />
+            {!signalingProposal && status.toLowerCase() !== 'cancelled' && (
+              <Outcome
+                result={outcomeText}
+                positive={proposalState !== UNABLE_TO_PASS}
+              />
+            )}
           </div>
-          <p
-            css={`
+          {!signalingProposal && proposalState !== EXECUTED && (
+            <p
+              css={`
                   margin-top: ${1 * GU}px;
                   ${textStyle('body2')}
                   color: ${theme.contentSecondary};
                 `}
-          >
-            This proposal is requesting{' '}
-            {formatTokenAmount(requestedAmount, requestToken.decimals)} ANT out
-            of {formatTokenAmount(vaultBalance, requestToken.decimals)} ANT
-            currently in the common pool.
-          </p>
+            >
+              This proposal{' '}
+              {status.toLowerCase() === 'cancelled' ||
+              status.toLowerCase() === 'executed'
+                ? 'was'
+                : 'is'}{' '}
+              requesting{' '}
+              {formatTokenAmount(requestedAmount, requestToken.decimals)} ANT
+              out of {formatTokenAmount(vaultBalance, requestToken.decimals)}{' '}
+              ANT currently in the common pool.
+            </p>
+          )}
           <div
             css={`
               margin-top: ${4 * GU}px;
@@ -198,11 +216,16 @@ function ProposalDetail({
               `}
             `}
           >
-            {requestToken && (
-              <Amount
-                requestedAmount={requestedAmount}
-                requestToken={requestToken}
-              />
+            {beneficiary === ZERO_ADDR && <SignalingIndicator />}{' '}
+            {status !== 'Cancelled' ? (
+              requestToken && (
+                <Amount
+                  requestedAmount={requestedAmount}
+                  requestToken={requestToken}
+                />
+              )
+            ) : (
+              <CancelledIndicator />
             )}
             <DataField
               label="Submitted By"
@@ -227,6 +250,17 @@ function ProposalDetail({
                 }
               />
             )}
+            {!signalingProposal &&
+              proposalState !== UNABLE_TO_PASS &&
+              proposalState !== EXECUTED && (
+                <div
+                  css={`
+                    ${compactMode && `margin-top: ${2 * GU}px;`}
+                  `}
+                >
+                  <ConvictionCountdown proposal={proposal} />
+                </div>
+              )}
             <DataField
               label="Link"
               value={
@@ -246,7 +280,7 @@ function ProposalDetail({
               }
             />
           </div>
-          {!executed && (
+          {status.toLowerCase() !== 'executed' && (
             <>
               <DataField
                 label="Conviction Progress"
@@ -258,16 +292,17 @@ function ProposalDetail({
                   />
                 }
               />
-              <ProposalActions
-                myStakes={myStakes}
-                proposal={proposal}
-                onExecuteProposal={onExecuteProposal}
-                onRequestSupportProposal={panelState.requestOpen}
-                onStakeToProposal={onStakeToProposal}
-                onWithdrawFromProposal={onWithdrawFromProposal}
-              />
             </>
           )}
+          <ProposalActions
+            hasCancelRole={hasCancelRole}
+            myStakes={myStakes}
+            proposal={proposal}
+            onCancelProposal={handleCancelProposal}
+            onExecuteProposal={onExecuteProposal}
+            onStakeToProposal={onStakeToProposal}
+            onWithdrawFromProposal={onWithdrawFromProposal}
+          />
         </section>
       </Box>
       <SidePanel
@@ -287,12 +322,14 @@ function ProposalDetail({
 
 export const Amount = ({
   requestedAmount = 0,
-  requestToken: { symbol, decimals, verified },
+  requestToken: { symbol, decimals, verified = true },
+  hasTopSpacing = true,
 }) => {
-  const tokenIcon = getTokenIconBySymbol(symbol)
+  const tokenIcon = getTokenIconBySymbol(ANT_SYMBOL)
 
   return (
     <DataField
+      hasTopSpacing={hasTopSpacing}
       label="Amount Requested"
       value={
         <Balance
@@ -307,16 +344,16 @@ export const Amount = ({
   )
 }
 
-function DataField({ label, value }) {
+function DataField({ label, value, hasTopSpacing = true }) {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below(1400)
 
   return (
     <div
       css={`
-        ${compactMode && `margin-top:${2 * GU}px;`}
+        ${compactMode && hasTopSpacing && `margin-top:${2 * GU}px;`}
       `}
     >
       <h2
@@ -345,19 +382,17 @@ const Outcome = ({ result, positive }) => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('medium')
+  const compactMode = below(1400)
 
   return (
     <div
       css={`
         color: ${theme[positive ? 'positive' : 'negative']};
         display: flex;
-        align-items: center;
-        justify-content: center;
         ${compactMode &&
           `
             justify-content: flex-start;
-            margin-bottom: 8px;
+            margin-bottom: ${2 * GU}px;
         `}
         text-transform: uppercase;
         font-size: 14px;
@@ -371,6 +406,75 @@ const Outcome = ({ result, positive }) => {
         `}
       >
         {result}
+      </span>
+    </div>
+  )
+}
+
+const SignalingIndicator = () => {
+  const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below(1400)
+
+  return (
+    <div
+      css={`
+        color: ${theme.infoSurfaceContent};
+        display: flex;
+        align-items: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        `}
+        text-transform: uppercase;
+        font-size: 14px;
+      `}
+    >
+      <IconVote />
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        Signaling proposal
+      </span>
+    </div>
+  )
+}
+
+const CancelledIndicator = () => {
+  const theme = useTheme()
+  const { below } = useViewport()
+
+  const compactMode = below(1400)
+
+  return (
+    <div
+      css={`
+        margin-top: ${2 * GU}px;
+        color: ${theme.warningSurfaceContent};
+        display: flex;
+        align-items: center;
+        ${compactMode &&
+          `
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        `}
+        text-transform: uppercase;
+        font-size: 14px;
+      `}
+    >
+      <IconWarning />
+      <span
+        css={`
+          display: inline-block;
+          margin-top: ${0.5 * GU}px;
+        `}
+      >
+        Proposal Withdrawn
       </span>
     </div>
   )

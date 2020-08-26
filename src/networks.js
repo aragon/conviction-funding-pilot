@@ -6,16 +6,20 @@ const networks = {
     chainId: 1,
     ensRegistry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     defaultEthNode: 'wss://mainnet.eth.aragon.network/ws',
+    defaultSubgraphUrl:
+      'https://api.thegraph.com/subgraphs/name/1hive/aragon-conviction-voting-mainnet',
     name: 'Mainnet',
-    orgAddress: '',
-    type: 'main',
+    orgAddress: '0xaAf56C0D604dDB88bBe451ae0db4580Ca3D49c0A',
+    type: 'mainnet',
   },
   rinkeby: {
     chainId: 4,
     ensRegistry: '0x98df287b6c145399aaa709692c8d308357bc085d',
     defaultEthNode: 'wss://rinkeby.eth.aragon.network/ws',
+    defaultSubgraphUrl:
+      'https://api.thegraph.com/subgraphs/name/evalir/aragon-cv-rinkeby-staging',
     name: 'Rinkeby',
-    orgAddress: '0xace2faa375ffc251fafc7360bc3defbc6184e5fe',
+    orgAddress: '0xb36b8319f0182653eabb9fec0c57c0df5634740d',
     type: 'rinkeby',
   },
   xdai: {

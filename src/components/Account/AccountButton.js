@@ -12,6 +12,8 @@ import {
 import { useWallet } from 'use-wallet'
 import HeaderModule from '../Header/HeaderModule'
 
+const IPFS_BASE_URL = 'https://ipfs.io/ipfs/'
+
 function AccountButton({ label, onClick }) {
   const [profile, setProfile] = useState(null)
   const theme = useTheme()
@@ -37,17 +39,26 @@ function AccountButton({ label, onClick }) {
         <div
           css={`
             position: relative;
-            width: 52px;
+            width: ${6.5 * GU}px;
           `}
         >
           {profile?.image ? (
-            <img
-              src={`https://ipfs.io/ipfs/${profile.image[0].contentUrl['/']}`}
-              width="52px"
+            <div
               css={`
-                border-radius: 50%;
+                width: ${6.5 * GU}px;
+                height: ${6.5 * GU}px;
               `}
-            />
+            >
+              <img
+                src={`${IPFS_BASE_URL}${profile.image[0].contentUrl['/']}`}
+                css={`
+                  width: 100%;
+                  height: 100%;
+                  border-radius: 50%;
+                  object-fit: cover;
+                `}
+              />
+            </div>
           ) : (
             <EthIdenticon address={wallet.account} radius={50} scale={2} />
           )}
@@ -58,7 +69,7 @@ function AccountButton({ label, onClick }) {
               scale={0.8}
               css={`
                 position: absolute;
-                bottom: 4px;
+                bottom: 0px;
                 right: 0px;
               `}
             />

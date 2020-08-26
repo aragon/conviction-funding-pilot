@@ -127,7 +127,14 @@ function AccountScreenConnected({ wallet }) {
           `}
         >
           Current block:&nbsp;
-        </span>{' '}
+          <span
+            css={`
+              color: ${theme.content};
+            `}
+          >
+            Block {wallet.getBlockNumber()}
+          </span>
+        </span>
       </div>
       <div
         css={`

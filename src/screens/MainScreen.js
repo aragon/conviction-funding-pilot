@@ -47,7 +47,7 @@ const MainScreen = React.memo(
     }, [history])
     const handleTabChange = tabIndex => {
       handleProposalExecutionFilterChange(tabIndex)
-      handleProposalSupportFilterChange(-1)
+      handleProposalSupportFilterChange(0)
     }
 
     if (isLoading) {

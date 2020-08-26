@@ -7,19 +7,20 @@ import {
   PROPOSAL_STATUS_SUPPORTED,
   PROPOSAL_STATUS_NOT_SUPPORTED,
   PROPOSAL_STATUS_OPEN,
-  PROPOSAL_STATUS_ACCEPTED,
+  PROPOSAL_STATUS_EXECUTED,
   PROPOSAL_TYPE_FUNDING,
   PROPOSAL_TYPE_SIGNALING,
+  PROPOSAL_STATUS_CANCELLED,
 } from '../proposal-types'
 import { checkInitialLetters } from '../lib/search-utils'
 
-const NULL_FILTER_STATE = -1
+const NULL_FILTER_STATE = 0
 const STAKE_STATUS_FILTER_SUPPORTED = 1
 const STAKE_STATUS_FILTER_NOT_SUPPORTED = 2
-const EXECUTION_STATUS_FILTER_OPEN = 0
-const EXECUTION_STATUS_FILTER_ACCEPTED = 1
-const TYPE_FILTER_FUNDING = 0
-const TYPE_FILTER_SIGNALING = 1
+const EXECUTION_STATUS_FILTER_OPEN = 1
+const EXECUTION_STATUS_FILTER_CLOSED = 2
+const TYPE_FILTER_FUNDING = 1
+const TYPE_FILTER_SIGNALING = 2
 
 function testSupportFilter(filter, proposalStatus) {
   return (
@@ -33,10 +34,13 @@ function testSupportFilter(filter, proposalStatus) {
 
 function testExecutionFilter(filter, proposalStatus) {
   return (
+    filter === NULL_FILTER_STATE ||
     (filter === EXECUTION_STATUS_FILTER_OPEN &&
       proposalStatus === PROPOSAL_STATUS_OPEN) ||
-    (filter === EXECUTION_STATUS_FILTER_ACCEPTED &&
-      proposalStatus === PROPOSAL_STATUS_ACCEPTED)
+    (filter === EXECUTION_STATUS_FILTER_CLOSED &&
+      proposalStatus === PROPOSAL_STATUS_EXECUTED) ||
+    (filter === EXECUTION_STATUS_FILTER_CLOSED &&
+      proposalStatus === PROPOSAL_STATUS_CANCELLED)
   )
 }
 
@@ -59,9 +63,7 @@ function testSearchFilter(proposalName, textSearch) {
 
 const useFilterProposals = (proposals, myStakes) => {
   const [supportFilter, setSupportFilter] = useState(NULL_FILTER_STATE)
-  const [executionFilter, setExecutionFilter] = useState(
-    EXECUTION_STATUS_FILTER_OPEN
-  )
+  const [executionFilter, setExecutionFilter] = useState(NULL_FILTER_STATE)
   const [typeFilter, setTypeFilter] = useState(NULL_FILTER_STATE)
   const [textSearch, setTextSearch] = useState('')
 
@@ -96,13 +98,14 @@ const useFilterProposals = (proposals, myStakes) => {
     filteredProposals,
     proposalExecutionStatusFilter: executionFilter,
     proposalSupportStatusFilter: supportFilter,
+    proposalTypeFilter: typeFilter,
     proposalTextFilter: textSearch,
     handleProposalExecutionFilterChange: useCallback(
       index => setExecutionFilter(index),
       [setExecutionFilter]
     ),
     handleProposalSupportFilterChange: useCallback(
-      index => setSupportFilter(index || NULL_FILTER_STATE),
+      index => setSupportFilter(index),
       [setSupportFilter]
     ),
     handleSearchTextFilterChange: useCallback(

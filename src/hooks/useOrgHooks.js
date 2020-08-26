@@ -4,20 +4,20 @@ import { connect } from '@aragon/connect'
 import env from '../environment'
 import { getNetwork } from '../networks'
 import BigNumber from '../lib/bigNumber'
-import { transformConfigData, getAppAddressByName } from '../lib/data-utils'
+import { getAppAddressByName } from '../lib/data-utils'
 import { getDefaultChain } from '../local-settings'
 import { useWallet } from '../providers/Wallet'
 import { addressesEqual } from '../lib/web3-utils.js'
 import {
+  useConfigSubscription,
   useProposalsSubscription,
   useStakesHistorySubscription,
-  // useConfigSubscription,
 } from './useSubscriptions'
 import { useContractReadOnly } from './useContract'
 import minimeTokenAbi from '../abi/minimeToken.json'
 import vaultAbi from '../abi/vault-balance.json'
 
-// Organzation
+// Organization
 const APP_NAME = 'conviction-beta'
 
 const DEFAULT_APP_DATA = {
@@ -32,7 +32,7 @@ const DEFAULT_APP_DATA = {
 }
 
 export function useOrganzation() {
-  const [organzation, setOrganization] = useState(null)
+  const [organization, setOrganization] = useState(null)
   const { ethereum, ethers } = useWallet()
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export function useOrganzation() {
     }
   }, [ethers, ethereum])
 
-  return organzation
+  return organization
 }
 
 export function useAppData(organization) {
@@ -73,6 +73,7 @@ export function useAppData(organization) {
     const fetchAppData = async () => {
       const apps = await organization.apps()
       const permissions = await organization.permissions()
+      const { defaultSubgraphUrl } = getNetwork(env('CHAIN_ID'))
 
       const convictionApp = apps.find(app => app.name === APP_NAME)
 
@@ -82,17 +83,12 @@ export function useAppData(organization) {
 
       const convictionVoting = await ConvictionVoting(
         convictionApp,
-        'https://api.thegraph.com/subgraphs/name/evalir/aragon-cv-rinkeby-staging'
+        defaultSubgraphUrl
       )
-
-      const config = await convictionVoting.config()
-
-      console.log(convictionVoting, config)
 
       if (!cancelled) {
         setAppData(appData => ({
           ...appData,
-          ...transformConfigData(config),
           installedApps: apps,
           convictionVoting,
           organization,
@@ -110,7 +106,7 @@ export function useAppData(organization) {
 
   const proposals = useProposalsSubscription(appData.convictionVoting)
 
-  // const config = useConfigSubscription(appData.convictionVoting)
+  const config = useConfigSubscription(appData.convictionVoting)
 
   // Stakes done across all proposals on this app
   // Includes old and current stakes
@@ -118,7 +114,7 @@ export function useAppData(organization) {
 
   return {
     ...appData,
-    // ...transformConfigData(config),
+    ...config,
     proposals,
     stakesHistory,
   }
@@ -128,7 +124,7 @@ export function useVaultBalance(installedApps, token, timeout = 1000) {
   const vaultAddress = getAppAddressByName(installedApps, 'vault')
   const vaultContract = useContractReadOnly(vaultAddress, vaultAbi)
   const [vaultBalance, setVaultBalance] = useState(new BigNumber(-1))
-  console.log(installedApps)
+
   // We are starting in 0 in order to immediately make the fetch call
   const controlledTimeout = useRef(0)
 

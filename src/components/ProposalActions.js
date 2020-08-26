@@ -11,24 +11,32 @@ import BigNumber from '../lib/bigNumber'
 import AccountNotConnected from './AccountNotConnected'
 import ChangeSupportModal from './ChangeSupportModal'
 import ProposalSupported from './ProposalSupported'
+import { ZERO_ADDR } from '../constants'
 
 function ProposalActions({
   hasCancelRole,
   myStakes,
-  proposal,
   onCancelProposal,
   onExecuteProposal,
-  onRequestSupportProposal,
   onStakeToProposal,
   onWithdrawFromProposal,
+  proposal,
 }) {
   const [modalVisible, setModalVisible] = useState(false)
-  const { stakeToken, accountBalance } = useAppState()
+  const [mainButtonDisabled, setMainButtonDisabled] = useState(false)
+  const { stakeToken, accountBalance, vaultBalance } = useAppState()
   const { account: connectedAccount } = useWallet()
   const { below } = useViewport()
 
   const compactMode = below('large')
-  const { id, currentConviction, stakes, threshold } = proposal
+  const {
+    beneficiary,
+    currentConviction,
+    id,
+    stakes,
+    status,
+    threshold,
+  } = proposal
 
   const totalStaked = useAccountTotalStaked()
 
@@ -58,14 +66,33 @@ function ProposalActions({
   const didIStake = myStake?.amount.gt(0)
 
   const mode = useMemo(() => {
-    if (currentConviction.gte(threshold)) {
+    if (status.toLowerCase() === 'cancelled') {
+      return 'cancelled'
+    }
+
+    if (status.toLowerCase() === 'executed') {
+      return 'executed'
+    }
+
+    if (
+      currentConviction.gte(threshold) &&
+      !vaultBalance.eq('0') &&
+      threshold.toFixed(0) !== '-1'
+    ) {
       return 'execute'
     }
+
     if (didIStake) {
       return 'update'
     }
+
     return 'support'
-  }, [currentConviction, didIStake, threshold])
+  }, [currentConviction, didIStake, status, threshold, vaultBalance])
+
+  const toggleMainButtonDisabled = useCallback(
+    () => setMainButtonDisabled(disabled => !disabled),
+    [setMainButtonDisabled]
+  )
 
   const closeModal = useCallback(() => {
     setModalVisible(false)
@@ -75,12 +102,50 @@ function ProposalActions({
     setModalVisible(true)
   }, [setModalVisible])
 
+  const onDone = useCallback(() => {
+    toggleMainButtonDisabled()
+  }, [toggleMainButtonDisabled])
+
   const handleExecute = useCallback(() => {
-    onExecuteProposal(id)
-  }, [id, onExecuteProposal])
+    toggleMainButtonDisabled()
+    onExecuteProposal(id, onDone)
+  }, [id, onDone, onExecuteProposal, toggleMainButtonDisabled])
+
+  const handleWithdraw = useCallback(() => {
+    toggleMainButtonDisabled()
+    onWithdrawFromProposal(id, myStake.amount.toFixed(0), onDone)
+  }, [
+    id,
+    myStake.amount,
+    onDone,
+    onWithdrawFromProposal,
+    toggleMainButtonDisabled,
+  ])
+
+  const signalingProposal = addressesEqual(beneficiary, ZERO_ADDR)
+
+  const isExecutable = useMemo(() => !signalingProposal && mode === 'execute', [
+    mode,
+    signalingProposal,
+  ])
+  const isCancellable = useMemo(
+    () => hasCancelRole && mode !== 'executed' && mode !== 'active',
+    [hasCancelRole, mode]
+  )
+  const isSupportable = useMemo(() => accountBalance.gt('0'), [accountBalance])
 
   const buttonProps = useMemo(() => {
-    if (mode === 'execute') {
+    // In both cases, we wanna let the users be able to withdraw the tokens manually.
+    if (mode === 'executed' || mode === 'cancelled') {
+      return {
+        text: 'Withdraw staked tokens',
+        action: handleWithdraw,
+        mode: 'strong',
+        disabled: !didIStake,
+      }
+    }
+    // Signaling proposals cannot be executed, so we exclude this case.
+    if (mode === 'execute' && !signalingProposal) {
       return {
         text: 'Execute proposal',
         action: handleExecute,
@@ -89,19 +154,31 @@ function ProposalActions({
       }
     }
 
+    // We have supported the proposal, but we may wanna change the current support.
     if (mode === 'update') {
       return {
         text: 'Change support',
         mode: 'normal',
+        action: openModal,
       }
     }
+
+    // We haven't supported this proposal, and it's not executed or cancelled.
     return {
       text: 'Support this proposal',
-      action: onRequestSupportProposal,
+      action: openModal,
       mode: 'strong',
       disabled: !accountBalance.gt(0),
     }
-  }, [accountBalance, handleExecute, mode, onRequestSupportProposal])
+  }, [
+    accountBalance,
+    didIStake,
+    handleExecute,
+    handleWithdraw,
+    mode,
+    openModal,
+    signalingProposal,
+  ])
 
   return connectedAccount ? (
     <>
@@ -112,7 +189,7 @@ function ProposalActions({
           flex-direction: column;
         `}
       >
-        {!myStake.amount.eq('0') && (
+        {didIStake && (
           <>
             <div
               css={`
@@ -129,52 +206,56 @@ function ProposalActions({
             display: flex;
             ${compactMode &&
               `
-            flex-direction: column;
-          `}
+                flex-direction: column;
+            `}
           `}
         >
           <Button
             mode="strong"
             wide
+            disabled={buttonProps.disabled || mainButtonDisabled}
             onClick={buttonProps.action}
             css={`
-            ${!compactMode && `width: 215px;`}
-            margin-top: ${3 * GU}px;
-            box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
-          `}
+              ${!compactMode && `width: 215px;`}
+              margin-top: ${3 * GU}px;
+              box-shadow: 0px ${0.5 * GU}px ${0.75 *
+              GU}px rgba(7, 146, 175, 0.08);
+            `}
           >
             {buttonProps.text}
           </Button>
-          <Button
-            wide
-            onClick={openModal}
-            css={`
-            ${!compactMode && `width: 215px;`}
-            margin-top: ${3 * GU}px;
-            margin-left: ${1.5 * GU}px;
-            box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
-            ${compactMode && `margin-left: 0px;`}
-          `}
-          >
-            Change support
-          </Button>
-          {hasCancelRole && (
+          {isExecutable && (
+            <Button
+              wide
+              onClick={openModal}
+              css={`
+                ${!compactMode && `width: 215px;`}
+                margin-top: ${3 * GU}px;
+                margin-left: ${1.5 * GU}px;
+                box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
+                ${compactMode && `margin-left: 0px;`}
+              `}
+            >
+              Change support
+            </Button>
+          )}
+          {isCancellable && (
             <Button
               wide
               onClick={onCancelProposal}
               css={`
-            ${!compactMode && `width: 215px;`}
-            margin-top: ${3 * GU}px;
-            margin-left: ${1.5 * GU}px;
-            box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
-            ${compactMode && `margin-left: 0px;`}
-          `}
+                margin-top: ${3 * GU}px;
+                margin-left: ${1.5 * GU}px;
+                box-shadow: 0px 4px 6px rgba(7, 146, 175, 0.08);
+                ${!compactMode && `width: 215px;`}
+                ${compactMode && `margin-left: 0px;`}
+              `}
             >
               Withdraw proposal
             </Button>
           )}
         </div>
-        {mode === 'support' && buttonProps.disabled && (
+        {mode === 'support' && !isSupportable && (
           <Info
             mode="warning"
             css={`
