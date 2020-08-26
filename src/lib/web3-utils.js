@@ -5,7 +5,7 @@ import { toChecksumAddress } from 'web3-utils'
 import env from '../environment'
 import { getDefaultChain } from '../local-settings'
 
-const DEFAULT_LOCAL_CHAIN = 'i'
+const DEFAULT_LOCAL_CHAIN = '1337'
 
 export function getUseWalletProviders() {
   const providers = [{ id: 'injected' }]

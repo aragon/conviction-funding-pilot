@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { ButtonBase, textStyle, IconSettings, GU } from '@aragon/ui'
+import { textStyle, GU } from '@aragon/ui'
 import { useAppState } from '../providers/AppState'
 import logoAaSvg from '../assets/logo-aa.svg'
 
@@ -15,6 +15,7 @@ function Header() {
     <div
       css={`
         min-height: 100px;
+        width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -47,15 +48,6 @@ function Header() {
           Aragon Association
         </div>
       </div>
-
-      <ButtonBase
-        css={`
-          height: 100%;
-          color: #8fa4b5;
-        `}
-      >
-        <IconSettings />
-      </ButtonBase>
     </div>
   )
 }
