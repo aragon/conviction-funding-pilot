@@ -116,7 +116,7 @@ export function useTokenBalanceToUsd(symbol, decimals, balance) {
     let cancelled = false
 
     fetch(
-      `https://min-api.cryptocompare.com/data/price?fsym=${symbol}&tsyms=USD`
+      `https://min-api.cryptocompare.com/data/price?fsym=${'ANT'}&tsyms=USD`
     )
       .then(res => res.json())
       .then(price => {
@@ -135,6 +135,7 @@ export function useTokenBalanceToUsd(symbol, decimals, balance) {
           .div(BigNumber(10).pow(decimals))
         setUsd(usdBalance)
       })
+      .catch(err => console.log(err))
 
     return () => {
       cancelled = true

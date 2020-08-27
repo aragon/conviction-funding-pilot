@@ -12,6 +12,9 @@ const ENV_VARS = {
   PORTIS_DAPP_ID() {
     return process.env.REACT_APP_PORTIS_DAPP_ID || ''
   },
+  SENTRY_DSN() {
+    return process.env.REACT_APP_SENTRY_DSN || ''
+  },
   WALLETCONNECT_RPC_URL() {
     return (
       process.env.REACT_APP_WALLETCONNECT_RPC_URL ||

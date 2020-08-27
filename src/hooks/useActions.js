@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import * as Sentry from '@sentry/browser'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 import { toHex } from 'web3-utils'
@@ -24,7 +25,7 @@ export default function useActions() {
           { ethers, from: account }
         )
       } catch (err) {
-        console.log(err)
+        console.error(err)
       } finally {
         onDone()
       }
@@ -43,7 +44,7 @@ export default function useActions() {
           { ethers, from: account }
         )
       } catch (err) {
-        console.log(err)
+        console.error(err)
       } finally {
         onDone()
       }
@@ -62,7 +63,7 @@ export default function useActions() {
           { ethers, from: account }
         )
       } catch (err) {
-        console.log(err)
+        console.error(err)
       } finally {
         onDone()
       }
@@ -81,7 +82,7 @@ export default function useActions() {
           { ethers, from: account }
         )
       } catch (err) {
-        console.log(err)
+        console.error(err)
       } finally {
         onDone()
       }
@@ -100,7 +101,7 @@ export default function useActions() {
           { ethers, from: account }
         )
       } catch (err) {
-        console.log(err)
+        console.error(err)
       } finally {
         onDone()
       }
@@ -134,6 +135,7 @@ async function sendIntent(
       .sendTransaction({ data, to, gasLimit: GAS_LIMIT })
     await tx.wait()
   } catch (err) {
+    Sentry.captureException(err)
     console.error('Could not create tx:', err)
   }
 }
