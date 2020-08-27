@@ -9,6 +9,7 @@ import ScreenProviders from './ScreenProviders'
 import ScreenConnected from './ScreenConnected'
 import ScreenConnecting from './ScreenConnecting'
 import HeaderPopover from '../Header/HeaderPopover'
+import { trackEvent } from '../../lib/trackEvent'
 
 import { getUseWalletProviders } from '../../lib/web3-utils'
 
@@ -56,7 +57,18 @@ function AccountModule({ compact }) {
 
   const activate = useCallback(
     async providerId => {
-      await wallet.connect(providerId)
+      // This will just return a promises that resolves.
+      // We should update use-wallet to return a boolean on
+      // whether this was successful so we don't have to wait
+      // until a next render to figure out the status.
+      const ok = await wallet.connect(providerId)
+      if (ok) {
+        trackEvent('web3_connect', {
+          segmentation: {
+            provider: providerId,
+          },
+        })
+      }
     },
     [wallet]
   )
