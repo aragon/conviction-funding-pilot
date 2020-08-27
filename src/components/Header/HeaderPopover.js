@@ -23,6 +23,7 @@ function HeaderPopover({
       onClose={onClose}
       opener={opener}
       visible={visible}
+      position="bottom-start"
       css={`
         width: ${width}px;
       `}
