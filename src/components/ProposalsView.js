@@ -26,7 +26,7 @@ function ProposalsView({ proposals, requestToken }) {
   const history = useHistory()
   const { below } = useViewport()
 
-  const compactMode = below('large')
+  const compactMode = below(1400)
 
   const handleSelectProposal = useCallback(
     id => {
@@ -69,9 +69,13 @@ function ProposalsView({ proposals, requestToken }) {
           <div
             css={`
               width: 100%;
-              display: flex;
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr;
+              grid-template-rows: 1fr;
+              justify-items: start;
               ${compactMode &&
                 `
+                display: flex;
                 flex-direction: column;
               `}
             `}
@@ -79,6 +83,7 @@ function ProposalsView({ proposals, requestToken }) {
             <ProposalProperty
               title="Proposal Title"
               css={`
+                grid-column-start: 0;
                 margin-top: ${2 * GU}px;
               `}
             >
@@ -88,7 +93,6 @@ function ProposalsView({ proposals, requestToken }) {
                 id={proposal.id}
               />
             </ProposalProperty>
-            <div css="flex-grow: 0.8;" />
             {proposal.beneficiary === ZERO_ADDR ? (
               <SignalingIndicator />
             ) : (
@@ -172,7 +176,7 @@ function ProposalProperty({ title, children }) {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('large')
+  const compactMode = below(1400)
 
   return (
     <div
@@ -205,7 +209,7 @@ const SignalingIndicator = () => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('large')
+  const compactMode = below(1400)
 
   return (
     <div
@@ -241,7 +245,7 @@ const CancelledIndicator = () => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('large')
+  const compactMode = below(1400)
 
   return (
     <div
@@ -277,7 +281,7 @@ const ExecutedIndicator = () => {
   const theme = useTheme()
   const { below } = useViewport()
 
-  const compactMode = below('large')
+  const compactMode = below(1400)
 
   return (
     <div

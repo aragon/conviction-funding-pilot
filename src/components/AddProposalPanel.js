@@ -23,6 +23,9 @@ import { ZERO_ADDR } from '../constants'
 const NULL_PROPOSAL_TYPE = -1
 const FUNDING_PROPOSAL = 1
 
+const BASE_IPFS_URI = 'https://ipfs.eth.aragon.network/ipfs/'
+const TC_IPFS_HASH = 'QmTSDxWVFnNUis8ZJ7aBfH2z71Jc4N62YLYM9PzJz8DUjt'
+
 const DEFAULT_FORM_DATA = {
   title: '',
   link: '',
@@ -263,10 +266,7 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
       >
         <Checkbox checked={termsAccepted} onChange={setTermsAccepted} />I accept
         the&nbsp;
-        <Link
-          href="https://ipfs.eth.aragon.network/ipfs/QmU13GnuG9qo8NUi1WfJP19qTrViHwZ2dRzAnmJKG2i8hA"
-          external
-        >
+        <Link href={`${BASE_IPFS_URI}${TC_IPFS_HASH}`} external>
           Terms and Conditions
         </Link>
       </label>

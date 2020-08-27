@@ -3,7 +3,7 @@ import TokenAmount from 'token-amount'
 import { GU, IconCheck, RADIUS, textStyle, useTheme } from '@aragon/ui'
 import { useAppState } from '../providers/AppState'
 
-const LIGHT_INFO_SURFACE_COLOR = '#F8DFE'
+const LIGHT_INFO_SURFACE_COLOR = '#F8FDFE'
 
 function VoteCast({ amountOfTokens }) {
   const theme = useTheme()
