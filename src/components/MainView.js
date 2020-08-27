@@ -24,7 +24,7 @@ function MainView({ children }) {
       position: relative;
       z-index: 100;
       width: 100%;
-      height: 100vh;
+      min-height: 100vh;
       background: no-repeat center/170px url(/splash_1.svg),
                 linear-gradient(289.78deg, #01E8F7 18.35%, #00C2FF 80.68%); !important
 

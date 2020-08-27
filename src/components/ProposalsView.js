@@ -18,7 +18,7 @@ import IdentityBadge from './IdentityBadge'
 import { Amount } from '../screens/ProposalDetail'
 import { ZERO_ADDR } from '../constants'
 
-const PROPOSALS_PER_PAGE = 5
+const PROPOSALS_PER_PAGE = 10
 
 function ProposalsView({ proposals, requestToken }) {
   const [page, setPage] = useState(0)

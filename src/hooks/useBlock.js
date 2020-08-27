@@ -5,7 +5,7 @@ import { useWallet } from '../providers/Wallet'
 import { getNetwork } from '../networks'
 
 const NETWORK_TIMES = new Map([
-  ['main', 13],
+  ['mainnet', 13],
   ['kovan', 4],
   ['rinkeby', 14],
   ['ropsten', 11],

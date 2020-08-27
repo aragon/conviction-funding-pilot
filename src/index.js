@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/browser'
 import App from './App'
 import Main from './components/Main'
 import MainView from './components/MainView'
+import ScrollTop from './components/ScrollTop'
 import { WalletProvider } from './providers/Wallet'
 import { AppStateProvider } from './providers/AppState'
 import env from './environment'
@@ -24,6 +25,7 @@ ReactDOM.render(
     <AppStateProvider>
       <ViewportProvider>
         <HashRouter>
+          <ScrollTop />
           <Main>
             <MainView>
               <App />
