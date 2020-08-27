@@ -203,6 +203,13 @@ const AddProposalPanel = React.memo(({ onSubmit }) => {
           wide
         />
       </Field>
+      <Info mode="info">
+        Remember to{' '}
+        <Link href="https://forum.aragon.org/t/about-the-cv-pilot-category/2255">
+          add your proposal to the forum
+        </Link>{' '}
+        first, and then add the link here.
+      </Info>
       <Field
         label="Title"
         css={`
