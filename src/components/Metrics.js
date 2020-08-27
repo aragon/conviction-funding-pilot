@@ -12,14 +12,12 @@ import {
 } from '@aragon/ui'
 import AccountModule from './Account/AccountModule'
 import Carousel from './Carousel/Carousel'
-import BigNumber, { bigNum } from '../lib/bigNumber'
+import { useUniswapAntPrice } from '../hooks/useUniswapAntPrice'
+import BigNumber from '../lib/bigNumber'
 import { formatTokenAmount } from '../lib/token-utils'
-import { useTokenBalanceToUsd } from '../lib/web3-utils'
 import { useAppState } from '../providers/AppState'
 import { useWallet } from '../providers/Wallet'
 import StakingTokens from '../screens/StakingTokens'
-
-const USD_DECIMALS = 2
 
 const Metrics = React.memo(function Metrics({
   amountOfProposals,
@@ -35,7 +33,7 @@ const Metrics = React.memo(function Metrics({
   const { layoutName } = useLayout()
   const theme = useTheme()
   const compactMode = layoutName === 'small'
-  const antPrice = useTokenBalanceToUsd('ANT', 18, bigNum(1))
+  const uniAntPrice = useUniswapAntPrice()
 
   const myActiveTokens = useMemo(() => {
     if (!myStakes) {
@@ -183,7 +181,11 @@ const Metrics = React.memo(function Metrics({
               )}
             </>
           )}
-          <TokenPrice token={antPrice} uppercased />
+          <Metric
+            label="ANT price"
+            value={`$${Number(uniAntPrice).toFixed(2)}`}
+            uppercased
+          />
           <div
             css={`
               width: 100%;
@@ -312,7 +314,19 @@ function CarouselBalance({ amount, decimals = 18, label, symbol = 'ANT' }) {
 
 function TokenBalance({ label, token, value, symbol, uppercased }) {
   const theme = useTheme()
-  const usdBalance = useTokenBalanceToUsd(symbol, token.decimals, value)
+  const uniAntPrice = useUniswapAntPrice()
+
+  const valueFormatted = formatTokenAmount(
+    value.toFixed(0),
+    token.decimals,
+    undefined,
+    false,
+    {
+      commas: false,
+    }
+  ).replace(/,/g, '')
+
+  const antFinalPrice = Number(uniAntPrice) * Number(valueFormatted)
 
   return (
     <>
@@ -328,21 +342,9 @@ function TokenBalance({ label, token, value, symbol, uppercased }) {
           color: ${theme.contentSecondary};
         `}
       >
-        {`$ ${formatTokenAmount(usdBalance, 2)}`}
+        {`$ ${antFinalPrice.toLocaleString()}`}
       </div>
     </>
-  )
-}
-
-function TokenPrice({ token, uppercased }) {
-  return (
-    <div>
-      <Metric
-        label="ANT price"
-        value={`$${formatTokenAmount(token, USD_DECIMALS)}`}
-        uppercased={uppercased}
-      />
-    </div>
   )
 }
 

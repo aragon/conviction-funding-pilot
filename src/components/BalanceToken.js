@@ -3,16 +3,21 @@ import styled from 'styled-components'
 import TokenAmount from 'token-amount'
 import { useTheme, GU } from '@aragon/ui'
 
-import { useTokenBalanceToUsd } from '../lib/web3-utils'
+import { useUniswapAntPrice } from '../hooks/useUniswapAntPrice'
 import logoAnt from '../assets/logo-ant.svg'
 
-const ANT_SYMBOL = 'ANT'
 const ANT_DECIMALS = 18
-const USD_DECIMALS = 2
 
 const BalanceToken = ({ amount, symbol, color, size }) => {
   const theme = useTheme()
-  const antBalance = useTokenBalanceToUsd(ANT_SYMBOL, ANT_DECIMALS, amount)
+  const uniAntPrice = useUniswapAntPrice()
+
+  const valueFormatted = TokenAmount.format(
+    amount.toFixed(0),
+    ANT_DECIMALS
+  ).replace(/,/g, '')
+
+  const antFinalPrice = Number(uniAntPrice) * Number(valueFormatted)
 
   return (
     <div
@@ -39,11 +44,7 @@ const BalanceToken = ({ amount, symbol, color, size }) => {
           color: ${theme.contentSecondary};
         `}
       >
-        (${' '}
-        {antBalance === '-'
-          ? ''
-          : TokenAmount.format(antBalance.toFixed(0), USD_DECIMALS)}
-        )
+        ($ {antFinalPrice.toLocaleString()})
       </div>
     </div>
   )
