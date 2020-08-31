@@ -129,7 +129,7 @@ function ProposalActions({
     signalingProposal,
   ])
   const isCancellable = useMemo(
-    () => hasCancelRole && mode !== 'executed' && mode !== 'active',
+    () => hasCancelRole && mode !== 'executed' && mode !== 'cancelled',
     [hasCancelRole, mode]
   )
   const isSupportable = useMemo(() => accountBalance.gt('0'), [accountBalance])

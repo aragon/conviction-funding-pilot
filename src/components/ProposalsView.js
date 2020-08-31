@@ -183,7 +183,7 @@ function ProposalProperty({ title, children }) {
       css={`
         display: flex;
         flex-direction: column;
-        width: 200px;
+        width: 95%;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

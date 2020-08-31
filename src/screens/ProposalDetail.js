@@ -102,7 +102,9 @@ function ProposalDetail({
       return false
     }
 
+    console.log('cancelRole', creator, connectedAccount)
     if (addressesEqual(creator, connectedAccount)) {
+      console.log('aja')
       return true
     }
 
