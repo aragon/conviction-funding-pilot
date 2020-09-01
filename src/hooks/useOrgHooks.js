@@ -81,10 +81,10 @@ export function useAppData(organization) {
         addressesEqual(appAddress, convictionApp.address)
       )
 
-      const convictionVoting = await ConvictionVoting(
-        convictionApp,
-        defaultSubgraphUrl
-      )
+      const convictionVoting = await ConvictionVoting(convictionApp, [
+        'thegraph',
+        { subgraphUrl: defaultSubgraphUrl },
+      ])
 
       if (!cancelled) {
         setAppData(appData => ({

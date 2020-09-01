@@ -7,7 +7,7 @@ const networks = {
     ensRegistry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
     defaultEthNode: 'wss://mainnet.eth.aragon.network/ws',
     defaultSubgraphUrl:
-      'https://api.thegraph.com/subgraphs/name/1hive/aragon-conviction-voting-mainnet',
+      'https://graph.backend.aragon.org/subgraphs/name/1hive/aragon-conviction-voting-mainnet',
     name: 'Mainnet',
     orgAddress: '0xaAf56C0D604dDB88bBe451ae0db4580Ca3D49c0A',
     type: 'mainnet',
