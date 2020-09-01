@@ -39,11 +39,15 @@ export function useOrganzation() {
     let cancelled = false
 
     const fetchOrg = async () => {
-      const { orgAddress } = getNetwork(env('CHAIN_ID'))
+      const { generalSubgraphUrl, orgAddress } = getNetwork(env('CHAIN_ID'))
 
-      const organization = await connect(orgAddress, 'thegraph', {
-        network: getDefaultChain(),
-      })
+      const organization = await connect(orgAddress, [
+        'thegraph',
+        {
+          network: getDefaultChain(),
+          orgSubgraphUrl: generalSubgraphUrl,
+        },
+      ])
 
       if (!cancelled) {
         setOrganization(organization)

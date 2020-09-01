@@ -8,6 +8,8 @@ const networks = {
     defaultEthNode: 'wss://mainnet.eth.aragon.network/ws',
     defaultSubgraphUrl:
       'https://graph.backend.aragon.org/subgraphs/name/1hive/aragon-conviction-voting-mainnet',
+    generalSubgraphUrl:
+      'https://graph.backend.aragon.org/subgraphs/name/aragon/aragon-mainnet',
     name: 'Mainnet',
     orgAddress: '0xaAf56C0D604dDB88bBe451ae0db4580Ca3D49c0A',
     type: 'mainnet',
