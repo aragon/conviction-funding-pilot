@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react'
 import { animated, useTransition } from 'react-spring'
 import { GU, useTheme, useViewport } from '@aragon/ui'
@@ -30,7 +29,6 @@ function MainView({ children }) {
             position: relative;
             z-index: 1;
             width: 100%;
-            min-height: 100vh;
             background: ${theme.background};
           `}
         >
