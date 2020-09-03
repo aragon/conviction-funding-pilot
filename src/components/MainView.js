@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
 import React from 'react'
-import { animated, config, useSpring } from 'react-spring'
+import { animated, useTransition } from 'react-spring'
 import { GU, useTheme, useViewport } from '@aragon/ui'
+import LoadingFullscreen from '../LoadingFullscreen'
+import { useAppState } from '../providers/AppState'
 
 import ConvictionBanner from './ConvictionBanner'
 import Footer from './Footer'
@@ -11,55 +14,74 @@ function MainView({ children }) {
   const theme = useTheme()
   const { below } = useViewport()
   const compactMode = below('medium')
+  const { isLoading } = useAppState()
 
-  const revealProps = useSpring({
-    from: { opacity: 0, transform: 'scale3d(0.98, 0.98, 1)' },
-    to: { opacity: 1, transform: 'scale3d(1, 1, 1)' },
-    config: config.slow,
+  const loaderExitTransitions = useTransition(isLoading, null, {
+    from: { opacity: 1 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
   })
 
   return (
-    <div
-      css={`
-      position: relative;
-      z-index: 100;
-      width: 100%;
-      min-height: 100vh;
-      background: no-repeat center/170px url(/splash_1.svg),
-                linear-gradient(289.78deg, #01E8F7 18.35%, #00C2FF 80.68%); !important
-
-      `}
-    >
-      <animated.div
-        style={revealProps}
-        css={`
-          background: ${theme.background};
-          display: flex;
-          flex-direction: column;
-        `}
-      >
-        <ConvictionBanner />
-        <Layout>
-          <Header compact={compactMode} />
-        </Layout>
+    <>
+      {!isLoading && (
         <div
           css={`
-            ${!compactMode && `transform: translateY(-${4 * GU}px);`}
-            flex: 1 0 auto;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            min-height: 100vh;
+            background: ${theme.background};
           `}
         >
+          <ConvictionBanner />
+          <Layout>
+            <Header compact={compactMode} />
+          </Layout>
           <div
             css={`
-              min-height: 100vh;
-              height: 100%;
+              ${!compactMode && `transform: translateY(-${4 * GU}px);`}
+              flex: 1 0 auto;
             `}
           >
-            <Layout>{children}</Layout>
+            <div
+              css={`
+                min-height: 100vh;
+                height: 100%;
+              `}
+            >
+              <Layout>{children}</Layout>
+            </div>
+            <Footer compact={compactMode} />
           </div>
-          <Footer compact={compactMode} />
         </div>
-      </animated.div>
-    </div>
+      )}
+      {loaderExitTransitions.map(
+        ({ item: loading, key, props }) =>
+          loading && (
+            <animated.div
+              style={props}
+              key={key}
+              css={`
+                height: 100vh;
+                display: flex;
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                z-index: 2;
+              `}
+            >
+              <LoadingFullscreen
+                css={`
+                  flex: 1;
+                `}
+              />
+            </animated.div>
+          )
+      )}
+    </>
   )
 }
 
