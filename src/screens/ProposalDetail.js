@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
+import { useTransition, animated } from 'react-spring'
 import { useViewport } from 'use-viewport'
 import {
   BackButton,
@@ -78,6 +79,16 @@ function ProposalDetail({
   const { below } = useViewport()
 
   const compactMode = below(1400)
+  const loadingSwapTransitions = useTransition(proposal, null, {
+    config: { mass: 1, tension: 200, friction: 20 },
+    from: { opacity: 0, transform: `translate3d(0, ${0.5 * GU}px, 0)` },
+    enter: { opacity: 1, transform: `translate3d(0, 0, 0)` },
+    leave: {
+      opacity: 0,
+      position: 'absolute',
+      transform: `translate3d(0, -${0.5 * GU}px, 0)`,
+    },
+  })
 
   const {
     currentConviction,
@@ -143,7 +154,11 @@ function ProposalDetail({
   const signalingProposal = addressesEqual(beneficiary, ZERO_ADDR)
 
   return (
-    <div>
+    <div
+      css={`
+        position: relative;
+      `}
+    >
       <Bar
         css={`
           margin-top: ${4 * GU}px;
@@ -151,160 +166,175 @@ function ProposalDetail({
       >
         <BackButton onClick={onBack} />
       </Bar>
-      <Box>
-        <section
-          css={`
-            display: flex;
-            flex-direction: column;
-            flex-wrap: wrap;
-          `}
-        >
-          <div
-            css={`
-              display: flex;
-              flex-wrap: wrap;
-              ${compactMode &&
-                `
+      {loadingSwapTransitions.map(
+        ({ item: loading, key, props }) =>
+          loading && (
+            <animated.div style={props} key={key}>
+              <Box>
+                <section
+                  css={`
+                    display: flex;
+                    flex-direction: column;
+                    flex-wrap: wrap;
+                  `}
+                >
+                  <div
+                    css={`
+                      display: flex;
+                      flex-wrap: wrap;
+                      ${compactMode &&
+                        `
                   flex-direction: column-reverse;
                 `}
-            `}
-          >
-            <h2
-              css={`
-                ${textStyle('title2')};
-              `}
-            >
-              {name}
-            </h2>
-            <div css="flex-grow: 1;" />
-            {!signalingProposal && status.toLowerCase() !== 'cancelled' && (
-              <Outcome
-                result={outcomeText}
-                positive={proposalState !== UNABLE_TO_PASS}
-              />
-            )}
-          </div>
-          {!signalingProposal && proposalState !== EXECUTED && (
-            <p
-              css={`
+                    `}
+                  >
+                    <h2
+                      css={`
+                        ${textStyle('title2')};
+                      `}
+                    >
+                      {name}
+                    </h2>
+                    <div css="flex-grow: 1;" />
+                    {!signalingProposal &&
+                      status.toLowerCase() !== 'cancelled' && (
+                        <Outcome
+                          result={outcomeText}
+                          positive={proposalState !== UNABLE_TO_PASS}
+                        />
+                      )}
+                  </div>
+                  {!signalingProposal && proposalState !== EXECUTED && (
+                    <p
+                      css={`
                   margin-top: ${1 * GU}px;
                   ${textStyle('body2')}
                   color: ${theme.contentSecondary};
                 `}
-            >
-              This proposal{' '}
-              {status.toLowerCase() === 'cancelled' ||
-              status.toLowerCase() === 'executed'
-                ? 'was'
-                : 'is'}{' '}
-              requesting{' '}
-              {formatTokenAmount(requestedAmount, requestToken.decimals)} ANT
-              out of {formatTokenAmount(vaultBalance, requestToken.decimals)}{' '}
-              ANT currently in the common pool.
-            </p>
-          )}
-          <div
-            css={`
-              margin-top: ${4 * GU}px;
-              margin-bottom: ${4 * GU}px;
-              display: flex;
-              flex-wrap: wrap;
-              justify-content: space-between;
-              ${compactMode &&
-                `
+                    >
+                      This proposal{' '}
+                      {status.toLowerCase() === 'cancelled' ||
+                      status.toLowerCase() === 'executed'
+                        ? 'was'
+                        : 'is'}{' '}
+                      requesting{' '}
+                      {formatTokenAmount(
+                        requestedAmount,
+                        requestToken.decimals
+                      )}{' '}
+                      ANT out of{' '}
+                      {formatTokenAmount(vaultBalance, requestToken.decimals)}{' '}
+                      ANT currently in the common pool.
+                    </p>
+                  )}
+                  <div
+                    css={`
+                      margin-top: ${4 * GU}px;
+                      margin-bottom: ${4 * GU}px;
+                      display: flex;
+                      flex-wrap: wrap;
+                      justify-content: space-between;
+                      ${compactMode &&
+                        `
                   flex-direction: column;
               `}
-            `}
-          >
-            {beneficiary === ZERO_ADDR && <SignalingIndicator />}{' '}
-            {status !== 'Cancelled' ? (
-              requestToken && (
-                <Amount
-                  requestedAmount={requestedAmount}
-                  requestToken={requestToken}
-                />
-              )
-            ) : (
-              <CancelledIndicator />
-            )}
-            <DataField
-              label="Submitted By"
-              value={
-                <IdentityBadge
-                  connectedAccount={addressesEqual(creator, connectedAccount)}
-                  entity={creator}
-                />
-              }
-            />
-            {requestToken && !signalingProposal && (
-              <DataField
-                label="Beneficiary"
-                value={
-                  <IdentityBadge
-                    connectedAccount={addressesEqual(
-                      beneficiary,
-                      connectedAccount
-                    )}
-                    entity={beneficiary}
-                  />
-                }
-              />
-            )}
-            {!signalingProposal &&
-              proposalState !== UNABLE_TO_PASS &&
-              proposalState !== EXECUTED && (
-                <div
-                  css={`
-                    ${compactMode && `margin-top: ${2 * GU}px;`}
-                  `}
-                >
-                  <ConvictionCountdown proposal={proposal} />
-                </div>
-              )}
-            <DataField
-              label="Link"
-              value={
-                link ? (
-                  <Link href={link} external>
-                    Read more
-                  </Link>
-                ) : (
-                  <span
-                    css={`
-                      ${textStyle('body2')};
                     `}
                   >
-                    No link provided
-                  </span>
-                )
-              }
-            />
-          </div>
-          {status.toLowerCase() !== 'executed' && (
-            <>
-              <DataField
-                label="Conviction Progress"
-                value={
-                  <ConvictionBar
+                    {beneficiary === ZERO_ADDR && <SignalingIndicator />}{' '}
+                    {status !== 'Cancelled' ? (
+                      requestToken && (
+                        <Amount
+                          requestedAmount={requestedAmount}
+                          requestToken={requestToken}
+                        />
+                      )
+                    ) : (
+                      <CancelledIndicator />
+                    )}
+                    <DataField
+                      label="Submitted By"
+                      value={
+                        <IdentityBadge
+                          connectedAccount={addressesEqual(
+                            creator,
+                            connectedAccount
+                          )}
+                          entity={creator}
+                        />
+                      }
+                    />
+                    {requestToken && !signalingProposal && (
+                      <DataField
+                        label="Beneficiary"
+                        value={
+                          <IdentityBadge
+                            connectedAccount={addressesEqual(
+                              beneficiary,
+                              connectedAccount
+                            )}
+                            entity={beneficiary}
+                          />
+                        }
+                      />
+                    )}
+                    {!signalingProposal &&
+                      proposalState !== UNABLE_TO_PASS &&
+                      proposalState !== EXECUTED && (
+                        <div
+                          css={`
+                            ${compactMode && `margin-top: ${2 * GU}px;`}
+                          `}
+                        >
+                          <ConvictionCountdown proposal={proposal} />
+                        </div>
+                      )}
+                    <DataField
+                      label="Link"
+                      value={
+                        link ? (
+                          <Link href={link} external>
+                            Read more
+                          </Link>
+                        ) : (
+                          <span
+                            css={`
+                              ${textStyle('body2')};
+                            `}
+                          >
+                            No link provided
+                          </span>
+                        )
+                      }
+                    />
+                  </div>
+                  {status.toLowerCase() !== 'executed' && (
+                    <>
+                      <DataField
+                        label="Conviction Progress"
+                        value={
+                          <ConvictionBar
+                            proposal={proposal}
+                            withThreshold={!!requestToken}
+                            hideSeparator={proposal.beneficiary === ZERO_ADDR}
+                          />
+                        }
+                      />
+                    </>
+                  )}
+                  <ProposalActions
+                    hasCancelRole={hasCancelRole}
+                    myStakes={myStakes}
                     proposal={proposal}
-                    withThreshold={!!requestToken}
-                    hideSeparator={proposal.beneficiary === ZERO_ADDR}
+                    onCancelProposal={handleCancelProposal}
+                    onExecuteProposal={onExecuteProposal}
+                    onStakeToProposal={onStakeToProposal}
+                    onWithdrawFromProposal={onWithdrawFromProposal}
                   />
-                }
-              />
-            </>
-          )}
-          <ProposalActions
-            hasCancelRole={hasCancelRole}
-            myStakes={myStakes}
-            proposal={proposal}
-            onCancelProposal={handleCancelProposal}
-            onExecuteProposal={onExecuteProposal}
-            onStakeToProposal={onStakeToProposal}
-            onWithdrawFromProposal={onWithdrawFromProposal}
-          />
-        </section>
-      </Box>
+                </section>
+              </Box>
+            </animated.div>
+          )
+      )}
       <SidePanel
         title="Support this proposal"
         opened={panelState.visible}

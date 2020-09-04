@@ -45,7 +45,6 @@ function MainView({ children }) {
             <div
               css={`
                 min-height: 100vh;
-                height: 100%;
               `}
             >
               <Layout>{children}</Layout>
