@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useTransition, animated } from 'react-spring'
 import styled from 'styled-components'
 import { useViewport } from 'use-viewport'
 import {
@@ -13,9 +14,13 @@ import {
   GU,
   RADIUS,
 } from '@aragon/ui'
+
 import { ConvictionBar } from './ConvictionVisuals'
 import IdentityBadge from './IdentityBadge'
 import { Amount } from '../screens/ProposalDetail'
+
+import { useAppState } from '../providers/AppState'
+
 import { ZERO_ADDR } from '../constants'
 
 const PROPOSALS_PER_PAGE = 10
@@ -25,8 +30,20 @@ function ProposalsView({ proposals, requestToken }) {
   const theme = useTheme()
   const history = useHistory()
   const { below } = useViewport()
+  const { isLoading } = useAppState()
 
   const compactMode = below(1400)
+
+  const loadingSwapTransitions = useTransition(isLoading, null, {
+    config: { mass: 1, tension: 200, friction: 20 },
+    from: { opacity: 0, transform: `translate3d(0, ${0.5 * GU}px, 0)` },
+    enter: { opacity: 1, transform: `translate3d(0, 0, 0)` },
+    leave: {
+      opacity: 0,
+      position: 'absolute',
+      transform: `translate3d(0, -${0.5 * GU}px, 0)`,
+    },
+  })
 
   const handleSelectProposal = useCallback(
     id => {
@@ -51,98 +68,109 @@ function ProposalsView({ proposals, requestToken }) {
   return (
     <div
       css={`
+        position: relative;
         width: 100%;
       `}
     >
-      {shownProposals.map(proposal => (
-        <ProposalCard
-          key={proposal.id}
-          background={theme.surface}
-          onClick={() => handleSelectProposal(proposal.id)}
-          focusRingRadius={RADIUS}
-          css={`
-            text-align: left;
-            word-wrap: break-word;
-            text-overflow: ellipsis;
-          `}
-        >
-          <div
-            css={`
-              width: 100%;
-              display: grid;
-              grid-template-columns: 1fr 1fr 1fr;
-              grid-template-rows: 1fr;
-              justify-items: start;
-              ${compactMode &&
-                `
+      {loadingSwapTransitions.map(
+        ({ item: loading, key, props }) =>
+          !loading && (
+            <animated.div style={props} key={key}>
+              {shownProposals.map(proposal => (
+                <ProposalCard
+                  key={proposal.id}
+                  background={theme.surface}
+                  onClick={() => handleSelectProposal(proposal.id)}
+                  focusRingRadius={RADIUS}
+                  css={`
+                    text-align: left;
+                    word-wrap: break-word;
+                    text-overflow: ellipsis;
+                  `}
+                >
+                  <div
+                    css={`
+                      width: 100%;
+                      display: grid;
+                      grid-template-columns: 1fr 1fr 1fr;
+                      grid-template-rows: 1fr;
+                      justify-items: start;
+                      ${compactMode &&
+                        `
                 display: flex;
                 flex-direction: column;
               `}
-            `}
-          >
-            <ProposalProperty
-              title="Proposal Title"
-              css={`
-                grid-column-start: 0;
-                margin-top: ${2 * GU}px;
-              `}
-            >
-              <ProposalTitleLink
-                handleSelectProposal={handleSelectProposal}
-                title={proposal.name}
-                id={proposal.id}
-              />
-            </ProposalProperty>
-            {proposal.beneficiary === ZERO_ADDR ? (
-              <SignalingIndicator />
-            ) : (
-              <Amount
-                requestedAmount={proposal.requestedAmount}
-                requestToken={requestToken}
-                hasTopSpacing={compactMode}
-              />
-            )}
-            <div
-              css={`
-                display: flex;
-                ${!compactMode && `margin-left: ${10 * GU}px;`}
-              `}
-            >
-              {proposal.status.toLowerCase() === 'executed' ? (
-                <ExecutedIndicator />
-              ) : proposal.status.toLowerCase() !== 'cancelled' ? (
-                <ProposalProperty title="Submitted by">
-                  <p
-                    css={`
-                      ${textStyle('body2')}
                     `}
                   >
-                    <IdentityBadge entity={proposal.creator} badgeOnly />
-                  </p>
-                </ProposalProperty>
-              ) : (
-                <CancelledIndicator />
-              )}
-            </div>
-          </div>
-          <h2
-            css={`
-              ${textStyle('body4')}
-              text-transform: uppercase;
-              color: ${theme.contentSecondary};
-              margin-top: ${4 * GU}px;
-              margin-bottom: ${1 * GU}px;
-            `}
-          >
-            Conviction Progress
-          </h2>
-          <ConvictionBar
-            hideSeparator={proposal.beneficiary === ZERO_ADDR}
-            proposal={proposal}
-            withThreshold={proposal.status !== 'Cancelled'}
-          />
-        </ProposalCard>
-      ))}
+                    <ProposalProperty
+                      title="Proposal Title"
+                      css={`
+                        grid-column-start: 0;
+                        margin-top: ${2 * GU}px;
+                      `}
+                    >
+                      <ProposalTitleLink
+                        handleSelectProposal={handleSelectProposal}
+                        title={proposal.name}
+                        id={proposal.id}
+                      />
+                    </ProposalProperty>
+                    {proposal.beneficiary === ZERO_ADDR ? (
+                      <SignalingIndicator />
+                    ) : (
+                      <Amount
+                        requestedAmount={proposal.requestedAmount}
+                        requestToken={requestToken}
+                        hasTopSpacing={compactMode}
+                      />
+                    )}
+                    <div
+                      css={`
+                        display: flex;
+                        ${!compactMode && `margin-left: ${10 * GU}px;`}
+                      `}
+                    >
+                      {proposal.status.toLowerCase() === 'executed' ? (
+                        <ExecutedIndicator />
+                      ) : proposal.status.toLowerCase() !== 'cancelled' ? (
+                        <ProposalProperty title="Submitted by">
+                          <p
+                            css={`
+                              ${textStyle('body2')}
+                            `}
+                          >
+                            <IdentityBadge
+                              entity={proposal.creator}
+                              badgeOnly
+                            />
+                          </p>
+                        </ProposalProperty>
+                      ) : (
+                        <CancelledIndicator />
+                      )}
+                    </div>
+                  </div>
+                  <h2
+                    css={`
+                      ${textStyle('body4')}
+                      text-transform: uppercase;
+                      color: ${theme.contentSecondary};
+                      margin-top: ${4 * GU}px;
+                      margin-bottom: ${1 * GU}px;
+                    `}
+                  >
+                    Conviction Progress
+                  </h2>
+                  <ConvictionBar
+                    hideSeparator={proposal.beneficiary === ZERO_ADDR}
+                    proposal={proposal}
+                    withThreshold={proposal.status !== 'Cancelled'}
+                  />
+                </ProposalCard>
+              ))}
+            </animated.div>
+          )
+      )}
       <Pagination pages={pages} selected={page} onChange={setPage} />
     </div>
   )
