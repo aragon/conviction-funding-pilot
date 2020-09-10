@@ -84,7 +84,7 @@ export function ConvictionBar({
             >
               {neededConviction
                 ? neededConviction.toString() === '0'
-                  ? '(Infinite conviction needed)'
+                  ? '(Infinite Conviction Needed)'
                   : `(${Math.round(
                       neededConviction.multipliedBy(new BigNumber('100'))
                     )}% Conviction Needed)`
