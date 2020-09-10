@@ -57,6 +57,7 @@ export function ConvictionBar({
 
   const secondSize = stakedConviction.minus(userStakedConviction)
   const thirdSize = futureStakedConviction.minus(stakedConviction)
+  console.log(neededConviction.toString())
 
   return (
     <div>
@@ -83,9 +84,11 @@ export function ConvictionBar({
               `}
             >
               {neededConviction
-                ? `(${Math.round(
-                    neededConviction.multipliedBy(new BigNumber('100'))
-                  )}% Conviction Needed)`
+                ? neededConviction.toString() === '0'
+                  ? '(Infinite conviction needed)'
+                  : `(${Math.round(
+                      neededConviction.multipliedBy(new BigNumber('100'))
+                    )}% Conviction Needed)`
                 : `(&infin; Needed)`}
             </span>
           )}
