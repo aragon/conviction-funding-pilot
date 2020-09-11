@@ -12,6 +12,7 @@ import {
 } from '@aragon/ui'
 import AccountModule from './Account/AccountModule'
 import Carousel from './Carousel/Carousel'
+import useAccountTotalStaked from '../hooks/useAccountTotalStaked'
 import { useUniswapAntPrice } from '../hooks/useUniswapAntPrice'
 import BigNumber from '../lib/bigNumber'
 import { formatTokenAmount } from '../lib/token-utils'
@@ -35,29 +36,22 @@ const Metrics = React.memo(function Metrics({
   const compactMode = layoutName === 'small'
   const uniAntPrice = useUniswapAntPrice()
 
-  const myActiveTokens = useMemo(() => {
-    if (!myStakes) {
-      return new BigNumber('0')
-    }
-    return myStakes.reduce((accumulator, stake) => {
-      return accumulator.plus(stake.amount)
-    }, new BigNumber('0'))
-  }, [myStakes])
+  const totalStaked = useAccountTotalStaked()
 
   const inactiveTokens = useMemo(() => {
-    if (!accountBalance.gte(0) || !myActiveTokens) {
+    if (!accountBalance.gte(0) || !totalStaked) {
       return new BigNumber('0')
     }
-    return accountBalance.minus(myActiveTokens)
-  }, [accountBalance, myActiveTokens])
+    return accountBalance.minus(totalStaked)
+  }, [accountBalance, totalStaked])
 
   const carouselContent = useMemo(
     () => [
       <CarouselBalance label="Total" amount={accountBalance} symbol="ANT" />,
-      <CarouselBalance label="Active" amount={myActiveTokens} symbol="ANT" />,
+      <CarouselBalance label="Active" amount={totalStaked} symbol="ANT" />,
       <CarouselBalance label="Inactive" amount={inactiveTokens} symbol="ANT" />,
     ],
-    [accountBalance, myActiveTokens, inactiveTokens]
+    [accountBalance, inactiveTokens, totalStaked]
   )
 
   return (
@@ -141,7 +135,7 @@ const Metrics = React.memo(function Metrics({
                   </Help>
                 </div>
               </div>
-              {!myActiveTokens.eq('0') && (
+              {!totalStaked.eq('0') && (
                 <>
                   <LineSeparator
                     border={theme.border}

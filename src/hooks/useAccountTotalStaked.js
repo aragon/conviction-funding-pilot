@@ -15,7 +15,7 @@ export default function useAccountTotalStaked() {
         // but the smart contract automatically removes this balance when staking an amount higher
         // than the available "unstaked" amount.
         // See: https://github.com/1hive/conviction-voting-app/blob/master/contracts/ConvictionVoting.sol#L489-L508
-        .filter(({ status }) => status !== 'Cancelled' || status !== 'Executed')
+        .filter(({ status }) => status === 'Active')
         .reduce((acc, { stakes }) => {
           const myStake = stakes.find(({ entity }) =>
             addressesEqual(entity, account)

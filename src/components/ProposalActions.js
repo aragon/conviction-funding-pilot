@@ -15,7 +15,6 @@ import { ZERO_ADDR } from '../constants'
 
 function ProposalActions({
   hasCancelRole,
-  myStakes,
   onCancelProposal,
   onExecuteProposal,
   onStakeToProposal,
@@ -48,15 +47,6 @@ function ProposalActions({
       },
     [stakes, connectedAccount]
   )
-
-  const myActiveTokens = useMemo(() => {
-    if (!myStakes) {
-      return new BigNumber('0')
-    }
-    return myStakes.reduce((accumulator, stake) => {
-      return accumulator.plus(stake.amount)
-    }, new BigNumber('0'))
-  }, [myStakes])
 
   const nonStakedTokens = useMemo(() => accountBalance.minus(totalStaked), [
     accountBalance,
@@ -278,7 +268,7 @@ function ProposalActions({
         onStakeToProposal={onStakeToProposal}
         onWithdrawFromProposal={onWithdrawFromProposal}
         proposalId={id}
-        totalActiveTokens={myActiveTokens}
+        totalActiveTokens={totalStaked}
       />
     </>
   ) : (

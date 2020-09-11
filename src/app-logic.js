@@ -26,7 +26,11 @@ export default function useAppLogic() {
 
     return proposals.reduce(
       ({ myStakes, totalActiveTokens }, proposal) => {
-        if (proposal.executed || !proposal.stakes) {
+        if (
+          proposal.status === 'Cancelled' ||
+          proposal.status === 'Executed' ||
+          !proposal.stakes
+        ) {
           return { myStakes, totalActiveTokens }
         }
 
